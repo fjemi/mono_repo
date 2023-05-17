@@ -1,0 +1,56 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Find Median From Data Stream
+      description: |
+        [Challenge](https://leetcode.com/problems/find-median-from-data-stream/)
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              arrays: array[number]
+              operations: []
+            examples:
+              'Example 1':
+                value: |
+                  arrays: [[], [1], [2], [], [3], []]
+                  operations: 
+                  - MedianFinder
+                  - addNum
+                  - addNum
+                  - findMedian
+                  - addNum
+                  - findMedian
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        arrays: [[], [1], [2], [], [3], []]
+                        operations: 
+                        - MedianFinder
+                        - addNum
+                        - addNum
+                        - findMedian
+                        - addNum
+                        - findMedian
+                      output:  
+                      - []
+                      - []
+                      - []
+                      - [1.5]
+                      - []
+                      - [2]

@@ -1,0 +1,18 @@
+data:
+  - name: directories
+    type: List[str]
+    description: Directories to search  
+  - name: extensions
+    type: List[str]
+    description: File extensions 
+  - name: files
+    type: List[str]
+    description: Files in the directories with matching extenstions
+functions: 
+  - name: get_files_by_extension
+    description: |
+      Searches a directory and retrieves files with certain 
+      extensions
+    paramters: data
+    returns: data
+dependancies: null

@@ -1,0 +1,61 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Top Frequent k Words
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              grid: array[string]
+              k: number
+            examples:
+              'Example 1':
+                value: |
+                  words: [i, love, leetcode, i, love, coding]
+                  k: 2
+              'Example 2':
+                value: |
+                  words: [the, day, is, sunny, the, the, the, sunny, is, is] 
+                  k: 4
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        words: [i, love, leetcode, i, love, coding]
+                        k: 2
+                      output: 
+                        top_k_words:
+                          n: 2 
+                          values: [i, love]
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        words: [the, day, is, sunny, the, the, the, sunny, is, is] 
+                        k: 4
+                      output:
+                        top_k_words:
+                          n: 4
+                          values: [the]
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://leetcode.com/problems/top-k-frequent-words/)

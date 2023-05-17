@@ -1,0 +1,90 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Maximal Square
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              matrix: array[array[number]]
+            examples:
+              'Example 1':
+                value: |
+                  matrix: 
+                  - [1, 0, 1, 0, 0]
+                  - [1, 0, 1, 1, 1]
+                  - [1, 1, 1, 1, 1]
+                  - [1, 0, 0, 1, 0]
+              'Example 2':
+                value: |
+                  matrix: 
+                  - [0, 1]
+                  - [1, 0]
+              'Example 3':
+                value: |
+                  matrix: 
+                  - [0]
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        matrix: 
+                        - [1, 0, 1, 0, 0]
+                        - [1, 0, 1, 1, 1]
+                        - [1, 1, 1, 1, 1]
+                        - [1, 0, 0, 1, 0]
+                      output: 
+                        largest_square:
+                          n: 4
+                          indices: 
+                          - - ['1.2', '1.3', '2.2', '2.3']
+                            - ['1.3', '1.4', '2.3', '2.4']
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        matrix: 
+                        - [0, 1]
+                        - [1, 0]
+                      output: 
+                        largest_square:
+                          n: 1
+                          indices:
+                          - - ['0.1']
+                            - ['1.0']
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        matrix: 
+                        - [0]
+                      output: 
+                        largest_square:
+                          n: 0
+                          indices:
+                          - - ['0.0']
+                          
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://leetcode.com/problems/maximal-square/)

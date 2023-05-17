@@ -1,0 +1,71 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Find kth Permutation
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              scores: List[number]
+              ages: List[number]
+            examples:
+              'Example 1':
+                value: |
+                  n: 3
+                  k: 3
+              'Example 2':
+                value: |
+                  n: 4
+                  k: 9
+              'Example 3':
+                value: |
+                  n: 3
+                  k: 1
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        n: 3
+                        k: 3
+                      output:
+                        kth_permutation: '213'
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        n: 4
+                        k: 9
+                      output:
+                        kth_permutation: '2314'
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        n: 3
+                        k: 1
+                      output:
+                        kth_permutation: '123'
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://leetcode.com/problems/permutation-sequence/)

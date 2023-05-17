@@ -1,0 +1,61 @@
+paths: 
+  '/{path}/':
+    get:
+      tags:
+      - Development
+      summary: Debugging
+      description:
+        $ref: '#/components/examples/{path}.description'
+      parameters:
+      - in: query
+        name: data
+        required: false
+        schema:
+          anyOf:
+            type: string
+            type: object
+            type: number
+            type: array
+        examples:
+          'string':
+            value: debug this
+          'object':
+            value:
+              debug: this
+          'array':
+            value: 
+            - debug
+            - this
+    post:
+      tags:
+      - Development
+      summary: Debugging
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              type: object
+            examples: 
+              'Debug This':
+                value: 
+                  debug: This
+          text/plain:
+            schema:
+              type: string
+            examples:
+              'Debug This':
+                value: |
+                  debug: This
+components:
+  examples:
+    '{path}.description': |
+      Development endpoint for debugging that prints query
+      parameters or request body to the terminal. Can be used to
+      debug the frontend if your browser doesn't have dev tools
+      or you don't want to to navigate to another page view the
+      results from `console.log()`.
+tags:
+- name: Development
+  description: Development endpoint for debugging

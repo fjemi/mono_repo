@@ -1,0 +1,6 @@
+links:
+  - Sets environment variables defined within a string
+    https://stackoverflow.com/questions/52412297/how-to-replace-environment-variable-value-in-yaml-file-to-be-parsed-using-python    
+dependencies:
+  - pyyaml
+  - python-box

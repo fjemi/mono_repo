@@ -1,0 +1,70 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Hourglass Sum
+      description: |
+        [Challenge](https://www.hackerrank.com/challenges/2d-array/problem)
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              array: array[number]
+            examples:
+              'Example 1':
+                value: |
+                  array: 
+                  - [1, 1, 1, 0, 0, 0]
+                  - [0, 1, 0, 0, 0, 0]
+                  - [1, 1, 1, 0, 0, 0]
+                  - [0, 0, 2, 4, 4, 0]
+                  - [0, 0, 0, 2, 0, 0]
+                  - [0, 0, 1, 2, 4, 0]
+              'Example 2':
+                value: |
+                  array:
+                  - [-9, -9, -9, 1, 1, 1] 
+                  - [0, -9, 0, 4, 3, 2]
+                  - [-9, -9, -9, 1, 2, 3]
+                  - [0, 0, 8, 6, 6, 0]
+                  - [0, 0, 0, -2, 0, 0]
+                  - [0, 0, 1, 2, 4, 0]
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        array: 
+                        - [1, 1, 1, 0, 0, 0]
+                        - [0, 1, 0, 0, 0, 0]
+                        - [1, 1, 1, 0, 0, 0]
+                        - [0, 0, 2, 4, 4, 0]
+                        - [0, 0, 0, 2, 0, 0]
+                        - [0, 0, 1, 2, 4, 0]
+                      output: 19
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        array:
+                        - [-9, -9, -9, 1, 1, 1] 
+                        - [0, -9, 0, 4, 3, 2]
+                        - [-9, -9, -9, 1, 2, 3]
+                        - [0, 0, 8, 6, 6, 0]
+                        - [0, 0, 0, -2, 0, 0]
+                        - [0, 0, 1, 2, 4, 0]
+                      output: 28

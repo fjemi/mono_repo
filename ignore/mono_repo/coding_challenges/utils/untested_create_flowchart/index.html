@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html land="eng">
+<head>
+  <style>
+    .chart {
+      display: flex;
+      justify-content: center;
+      height: auto;
+      width: auto;
+    }
+    .script {
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="chart" id="chart"></div>
+  <div class="data" id="data"></div>
+  <div class="test" id="test"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowchart/1.17.1/flowchart.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js"></script> -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/canvg/1.1/canvg.js"></script> -->
+  <!-- <script async type="text/javascript" src="script.js"></script> -->
+  <script async type="text/javascript">
+    const test = () => { return 'Hello World' }
+    document.getElementById("test").innerHTML = test()
+
+    const get_flowchart_data = async (method, url) => {
+      // 
+      const config = {
+        method: method,
+        url: url,
+      }
+      const response = axios('/home/femij/mono_repo/coding_challenges/data/flowchart.txt')
+      data = await response.then((response) => response.data)
+      return data
+    }
+
+    const display_flowchart = async (flowchart_data) => {
+      // 
+      const fc = flowchart.parse(flowchart_data)
+      fc.drawSVG('chart')
+      // document = fc.drawSVG('chart')
+      // return document
+    }
+
+    // data = await get_flowchart_data()
+    const data = `
+      st0=>start: start a_pyflow_test:>https://google.com
+      op1=>operation: do something
+      cond2=>condition: Yes or No?
+      io3=>inputoutput: output: something...
+      sub4=>subroutine: A Subroutine
+      e5=>end: end a_pyflow_test
+
+
+      st0->op1
+      op1->cond2
+      cond2(yes,)->io3
+      cond2(no,)->sub4
+      io3->e5
+      sub4(right)->op1`
+    document.getElementById("data").innerHTML = data
+    display_flowchart(data)
+  </script>
+</body>
+</html>

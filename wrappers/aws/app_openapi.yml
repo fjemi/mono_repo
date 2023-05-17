@@ -1,0 +1,30 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - TODO
+      - Utilities
+      summary: Amazon Web Services (AWS) Wrapper
+      description:
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              grid: array[number | string] | object
+            examples:
+              '2*2 Grid':
+                value: |
+                  {}
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                '2*2 grid':
+                  value: |
+                    {}

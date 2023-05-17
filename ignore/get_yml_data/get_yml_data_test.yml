@@ -1,0 +1,68 @@
+functions:
+  - name: get_yml_data
+    description: 
+    parameters: data
+    returns: Dictionary containing the YML data
+  - name: set_path
+    description: Sets the path to a `.yml` file from the path to a `.py` file
+    parameters: data
+    returns: data
+  - name: set_env_vars
+    descriptions: |
+      Sets environment variables defined within a string
+      https://stackoverflow.com/questions/52412297/how-to-replace-environment-variable-value-in-yaml-file-to-be-parsed-using-python    
+    parameters: data
+    returns: data
+dependencies:
+  - pyyaml
+  - python-box
+tests:
+  - description: Should return None if the path doesn't exist
+    function: set_path
+    inputs: null
+    output: null
+  - description: Should return the path to a YML for an existing `.py` file
+    function: set_path
+    inputs: 
+      path: WORKING_DIR/test_get_yml_data_test.py
+    output: 
+      path: WORKING_DIR/get_yml_data.yml
+  - description: Should return the path to a YML file for an existing `.yml` file
+    function: set_path
+    inputs: 
+      path: WORKING_DIR/get_yml_data.yml
+    output: 
+      path: WORKING_DIR/get_yml_data.yml
+  - description: Should return original text if text contains no environment variables
+    function: set_env_vars
+    inputs: 
+      path: /get_yml_data.yml
+      text: ''
+    output: 
+      path: /get_yml_data.yml
+      text: ''
+  - description: Should set environment variables in text
+    function: set_env_vars
+    inputs: 
+      path: /get_yml_data.yml
+      text: 'WORKING_DIR'  # env var that gets set
+    output: 
+      path: /get_yml_data.yml
+      text: '${PWD}/functions/get_yml_data'  # env var that gets set
+  - description: Should return None when no data is passed
+    function: set_env_vars
+    inputs: null
+    output: null
+  - description: Should return None when the path to yml file doesn't exist
+    function: get_yml_data
+    inputs: 
+      path: 'does_not_exist.yml'
+      text: ''
+    output: null
+  - description: Should return the contents of an existing yml file when yml exists yml file when yml exists yml file when yml exists
+    function: get_yml_data
+    inputs: 
+      path: 'WORKING_DIR/test.py'
+      text: ''
+    output: 
+      test: test

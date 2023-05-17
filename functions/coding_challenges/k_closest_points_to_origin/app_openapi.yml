@@ -1,0 +1,70 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: K Closest Points to Origin
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              points: array[array[number]]
+              k: number
+            examples:
+              'Example 1':
+                value: |
+                  points: 
+                  - [1,3]
+                  - [-2,2]
+                  k: 1
+              'Example 2':
+                value: |
+                  points: 
+                  - [3, 3] 
+                  - [5, -1] 
+                  - [-2, 4]
+                  k: 2
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        points: 
+                        - [1,3]
+                        - [-2,2]
+                        k: 1
+                      output:
+                        points:
+                        - [-2, 2]
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        points: 
+                        - [3, 3] 
+                        - [5, -1] 
+                        - [-2, 4]
+                        k: 2
+                      output:
+                        points:
+                        - [-2, 4]
+                        - [3, 3]
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://leetcode.com/problems/k-closest-points-to-origin/)

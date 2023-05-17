@@ -1,0 +1,8 @@
+node_modules
+# Test files
+*.test.tsx
+*.test.js
+*.test.ts
+README.md
+.env_example
+.gitignore

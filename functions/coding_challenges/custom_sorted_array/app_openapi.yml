@@ -1,0 +1,62 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Custom Sorted Array
+      description: |
+        [Challenge](https://leetcode.com/discuss/interview-question/916854/custom-sorted-array-with-even-numbers-at-beginning-and-odd-at-end-of-the-array/)
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              numbers: array[number]
+            examples:
+              'Example 0':
+                value: |
+                  numbers: [6,3,4,5]
+              'Example 1':
+                value: |
+                  numbers: [13,10,21,20]
+              'Example 2':
+                value: |
+                  numbers: [8,5,11,4,6]
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 0':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      inputs: 
+                        numbers: [6,3,4,5]
+                      outputs: 
+                        moves:
+                          n: 1
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      inputs: 
+                        numbers: [13,10,21,20]
+                      outputs: 
+                        moves:
+                          n: 3
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input: 
+                        numbers: [8,5,11,4,6]
+                      output: 
+                        moves:
+                        n: 3

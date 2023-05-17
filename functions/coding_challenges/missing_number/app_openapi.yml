@@ -1,0 +1,75 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Missing Number
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              nums: array[number]
+            examples:
+              'Example 0':
+                value: |
+                  nums: [0, 1, 3, 4]
+              'Example 1':
+                value: |
+                  nums: [3,0,1]
+              'Example 2':
+                value: |
+                  nums: [0, 1]
+              'Example 3':
+                value: |
+                  nums: [9,6,4,2,3,5,7,0,1]
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 0':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      inputs: 
+                        nums: [0, 1, 3, 4]
+                      outputs: 
+                        missing_number: 2
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      inputs: 
+                        nums: [3,0,1]
+                      outputs: 
+                        missing_number: 2
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input: 
+                        nums: [0,1]
+                      output: 
+                        missing_number: 2
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input: 
+                        nums: [9,6,4,2,3,5,7,0,1]
+                      output: 
+                        missing_number: 8
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://leetcode.com/problems/missing-number/)

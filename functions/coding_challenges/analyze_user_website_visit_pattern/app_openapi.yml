@@ -1,0 +1,170 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Analyze User Website Visit Pattern
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              usernames: List[string]
+              timestamps: List[number]
+              websites: List[string]
+            examples:
+              'Example 1':
+                value: |
+                  usernames: 
+                  - joe     
+                  - joe     
+                  - joe     
+                  - james     
+                  - james     
+                  - james     
+                  - james     
+                  - mary     
+                  - mary     
+                  - mary
+                  timestamps: 
+                  - 1
+                  - 2     
+                  - 3     
+                  - 4     
+                  - 5     
+                  - 6     
+                  - 7     
+                  - 8     
+                  - 9     
+                  - 10
+                  websites:
+                  - home
+                  - about     
+                  - career     
+                  - home     
+                  - cart    
+                  - maps     
+                  - home     
+                  - home     
+                  - about     
+                  - career
+          application/json:
+            schema:
+              type: object
+              properties:
+                usernames:
+                  type: array
+                  items:
+                    type: string
+                timestamps:
+                  type: array
+                  items:
+                    type: number
+                websites:
+                  type: array
+                  items:
+                    type: string
+            examples:
+              'Example 1':
+                value:
+                  usernames: 
+                  - joe     
+                  - joe     
+                  - joe     
+                  - james     
+                  - james     
+                  - james     
+                  - james     
+                  - mary     
+                  - mary     
+                  - mary
+                  timestamps: 
+                  - 1
+                  - 2     
+                  - 3     
+                  - 4     
+                  - 5     
+                  - 6     
+                  - 7     
+                  - 8     
+                  - 9     
+                  - 10
+                  websites:
+                  - home
+                  - about     
+                  - career     
+                  - home     
+                  - cart    
+                  - maps     
+                  - home     
+                  - home     
+                  - about     
+                  - career
+
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        usernames: 
+                        - joe     
+                        - joe     
+                        - joe     
+                        - james     
+                        - james     
+                        - james     
+                        - james     
+                        - mary     
+                        - mary     
+                        - mary
+                        timestamps: 
+                        - 1
+                        - 2     
+                        - 3     
+                        - 4     
+                        - 5     
+                        - 6     
+                        - 7     
+                        - 8     
+                        - 9     
+                        - 10
+                        websites:
+                        - home
+                        - about     
+                        - career     
+                        - home     
+                        - cart    
+                        - maps     
+                        - home     
+                        - home     
+                        - about     
+                        - career
+                      output:
+                        3_sequence: home.home.home
+                        visits: 4
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OK/application_json'
+              examples:
+                'Example 1':
+                  value:
+                    code: 200
+                    status: OK
+                    data: 
+                      3_sequence: home.home.home
+                      visits: 4
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://leetcode.ca/all/1152.html)

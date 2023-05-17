@@ -1,0 +1,4 @@
+links:
+- https://stackoverflow.com/questions/34651379/how-to-make-py-test-cov-skip-virtualenv-directory
+- https://docs.pytest.org/en/7.1.x/example/pythoncollection.html
+- https://stackoverflow.com/questions/11117062/how-to-tell-py-test-to-skip-certain-directories

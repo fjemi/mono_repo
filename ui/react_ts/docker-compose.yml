@@ -1,0 +1,30 @@
+version: '3.9'
+services:
+  ui:
+    build: 
+      context: ./
+      dockerfile: ./dockerfile
+      args:
+        NODE_ENV: $NODE_ENV
+        WORKDIR: $WORKDIR
+        PORT: $PORT
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: dev
+    ports: 
+      - $PORT:$PORT
+    volumes:
+      - type: bind
+        source: ./src
+        target: /app/src
+      - type: bind
+        source: ./node_modules
+        target: /app/node_modules
+      - type: bind
+        source: ./nginx/nginx.conf
+        target: /etc/nginx/conf.d/default.conf
+    working_dir: /app
+    restart: always
+    
+    

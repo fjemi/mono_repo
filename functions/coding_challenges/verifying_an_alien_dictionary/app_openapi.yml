@@ -1,0 +1,65 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Verifying an Alien Dictionary
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              order: string
+              words: array[string]
+            examples:
+              'Example 1':
+                value: |
+                  words: 
+                  - world
+                  - worlds
+                  - row
+                  order: worldabcefghijkmnpqstuvxyz
+              'Example 2':
+                value: |
+                  words: 
+                  - hello
+                  - leetcode
+                  order: hlabcdefgijkmnopqrstuvwxyz
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        words: 
+                        - world
+                        - worlds
+                        - row
+                        order: worldabcefghijkmnpqstuvxyz
+                      output: false
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        words: 
+                        - hello
+                        - leetcode
+                        order: hlabcdefgijkmnopqrstuvwxyz
+                      output: true
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://leetcode.com/problems/verifying-an-alien-dictionary/)

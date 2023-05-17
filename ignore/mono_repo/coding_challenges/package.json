@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "httpster": "^1.2.1",
+    "zsh-history-enquirer": "^1.2.5"
+  }
+}

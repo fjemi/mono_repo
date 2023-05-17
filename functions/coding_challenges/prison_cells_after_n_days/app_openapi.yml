@@ -1,0 +1,65 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Prison Cells After N Days
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              cells: array[number]
+              n: number
+            examples:
+              'Example 1':
+                value: |
+                  cells: [0, 1, 0, 1, 1, 0, 0, 1] 
+                  n: 7  
+              'Example 2':
+                value: |
+                  cells: [1, 0, 0, 1, 0, 0, 1, 0]
+                  n: 1000000000
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        cells: [0, 1, 0, 1, 1, 0, 0, 1] 
+                        n: 7
+                      output: [0, 0, 1, 1, 0, 0, 0, 0]
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        head: [1, 0, 0, 1, 0, 0, 1, 0]
+                        n: 1000000000
+                      output: [0, 0, 1, 1, 1, 1, 1, 0]
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        cells: [1, 2, 3, 4, 5]
+                        k: 3
+                      output:
+                        reversed_nodes: [3, 2, 1, 4, 5]
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://leetcode.com/problems/prison-cells-after-n-days/)

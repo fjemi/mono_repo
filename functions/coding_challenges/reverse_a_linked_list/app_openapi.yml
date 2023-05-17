@@ -1,0 +1,64 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Reverse a Linked List
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              items: array[AnyValue]
+            examples:
+              'Example 1':
+                value: |
+                  items: [a, b, c, d]
+              'Example 2':
+                value: |
+                  items: [1, 2]
+              'Example 3':
+                value: |
+                  items: []
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        items: [a, b, c, d]
+                      output: 
+                        reversed_items: [d, c, b, a]
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        items: [1, 2]
+                      output:
+                        reversed_items: [2, 1]
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        items: []
+                      output:
+                        reversed_items: []
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://leetcode.com/problems/reverse-linked-list/)

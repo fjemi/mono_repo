@@ -1,0 +1,225 @@
+functions:
+- name: main
+  description: | 
+    Orchestration function that executes the other functions within the module
+  tests:
+  - arguments:
+    request:
+      data:
+        body:
+          usernames: 
+          - joe     
+          - joe     
+          - joe     
+          - james     
+          - james     
+          - james     
+          - james     
+          - mary     
+          - mary     
+          - mary
+          timestamps: 
+          - 1
+          - 2     
+          - 3     
+          - 4     
+          - 5     
+          - 6     
+          - 7     
+          - 8     
+          - 9     
+          - 10
+          websites:
+          - home
+          - about     
+          - career     
+          - home     
+          - cart    
+          - maps     
+          - home     
+          - home     
+          - about     
+          - career
+    cast_arguments: 
+      request: models.Request
+    assertions:
+    - has_attributes:
+        data.output:
+          3_sequence: home.home.home
+          visits: 4
+- name: get_aggregate_data
+  description: | 
+    Aggregates the website data and returns a dictionary with keys being unique usernames and values being lists of timestamps and websites combined into a string: '<timestamp_01>_<website_01>'
+  tests:
+  - arguments:
+      data:
+        usernames: 
+        - joe     
+        - joe     
+        - joe     
+        - james     
+        - james     
+        - james     
+        - james     
+        - mary     
+        - mary     
+        - mary
+        timestamps: 
+        - 1
+        - 2     
+        - 3     
+        - 4     
+        - 5     
+        - 6     
+        - 7     
+        - 8     
+        - 9     
+        - 10
+        websites:
+        - home
+        - about     
+        - career     
+        - home     
+        - cart    
+        - maps     
+        - home     
+        - home     
+        - about     
+        - career
+    cast_argument: Data
+    assertions:
+    - has_attributes:
+        aggregate_data:
+          joe: [01_home, 02_about, 03_career]
+          james: [04_home, 05_cart, 06_maps, 07_home]
+          mary: [08_home, 09_about, 10_career]
+- name: get_next_branches
+  description: |
+    Returns the next branch in a tree from the last set of branches and available leaves. If an available leaf if less than the last leaf of the previous branch, a next branch can be formed: '<previous_branch>.<leaf>'
+  tests:
+  - arguments:
+      previous_branches: ['0', '1', '2']
+      leaves: ['0', '1', '2']
+    assertions:
+    - equals: 
+        value: ['1.0', '2.0', '2.1']
+  - arguments:
+      previous_branches: ['1.0', '2.0', '2.1', '3.0', '3.1', '3.2']
+      leaves: ['0', '1', '2']
+    assertions:
+    - equals: 
+        value: ['2.1.0', '3.1.0', '3.2.0', '3.2.1']
+  - arguments:
+      previous_branches: ['0', '1', '2']
+      leaves: ['4', '5', '6']
+    assertions:
+    - equals: 
+        value: []
+- name: get_combinations
+  description: |
+    Returns a list of websites sequences of size n, where the sequences are 
+    ordered in descending order. Each sequence is dot delimited string, where the
+    values represent an index for a website a user visited 
+  inputs_values:
+  - websites: [01_home, 02_about, 03_career]
+    sequence_n: 3
+  - websites: [04_home, 05_cart, 06_maps, 07_home]
+    sequence_n: 3
+  - websites: [08_home, 09_about, 10_career]
+    sequence_n: 3
+  - websites: [08_home, 09_amount]
+    sequence_n: 3
+  expected_outputs:
+  - ['2.1.0']
+  - ['2.1.0', '3.1.0', '3.2.0', '3.2.1']
+  - ['2.1.0']
+  - []
+  assertions: equals
+- name: convert_indices_to_websites
+  description: |
+    Converts a string of dot delimited indices to a string of dot
+    delimited websites
+  inputs_values:
+  - combination: [2.1.0]
+    websites: [01_home, 02_about, 03_career]
+  - combination: [2.1.0]
+    websites: [04_home, 05_cart, 06_maps, 07_home]
+  - combination: [3.1.0]
+    websites: [04_home, 05_cart, 06_maps, 07_home]
+  - combination: [3.2.0]
+    websites: [04_home, 05_cart, 06_maps, 07_home]
+  - combination: [3.2.1]
+    websites: [04_home, 05_cart, 06_maps, 07_home]
+  - combination: [2.1.0]
+    websites: [08_home, 09_bout, 10_career]
+  expected_outputs:
+  - home.cart.career
+  - home.cart.maps
+  - home.cart.home
+  - home.maps.home
+  - cart.maps.home
+  - home.cart.career
+  assertions: equals
+- name: process_combinations
+  description: |
+    Returns a list of sequences of size n from a list of combinations. Each 
+    sequences is a dot delimited string
+  inputs_values:
+  - combinations: [2.1.0]
+    websites: [01_home, 02_about, 03_career]
+  - combination: [2.1.0, 3.1.0, 3.2.0, 3.2.1]
+    websites: [04_home, 05_cart, 06_maps, 07_home]
+  - combinations: [2.1.0]
+    websites: [08_home, 09_bout, 10_career]
+  expected_outputs:
+  - [home.abut.career]
+  - [home.cart.maps, home.cart.home, home.maps.home, cart.maps.home]
+  - [home.abut.career]
+  assertions: equals
+- name: get_combinations_from_aggregrated_data
+  description: |
+    Returns a list of dot delimited sequences of websites from a dictionary
+    containg aggregated website data for usernames
+  inputs_values:
+  - aggragated_data: 
+      joe: [01_home, 02_about, 03_career]
+      james: [04_home, 05_cart, 06_maps, 07_home]
+      mary: [08_home, 09_about, 10_career]
+    sequence_n: 3
+  expected_outputs:
+  - joe: [home.about.career]
+    james: [home.cart.maps, home.cart.home, home.maps.home, cart.maps.home]
+    mary: [home.about.career]
+  assertions: equals
+- name: merge_username_combinations
+  description: | 
+    Returns a merged list of list values from a dictionary
+  inputs_values: 
+  - a: [a]
+    b: [b]
+    c: [c]
+  - 0: [0]
+    1: [0, 1]
+    2: [0, 1, 2]
+  expected_outputs:
+  - [a, b, c]
+  - [0, 0, 1, 0, 1, 2]
+  assertions: equals
+- name: get_combination_counts
+  description: |
+    Returns counts of unique sequences for all users
+  tests:
+  - arguments:
+      data:
+        combinations:
+          - [0, 1, 2, 2, 3, 3, 4, 4, 4, 4]
+      cast_argument:
+        data: Data
+    assertions: 
+    - equals:
+        value: 
+          0: 1
+          1: 1
+          2: 2
+          3: 3
+          4: 4

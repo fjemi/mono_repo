@@ -1,0 +1,71 @@
+comments:
+  asset_props: |
+    Contains properties needed to create instances of assets with
+    values pulled from GEMS or default values
+​
+    Property Fields
+    - asset_type: The type of asset
+    - prop_name: The property's name when creating an instance of the object
+    - gems_prop_name:  The property's name in GEMS. If this is null reading the prop
+    from the device listener is skipped, and default value is used
+    - default_value: Default value to set the property too
+    - raise_error: Flag for raising error if the property cannot be read from
+    - scale: 
+    
+asset_props:
+  - asset_type: storage
+    prop_name: rated_energy
+    gems_name: whCapacity
+    default_value: null
+    raise_error: True
+    scale: null
+  - asset_type: storage
+    prop_name: rated_power_charge
+    gems_name: allowedChargeableEnergy
+    default_value: null
+    raise_error: True
+    scale: null
+  - asset_type: storage
+    prop_name: rated_power_discharge
+    gems_name: allowedDischargeableEnergy
+    default_value: null
+    raise_error: True
+    scale: null
+  - asset_type: storage
+    prop_name: efficiency
+    gems_name: whCapacity
+    default_value: null
+    raise_error: True
+    scale: null
+  - asset_type: storage
+    prop_name: max_soc
+    gems_name: maxSocLimit
+    default_value: null
+    add_to_prop_store: False
+    raise_error: True
+    scale: null
+  - asset_type: storage
+    prop_name: min_soc
+    gems_name: minSocLimit
+    default_value: null
+    add_to_prop_store: False
+    raise_error: True
+    scale: null
+  - asset_type: storage
+    prop_name: cycling_cost
+    gems_name: null
+    default_value: 0.001
+    raise_error: False
+    scale: null
+  - asset_type: storage
+    prop_name: mip
+    gems_name: null
+    default_value: True
+    raise_error: False
+    scale: null
+  - asset_type: solar
+    prop_name: inverter_max_power
+    gems_name: potentialRealPower
+    default_value: null
+    raise_error: True
+    scale: null

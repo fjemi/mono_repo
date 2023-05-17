@@ -1,0 +1,10 @@
+tests:
+  - function: add
+    description: Test that the function returns the sum of two integers
+    inputs:
+      a: 1
+      b: 1
+    output:
+      a: 1
+      b: 1
+      output: 2

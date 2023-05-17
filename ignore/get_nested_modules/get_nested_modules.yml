@@ -1,0 +1,21 @@
+data:
+  - name: path
+    type: str
+    description: The path to a directory containing nested python scripts
+  - modules:
+    type: List[str]
+    description: A list containing the paths for all modules in a directory
+functions:
+  - name: get_nested_modules
+    description: 
+    parameters: data
+    returns: data
+  - name: get_modules
+    description: Get a list of all of the python modules within a directory
+    parameters:  data
+    returns: data
+  
+tests:
+links: 
+  - https://stackoverflow.com/questions/3207219/how-do-i-list-all-files-of-a-directory
+  - https://stackoverflow.com/questions/8790003/dynamically-import-a-method-in-a-file-from-a-string

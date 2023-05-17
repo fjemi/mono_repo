@@ -1,0 +1,14 @@
+st0=>start: start a_pyflow_test:>https://google.com
+op1=>operation: do something
+cond2=>condition: Yes or No?
+io3=>inputoutput: output: something...
+sub4=>subroutine: A Subroutine
+e5=>end: end a_pyflow_test
+
+
+st0->op1
+op1->cond2
+cond2(yes,)->io3
+cond2(no,)->sub4
+io3->e5
+sub4(right)->op1

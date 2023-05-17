@@ -1,0 +1,4 @@
+environment:
+  WORKING_DIR: ${PWD}
+  ENV: local
+  WORKDIR: null

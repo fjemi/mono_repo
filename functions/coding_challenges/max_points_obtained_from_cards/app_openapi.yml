@@ -1,0 +1,73 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Max Points Obtained from Cards
+      description: |
+        [Coding Challenge](https://leetcode.com/problems/maximum-points-you-can-obtain-from-cards/)
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              card_points: array[number]
+              k: number
+            examples:
+              'Example 1':
+                value: |
+                  card_points: [9,7,7,9,7,7,9]
+                  k: 7
+              'Example 2':
+                value: |
+                  card_points: [2,2,2]
+                  k: 2
+              'Example 3':
+                value: |
+                  card_points: [1,2,3,4,5,6,1]
+                  k: 3
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        card_points: [9,7,7,9,7,7,9]
+                        k: 7
+                      output:
+                        max_points:
+                          cards: [9.7.7.9.7.7.9]
+                          n: [55]
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        card_points: [2, 2, 2]
+                        k: 2
+                      output: 
+                        max_points:
+                          cards: ['2.2', '2.2', '2.2', '2.2']
+                          n: [4]
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        card_points: [1,2,3,4,5,6,1]
+                        k: 3
+                      output:
+                        max_points:
+                          cards: [1.6.5]
+                          n: [12]

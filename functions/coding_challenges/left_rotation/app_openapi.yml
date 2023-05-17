@@ -1,0 +1,54 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Left Rotation
+      description: |
+        [Coding Challenges](https://www.hackerrank.com/challenges/array-left-rotation/problem)
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              array: array[number]
+              rotations: number
+            examples:
+              'Example 1':
+                value: |
+                  array: [1, 2, 3, 4, 5]
+                  rotations: 2
+              'Example 2':
+                value: |
+                  array: [1, 2, 3, 4, 5]
+                  rotations: 4
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        array: [1, 2, 3, 4, 5]
+                        rotations: 2
+                      output: 
+                        rotated_array: [3, 4, 5, 1, 2]
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data:
+                      input:
+                        array: [1, 2, 3, 4, 5]
+                        rotations: 4
+                      output: 
+                        rotated_array: [5, 1, 2, 3, 4]
+

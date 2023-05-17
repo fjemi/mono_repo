@@ -1,0 +1,14 @@
+description: |
+links:
+tests:
+  - name:  main
+    tests:
+      - description: Should return a string without vowels
+        inputs:
+          - test
+          - hello
+          - world
+        outputs:
+          - tst
+          - hll
+          - wrld

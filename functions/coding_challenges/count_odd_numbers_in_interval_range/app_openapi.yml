@@ -1,0 +1,75 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Count Odd Numbers in Interval Range
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              interval: array[number]
+            examples:
+              'Example 1':
+                value: |
+                  interval: [-1, 3]
+              'Example 2':
+                value: |
+                  interval: [3, 7]
+              'Example 3':
+                value: |
+                  interval: [8, 10]
+              'Example 4':
+                value: |
+                  interval: [-3, 3]
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        interval: [-1, 3]
+                      output:
+                        odds: 3
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        interval: [3, 7]
+                      output:
+                        odds: 3
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        interval: [8, 10]
+                      output:
+                        odds: 1
+                'Example 4':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        interval: [-3, 3]
+                      output:
+                        odds: 4
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://leetcode.com/problems/count-odd-numbers-in-an-interval-range/)

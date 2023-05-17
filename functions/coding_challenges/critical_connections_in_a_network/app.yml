@@ -1,0 +1,536 @@
+environment:
+  DEBUG: True
+- function_name: create_edge_objects
+  description: |
+    Creates 'Edge' objects for the edges passed into the main
+    function of the module. The first 'Edge' object consists of
+    all of the edges, and following objects have the ith edge of
+    the edges removed and set as the edge that is excluded
+  inputs_values:
+  - [edge_0, edge_1, edge_2, edge_3]
+  - - [edge_0]
+    - [edge_0, edge_1]
+    - [edge_0, edge_1, edge_2]
+    - [edge_3]
+  expected_outputs:
+  - - values: [edge_0, edge_1, edge_2, edge_3]
+      excludes: null
+    - values: [edge_1, edge_2, edge_3]
+      excludes: edge_0
+    - values: [edge_0, edge_2, edge_3]
+      excludes: edge_1
+    - values: [edge_0, edge_1, edge_3]
+      excludes: edge_2
+    - values: [edge_0, edge_1, edge_2]
+      excludes: edge_3
+  - - values:
+      - - [edge_0]
+        - [edge_0, edge_1]
+        - [edge_0, edge_1, edge_2]
+        - [edge_3]
+      excludes: null
+    - values:
+      - - [edge_0, edge_1]
+        - [edge_0, edge_1, edge_2]
+        - [edge_3]
+      excludes: [edge_0]
+    - values:
+      - - [edge_0, edge_1]
+        - [edge_0, edge_1, edge_2]
+        - [edge_3]
+      excludes: [edge_0]
+    - values:
+      - - [edge_0]
+        - [edge_0, edge_1, edge_2]
+        - [edge_3]
+      excludes: [edge_0, edges_1]
+    - values:
+      - - [edge_0]
+        - [edge_0, edge_1]
+        - [edge_3]
+      excludes: [edge_0, edge_1, edge_2]
+    - values:
+      - - [edge_0]
+        - [edge_0, edge_1]
+        - [edge_0, edge_1, edge_2]
+      excludes: [edge_3]
+  assertions: equals
+- function_name: get_direct_connections_by_nodes
+  description: |
+  inputs_values:
+  - [[a, b], [b, c], [c, d]]
+  - - [0, 1]
+    - [1, 2]
+    - [2, 1]
+    - [2, 3]
+    - [3, 1]
+    - [2, 0]
+    - [3, 0]
+  expected_outputs:
+  - a: [b]
+    b: [a, c]
+    c: [b, d]
+    d: [c]
+  - 0: [0, 1, 2]
+    1: [0, 2, 3]
+    2: [0, 1, 3]
+    3: [0, 1, 2]
+  assertions: equals
+- function_name: set_indirect_connections_by_nodes
+  description: | 
+    Adds indirect connections for nodes. 
+  inputs_values:
+  - connections_by_nodes:
+      0: [1, 2]
+      1: [0, 2, 3]
+      2: [1, 0]
+      3: [1]
+    reverse: false
+  - connections_by_nodes:
+      0: [1, 2, 0, 3]
+      1: [0, 2, 3, 1]
+      2: [1, 0, 2, 3]
+      3: [1, 0, 2, 3]
+    reverse: true
+  - connections_by_nodes:
+      0: [2]
+      1: [2, 3]
+      2: [1, 0]
+      3: [1]
+    reverse: false
+  - connections_by_nodes:
+      0: [2, 1, 0, 3]
+      1: [2, 3, 1, 0]
+      2: [1, 0, 2, 3]
+      3: [1, 2, 3, 0]
+    reverse: true
+  - connections_by_nodes:
+      0: [1, 2]
+      1: [0, 3]
+      2: [0]
+      3: [1]
+    reverse: false
+  - connections_by_nodes:
+      0: [1, 2, 0, 3]
+      1: [0, 3, 1, 2]
+      2: [0, 1, 2, 3]
+      3: [1, 0, 3, 2]
+    reverse: true
+  - connections_by_nodes:
+      0: [1]
+      1: [0, 2, 3]
+      2: [1]
+      3: [1]
+    reverse: false
+  - connections_by_nodes:
+      0: [1, 0, 2, 3]
+      1: [0, 2, 3, 1]
+      2: [1, 0, 2, 3]
+      3: [1, 0, 2, 3]
+    reverse: true
+  - connections_by_nodes:
+      0: [1, 2]
+      1: [0, 2]
+      2: [1, 0]
+    reverse: false
+  - connections_by_nodes:
+      0: [1, 2, 0]
+      1: [0, 2, 1]
+      2: [1, 0, 2]
+    reverse: true
+  expected_outputs:
+  - 0: [1, 2, 0, 3]
+    1: [0, 2, 3, 1]
+    2: [1, 0, 2, 3]
+    3: [1, 0, 2, 3]
+  - 0: [1, 2, 0, 3]
+    1: [0, 2, 3, 1]
+    2: [1, 0, 2, 3]
+    3: [1, 0, 2, 3]
+  - 0: [2, 1, 0, 3]
+    1: [2, 3, 1, 0]
+    2: [1, 0, 2, 3]
+    3: [1, 2, 3, 0]
+  - 0: [2, 1, 0, 3]
+    1: [2, 3, 1, 0]
+    2: [1, 0, 2, 3]
+    3: [1, 2, 3, 0]
+  - 0: [1, 2, 0, 3]
+    1: [0, 3, 1, 2]
+    2: [0, 1, 2, 3]
+    3: [1, 0, 3, 2]
+  - 0: [1, 2, 0, 3]
+    1: [0, 3, 1, 2]
+    2: [0, 1, 2, 3]
+    3: [1, 0, 3, 2]
+  - 0: [1, 0, 2, 3]
+    1: [0, 2, 3, 1]
+    2: [1, 0, 2, 3]
+    3: [1, 0, 2, 3]
+  - 0: [1, 0, 2, 3]
+    1: [0, 2, 3, 1]
+    2: [1, 0, 2, 3]
+    3: [1, 0, 2, 3]
+  - 0: [1, 2, 0]
+    1: [0, 2, 1]
+    2: [1, 0, 2]
+  - 0: [1, 2, 0]
+    1: [0, 2, 1]
+    2: [1, 0, 2]
+  assertions: equals
+- function_name: get_unique_connections
+  descriptions: |
+    Returns the lists of unique connections from a dictionary that
+    represents connections by nodes.
+  inputs_values:
+  - connections_by_nodes:
+      0: [1, 2, 0, 3]
+      1: [0, 2, 3, 1]
+      2: [1, 0, 2, 3]
+      3: [1, 0, 2, 3]
+  - connections_by_nodes:
+    a: [b]
+    b: [c]
+    c: [d]
+  - connections_by_nodes:
+      0: [1, 2, 0]
+      1: [0, 2, 1]
+      2: [1, 0, 2]
+      3: [5, 3, 4]
+      4: [5, 3, 4]
+      5: [3, 4, 5]
+  expected_outputs:
+  - - [0, 1, 2, 3]
+  - - [b]
+    - [c]
+    - [d]
+  - - [0, 1, 2]
+    - [3, 4, 5]
+  assertions: equals
+- function_name: get_connections_and_nodes
+  description: |
+    Returns a list of edge objects with 
+  inputs_cast_as: List.Edge
+  inputs_values:
+  - edges:
+    - connections: null
+      excludes: []
+      nodes: null
+      values:
+      - [0, 1]
+      - [1, 2]
+      - [2, 0]
+      - [1, 3]
+    - connections: null
+      excludes: [0, 1]
+      nodes: null
+      values:
+      - [1, 2]
+      - [2, 0]
+      - [1, 3]
+    - connections: null
+      excludes: [1, 2]
+      nodes: null
+      values:
+      - [0, 1]
+      - [2, 0]
+      - [1, 3]
+    - connections: null
+      excludes: [2, 0]
+      nodes: null
+      values:
+      - [0, 1]
+      - [1, 2]
+      - [1, 3]
+    - connections: null
+      excludes: [1, 3]
+      nodes: null
+      values:
+      - [0, 1]
+      - [1, 2]
+      - [2, 0]
+  - edges:
+    - connections: null
+      excludes: []
+      nodes: null
+      values:
+      - [0, 1]
+    - connections: null
+      excludes: [0, 1]
+      nodes: null
+      values: []
+  expected_outputs:
+  - - connections:
+      - [0, 1, 2, 3]
+      excludes: []
+      nodes: [0, 1, 2, 3]
+      values:
+      - [0, 1]
+      - [1, 2]
+      - [2, 0]
+      - [1, 3]
+    - connections:
+      - [0, 1, 2, 3]
+      excludes: [0, 1]
+      nodes: [0, 1, 2, 3]
+      values:
+      - [1, 2]
+      - [2, 0]
+      - [1, 3]
+    - connections:
+      - [0, 1, 2, 3]
+      excludes: [1, 2]
+      nodes: [0, 1, 2, 3]
+      values:
+      - [0, 1]
+      - [2, 0]
+      - [1, 3]
+    - connections:
+      - [0, 1, 2, 3]
+      excludes: [2, 0]
+      nodes: [0, 1, 2, 3]
+      values:
+      - [0, 1]
+      - [1, 2]
+      - [1, 3]
+    - connections:
+      - [0, 1, 2]
+      excludes: [1, 3]
+      nodes: [0, 1, 2]
+      values:
+      - [0, 1]
+      - [1, 2]
+      - [2, 0]
+  - - connections:
+      - [0, 1]
+      excludes: []
+      nodes: [0, 1]
+      values:
+      - [0, 1]
+    - connections: []
+      excludes: [0, 1]
+      nodes: []
+      values: []
+  outputs_cast_as: dict
+  assertions: equals
+- function_name: get_critical_edges
+  description: |
+    Returns the critical edges, edges that if removed would 
+    prevent the nodes formed form the original list of edges from
+    connecting.
+  inputs_values:
+  - edges:
+    - connections:
+      - [0, 1, 2, 3]
+      excludes: []
+      nodes: [0, 1, 2, 3]
+      values:
+      - [0, 1]
+      - [1, 2]
+      - [2, 0]
+      - [1, 3]
+    - connections:
+      - [0, 1, 2, 3]
+      excludes: [0, 1]
+      nodes: [0, 1, 2, 3]
+      values:
+      - [1, 2]
+      - [2, 0]
+      - [1, 3]
+    - connections:
+      - [0, 1, 2, 3]
+      excludes: [1, 2]
+      nodes: [0, 1, 2, 3]
+      values:
+      - [0, 1]
+      - [2, 0]
+      - [1, 3]
+    - connections:
+      - [0, 1, 2, 3]
+      excludes: [2, 0]
+      nodes: [0, 1, 2, 3]
+      values:
+      - [0, 1]
+      - [1, 2]
+      - [1, 3]
+    - connections:
+      - [0, 1, 2]
+      excludes: [1, 3]
+      nodes: [0, 1, 2]
+      values:
+      - [0, 1]
+      - [1, 2]
+      - [2, 0]
+  - edges:
+    - connections:
+      - [0, 1]
+      excludes: []
+      nodes: [0, 1]
+      values:
+      - [0, 1]
+    - connections: []
+      excludes: [0, 1]
+      nodes: []
+      values: []
+  - edges:
+    - connections:
+      - [0, 1, 2, 3, 4, 5]
+      excludes: []
+      nodes: [0, 1, 2, 3, 4, 5]
+      values:
+      - [0, 1]
+      - [1, 2]
+      - [2, 0]
+      - [1, 3]
+      - [3, 4]
+      - [3, 5]
+    - connections:
+      - [0, 1, 2, 3, 4, 5]
+      excludes: [0, 1]
+      nodes: [0, 1, 2, 3, 4, 5]
+      values:
+      - [1, 2]
+      - [2, 0]
+      - [1, 3]
+      - [3, 4]
+      - [3, 5]
+    - connections:
+      - [0, 1, 2, 3, 4, 5]
+      excludes: [1, 2]
+      nodes: [0, 1, 2, 3, 4, 5]
+      values:
+      - [0, 1]
+      - [2, 0]
+      - [1, 3]
+      - [3, 4]
+      - [3, 5]
+    - connections:
+      - [0, 1, 2, 3, 4, 5]
+      excludes: [2, 0]
+      nodes: [0, 1, 2, 3, 4, 5]
+      values:
+      - [0, 1]
+      - [1, 2]
+      - [1, 3]
+      - [3, 4]
+      - [3, 5]
+    - connections:
+      - [0, 1, 2]
+      - [3, 4, 5]
+      excludes: [1, 3]
+      nodes: [0, 1, 2, 3, 4, 5]
+      values:
+      - [0, 1]
+      - [1, 2]
+      - [2, 0]
+      - [3, 4]
+      - [3, 5]
+    - connections:
+      - [0, 1, 2, 3, 5]
+      excludes: [3, 4]
+      nodes: [0, 1, 2, 3, 5]
+      values:
+      - [0, 1]
+      - [1, 2]
+      - [2, 0]
+      - [1, 3]
+      - [3, 5]
+    - connections:
+      - [0, 1, 2, 3, 4]
+      excludes: [3, 5]
+      nodes: [0, 1, 2, 3, 4]
+      values:
+      - [0, 1]
+      - [1, 2]
+      - [2, 0]
+      - [1, 3]
+      - [3, 4]
+  - edges:
+    - connections:
+      - [0, 1, 2]
+      - [3, 4, 5]
+      excludes: []
+      nodes: [0, 1, 2, 3, 4, 5]
+      values:
+      - [0, 1]
+      - [1, 2]
+      - [2, 0]
+      - [3, 5]
+      - [3, 4]
+      - [4, 5]
+    - connections:
+      - [0, 1, 2]
+      - [3, 4, 5]
+      excludes: [0, 1]
+      nodes: [0, 1, 2, 3, 4, 5]
+      values:
+      - [1, 2]
+      - [2, 0]
+      - [3, 5]
+      - [3, 4]
+      - [4, 5]
+    - connections:
+      - [0, 1, 2]
+      - [3, 4, 5]                                         
+      excludes: [1, 2]
+      nodes: [0, 1, 2, 3, 4, 5]
+      values:
+      - [0, 1]
+      - [2, 0]
+      - [3, 5]
+      - [3, 4]
+      - [4, 5]
+    - connections:
+      - [0, 1, 2]
+      - [3, 4, 5]
+      excludes: [2, 0]
+      nodes: [0, 1, 2, 3, 4, 5]
+      values:
+      - [0, 1]
+      - [1, 2]
+      - [3, 5]
+      - [3, 4]
+      - [4, 5]
+    - connections:
+      - [0, 1, 2]
+      - [3, 4, 5]
+      excludes: [3, 5]
+      nodes: [0, 1, 2, 3, 4, 5]
+      values:
+      - [0, 1]
+      - [1, 2]
+      - [2, 0]
+      - [3, 4]
+      - [4, 5]
+    - connections:
+      - [0, 1, 2]
+      - [3, 4, 5]
+      excludes: [3, 4]
+      nodes: [0, 1, 2, 3, 4, 5]
+      values:
+      - [0, 1]
+      - [1, 2]
+      - [2, 0]
+      - [3, 5]
+      - [4, 5]
+    - connections:
+      - [0, 1, 2]
+      - [3, 4, 5]
+      excludes: [4, 5]
+      nodes: [0, 1, 2, 3, 4, 5]
+      values:
+      - [0, 1]
+      - [1, 2]
+      - [2, 0]
+      - [3, 5]
+      - [3, 4]
+  expected_outputs:
+  - - [1, 3]
+  - - [0, 1]
+  - - [1, 3]
+    - [3, 4]
+    - [3, 5]
+  - []
+  assertions: equals
+
+  

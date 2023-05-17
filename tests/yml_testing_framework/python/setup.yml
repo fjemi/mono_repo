@@ -1,0 +1,28 @@
+meta-data:
+  name: python_yaml_testing_framework
+  version: "0.0.1"
+  scripts:
+  - app
+  authors: 
+  - name: 
+    email: 
+  description: 
+  long_description: README.md
+  long_description_content_type: text/markdown
+  url: null
+  packages: null
+  license: MIT
+  classifiers: 
+  - "Programming Language :: Python :: 3"
+  - "Programming Language :: Python :: 3.10"
+  - "License :: OSI Approved :: MIT License"
+  - "Operating System :: OS Independent"
+
+
+resources:
+- title: | 
+    Python: Creating a pip installable package
+  url: https://betterscientificsoftware.github.io/python-for-hpc/tutorials/python-pypi-packaging/#creating-a-python-package
+- title:
+  url: https://setuptools.pypa.io/en/latest/userguide/declarative_config.html
+- url: https://medium.com/expedia-group-tech/simplifying-python-builds-74e76802444f

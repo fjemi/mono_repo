@@ -1,0 +1,314 @@
+description: Uploads a file to to S3. Mimicks S3 using the file system if the environment is set to local.  
+environment:
+  AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+  AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+  ENV: local
+  DEBUG: True
+  REGION_NAME: us-east-1
+  WORKDIR: ${WORKDIR}
+buckets:
+  local: ${WORKDIR}/data/s3
+  dev: 
+  qa:
+  prod:
+resources:
+- title: How can I denote unused function arguments
+  url: https://stackoverflow.com/questions/10025680/how-can-i-denote-unused-function-arguments
+tests_startup:
+  temporary_directory: 
+tests_teardown: 
+tests:
+- function_name: case_session_not_none
+  description: | 
+    Returns the session object passed into the function. 
+  inputs:
+    values:
+    - session: session_0
+    - session: session_1
+    - session: session_2
+  expected_outputs:
+  - session_0
+  - session_1
+  - session_2
+  assertions: equals
+- function_name: case_session_none_and_env_local
+  description: |
+    Returns a null object for cases where the session argument is null
+    and the environment is 'local'
+  inputs:
+    values:
+    - env: 
+        ENV: local
+      session: null
+    cast_as:
+      env: test_resources_app.Env
+  expected_outputs:
+  - None
+  assertions: equals
+- function_name: case_session_none_and_env_not_local
+  description: Creates and returns a new session using environment variables
+  inputs:
+    values:
+    - session: null
+      env:
+        REGION: REGION
+        AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY
+        AWS_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
+    - session: null
+      env:
+        REGION: US-EAST-1
+        AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY
+        AWS_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
+  expected_outputs:
+  - Session(region_name='REGION')
+  - Session(region_name='US-EAST-1')
+  outputs:
+    cast_as: str
+  assertions: 
+  - - equals
+    - type: Session
+  - function_name: get_session
+    description: |
+      Returns a boto3 session based then environment and/or a session argument
+    inputs:
+      values:
+      - session: session_0
+        env: 
+          ENV: local
+          REGION: REGION
+          AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY
+          AWS_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
+      - session: null
+        env: 
+          ENV: local
+          REGION: REGION
+          AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY
+          AWS_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
+      - session: null
+        env: 
+          ENV: dev
+          REGION: REGION
+          AWS_SECRET_ACCESS_KEY: AWS_SECRET_ACCESS_KEY
+          AWS_ACCESS_KEY_ID: AWS_ACCESS_KEY_ID
+    expected_outputs:
+    - session_0
+    - None
+    - Session(region='REGION')
+    outputs:
+      cast_as: str
+    assertions: equals
+  - function_name: case_client_not_none
+    description: Pass through function. Returns client argument passed in
+    inputs:
+      values:
+      - client: client_0
+        session: null
+      - client: client_0
+        session: null
+    expected_outputs:
+    - client_0
+    - client_1
+    assertions: equals
+  - function_name: case_client_none_session_none
+    description: Returns a null object when the session and client arguments
+      are null
+    inputs:
+      values:
+      - session: null
+        client: null
+    expected_values:
+    - null
+    assertions: equals
+  - function_name: case_client_none_session_not_none
+    description: Returns a S3 client using a session passed in as an argument
+    patches:
+    - object_name: boto3.session.client
+      return_value: s3_client
+    inputs:
+      values:
+      - session: test_resources_app.session
+        client: null
+    expected_values:
+    - <class 'botocore.client.S3'>
+    outputs_cast_as: str
+    assertions: equals
+  - function_name: get_client
+    description: Returns a S3 client or null depending on environment and session
+      arguments for the function
+    patches:
+    - object_name: str.session.client
+      return_value: "<class 'botocore.client.S3'>"
+    inputs:
+      values:
+      - client: null
+        session: null
+      - client: client_0
+        session: null
+      - client: null
+        session: session_0
+    outputs_cast_as: str
+    expected_values:
+    - None
+    - client_0
+    - "<class 'botocore.client.S3'>"
+    assertions:
+  - function_name: case_folder_name_not_none
+    description: Returns the function argument 'folder_name'
+    inputs:
+      values:
+      - folder_name: folder_name_0
+      - folder_name: folder_name_1
+      - folder_name: folder_name_2
+    expected_outputs:
+    - folder_name_0
+    - folder_name_1
+    - folder_name_2
+    assertions: equals
+  - function_name: case_folder_name_and_module_path_are_none
+    description: Returns the empty string when the folder name and module path arguments are null
+    inputs:
+      values: 
+      - module_path: null
+        folder_name: null
+    expected_outputs: 
+    - ''
+    assertions: equals
+  - function_name: case_module_path_not_none
+    description: |
+      Returns the folder name from the parent directory of the module, from
+      the function argument 'module_path'
+    inputs:
+      values:
+      - module_path: directory_0/directory_1/app.py
+        folder_name: null
+      - module_path: directory_1/directory_2/app.py
+        folder_name: ''
+    expected_outputs:
+    - directory_1
+    - directory_2
+    assertions: equals
+  - function_name: get_folder_name
+    desciption: |
+      A "switch" function that returns the name of a folder within an S3 bucket 
+      to upload the file to
+    inputs:
+      values:
+      - module_path: null
+        folder_name: folder_name
+      - module_path: null
+        folder_name: null
+      - module_path: directory/app.py
+        folder_name: null
+    expected_outputs:
+    - folder_name
+    - ''
+    - directory
+    assertions: equals
+  - function_name: get_timestamp_key
+    description: |
+      Returns a timestamp to use as a file's S3 key when the
+      function arguments 'file_path' and 'key' are null
+    patches:
+    - object_name: app_time.time
+      return_value: timestamp_0
+    - object_name: app_time.time
+      return_value: timestamp_1
+    inputs:
+      values:
+      - timestamp_0
+      - timestamp_1
+    assertions: equals
+  - function_name: get_key
+    description: Returns the key or name of the file or content to upload
+      to S3
+    inputs:
+      values:
+      - file_path: null
+        key: key_0
+        module_path: null 
+        folder_name: null
+      - file_path: directory_0/app.py
+        key: null
+        module_path: null
+        folder_name: null
+      - file_path: null
+        key: key_0
+        module_path: directory_0/app.py 
+        folder_name: null
+      - file_path: null
+        key: key_0
+        module_path: null
+        folder_name: folder_name_0
+    expected_outputs:
+    - key_0
+    - directory_0
+    - directory_0/key_0
+    - folder_name_0/key_0
+    assertions: equals
+  - function_name: case_content_not_none
+    description: |
+      Returns content argument for the function as JSON or a string
+    inputs:
+      values: 
+      - value_0
+      - 0
+      - 1.5
+      - value_0: value_0
+    expected_outputs:
+    - value_0
+    - '0'
+    - '1.5'
+    - '{"value_0": "value_0"}'
+    assertions: equals
+  - function_name: case_file_path_not_none
+    description: Returns data from a file when the 'file_path' argument of the 
+      function is set
+    inputs:
+      values:
+      - file_path: ${WORKDIR}/aws/s3/test_resources/upload_0.txt
+        content: null
+      - file_path: ${WORKDIR}/aws/s3/test_resources/upload_1.txt
+        content: content_0
+      - file_path: does_not_exist.txt
+        content: content_0
+    expected_outputs:
+    - 'File content to upload to S3'
+    - 'File content to upload to S3'
+    - ''
+    assertions: equals
+  - function_name: case_content_none_and_file_path_none
+    description: |
+      Raise a runtime error when the function arguments
+      'content' and 'file_path' are null
+    inputs:
+      values:
+      - content: null
+        file_path: null
+      - content: content
+        file_path: file_path
+    expected_outputs:
+    - None
+    - None
+    #TODO capture error
+    assertions: equals 
+  - function_name: case_upload_to_file_system
+    description: Saves data to the file system
+    inputs:
+      values:
+      - bucket: ${WORKDIR}/data/s3/tests
+        file_path: null
+        content: content
+        key: key
+      - bucket: ${WORKDIR}/data/s3/tests
+        file_path: ${WORKDIR}/aws/s3/test_resources/temp/upload_0.txt
+        content: null
+        key: key      
+      - bucket: ${WORKDIR}/data/s3/tests
+        file_path: ${WORKDIR}/aws/s3/test_resources/upload_0.txt
+        content: 
+        key: key
+    expected_outputs: 
+    - 
+    - 
+    - 
+    assertions: 

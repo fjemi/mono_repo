@@ -1,0 +1,38 @@
+challenge: Count Primes
+description: |
+  Count the number of prime numbers less than a non-negative number, `n`.
+links: 
+  - 
+functions:
+  - name:  main
+    desciption: Returns prime numbers between 0 and a number, `n`
+    inputs:
+    - {n: 0}
+    - {n: 1}
+    - {n: 2}
+    - {n: 3}
+    - {n: 4}
+    - {n: 5}
+    - {n: 14}
+    - {n: 50}
+
+    outputs:
+    - n: 0
+      primes: []
+    - n: 1
+      primes: []
+    - n: 2
+      primes: []
+    - n: 3
+      primes: [2]
+    - n: 4
+      primes: [2, 3]
+    - n: 5
+      primes: [2, 3]
+    - n: 14
+      primes: [2, 3, 5, 7, 11, 13]
+    - n: 50
+      primes: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
+
+
+

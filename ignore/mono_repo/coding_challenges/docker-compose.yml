@@ -1,0 +1,23 @@
+version: '3.9'
+services:
+  app:
+    build: 
+      context: ./
+      dockerfile: ./Dockerfile
+      args:
+        ENV: dev
+        WORKDIR: $WORKDIR
+        PORT: $PORT
+    env_file:
+      - .env
+    environment:
+      ENV: dev
+    ports: 
+      - $PORT:$PORT
+    working_dir: $WORKDIR
+    volumes:
+      - ./app:$WORKDIR/app
+      - ./.venv:$WORKDIR/.venv
+    restart: always
+    
+    

@@ -1,0 +1,11 @@
+resources:
+- title: Get __name__ of calling function's module in Python
+  links: https://stackoverflow.com/questions/1095543/get-name-of-calling-functions-module-in-python
+environment:
+  WORKING_DIR: for_example
+  ENV: for_example
+  WORKDIR: for_example
+tests:  
+- function_name: setup_data
+  input_data:
+  output_data:

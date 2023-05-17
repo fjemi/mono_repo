@@ -1,0 +1,28 @@
+# https://github.com/nedbat/coveragepy/blob/master/doc/config.rst
+
+[report]
+fail_under = 90
+show_missing = True
+; skip_covered = True
+omit = ignore/*
+exclude_lines =
+    # ignore non-runnable code
+    if __name__ == '__main__':
+    # main block
+    def main
+skip_empty = True
+
+ignore_errors = True
+
+[run]
+data_file = coverage/.coverage
+branch = True
+omit = ignore/*
+exclude = 
+    */*_test.py
+
+parallel = True
+
+[json]
+output = coverage/coverage1.json
+pretty_print = True

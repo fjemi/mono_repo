@@ -1,0 +1,55 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Find Numbers with Even Digits
+      description: |
+        [Challenge](https://leetcode.com/problems/find-numbers-with-even-number-of-digits/)
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              nums: array[number]
+            examples:
+              'Example 1':
+                value: |
+                  nums: [12,345,2,6,7896]
+              'Example 2':
+                value: |
+                  nums: [555,901,482,1771]
+              'Example 3':
+                value: |
+                  digits: 2
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        nums: [12,345,2,6,7896]
+                      output: 
+                        even_digit_nums: 
+                          values: [12, 7896]
+                          n: 2
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        nums: [555,901,482,1771]
+                      output:
+                        even_digit_nums: 
+                          values: [1771]
+                          n: 1

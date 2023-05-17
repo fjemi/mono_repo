@@ -1,0 +1,21 @@
+links:
+tests:
+  - function: main
+    description: testing main function
+    data_class: Data
+    data: 
+      - a: 1
+        b: 2 
+      - a: 2
+        b: 2
+    output:
+      - 3
+      - 4
+  - function: add
+    description: testing main function
+    # data_class: null
+    data: 
+      - a: 1
+        b: 2
+    output:
+      - 3

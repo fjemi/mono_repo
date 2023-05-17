@@ -1,0 +1,44 @@
+
+todo:
+- decorate with error handler that does logging
+description: Returns the days and dates that a person's birth date lands within
+  a specified period of time
+resources: null
+environment:
+  DEBUG: True
+tests:
+- function_name:  main
+  description:
+  - Results for when the birth year and ending year 
+    are the same
+  - Results for when the birth year is a leap year
+  - Should produce empty birthdays and weekday_counts 
+    lists when the birth year is greater than the ending 
+    year
+  inputs: 
+    values:
+    - birth_date: 20220101
+      ending_year: 2022
+    - birth_date: 20200101
+      ending_year: 2022
+    - birth_date: 20220101
+      ending_year: 2021
+  expected_outputs:
+  - birth_date: 20220101
+    birthdays:
+    ending_year: 2022
+    weekday_counts:
+      sunday: 1
+  - birth_date: 20200101
+    ending_year: 2022 
+    birthdays:
+    - {'weekday': 'Thursday', 'date': '20201231'}
+    - {'weekday': 'Friday', 'date': '20211231'}
+    weekday_counts:
+    - thursday: 1
+    - friday: 1
+  - birth_date: 20220101
+    ending_year: 2021 
+    birthdays: []
+    weekday_counts: {}
+  assertions: has_values

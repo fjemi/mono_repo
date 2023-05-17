@@ -1,0 +1,3 @@
+environment:
+  DATA_PATH: ${DATA_PATH}
+  WORKDIR: ${WORKDIR}

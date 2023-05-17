@@ -1,0 +1,18 @@
+description: 
+notes: 
+tests:
+- function_name: 
+  description: 
+  notes: 
+  imports:
+  - function_name: 
+    module_name: 
+    module_path: 
+  patches:
+    - function_name: 
+      module_path: 
+      return_value: 
+  cast_inputs_as: 
+  inputs:
+  outputs:
+  cast_output_as:

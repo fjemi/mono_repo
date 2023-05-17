@@ -1,0 +1,45 @@
+tests:
+  - name:  get_median
+    tests:
+      - description: Should return the median for a list of integers
+        inputs:
+          - [0]
+          - []
+          - [1, 2, 3]
+          - [1, 2, 3, 4]
+        outputs:
+          - 0
+          - 0
+          - 2
+          - 2.5
+  - name:  main
+    tests:
+      - description: Should carry out the operations and return the
+          last calculated median.
+        inputs:
+          - [[],[1],[2],[],[3],[]]
+          - [[]]
+          - []
+          - [[], [], [1]]
+          - [[],[1],[2],[3],[4],[]]
+        outputs:
+          - 2
+          - 0
+          - 0
+          - 0
+          - 2.5
+  - name:  add_number_to_sorted_array
+    tests:
+      - description: Should add a number into the correct position in a
+          sorted array and return the results
+        inputs:
+          - array: [1,2,3]
+            number: 2
+          - array: [1,2,3]
+            number: 4
+          - array: [1,2,3]
+            number: 0
+        outputs:
+          - [1,2,2,3]
+          - [1,2,3,4]
+          - [0,1,2,3]

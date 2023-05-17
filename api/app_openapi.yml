@@ -1,0 +1,235 @@
+openapi: 3.0.2
+info:
+  title: Minimal Functional API
+  description: API that uses functions to process data
+  version: 2.0.5
+  contact:
+    name: Olufemi Jemilohun
+    url: http://www.github.com/fjemi
+    email: olufemi.jemilohun@gmail.com
+  license_info:
+    name: Apache 2.2
+    url: url
+tags:
+# - name: API
+#   description: Single API for handling GET and POST routes.
+- name: TODO
+  description: Functions with tasks to complete
+- name: Examples
+  description: Example functions
+- name: Functions
+  description: Functions to call to process requests
+- name: Algorithms
+  description: Algorithms algorithms
+- name: Security
+  description: Functions for securing the API
+- name: Coding Challenges
+  description: Challenges from websites such as LeetCode, HackerRank, 
+    GoogleTechDev, reddit, and other sources
+- name: Development
+  description: Functions to use for development purposes
+# - name: Pages
+#   description: Pages or templates served from GET routes
+paths:
+  '/{function_path}/':
+    get:
+      tags: 
+      - Development
+      summary: Call function and process request
+      operationId: call_function.get
+      parameters:
+      - $ref: '#/components/parameters/Path'
+      - in: query
+        name: data
+        required: false
+        examples:
+          'Ping API':
+            value: null
+          'Hello World':
+            value:
+              name: Mars
+        schema:
+          type: object
+        description: Data for the function to process
+      responses:
+        200: 
+          description: Successful Response
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OK/application_json'
+              examples:
+                'Ping API':
+                  value:
+                    code: 200
+                    status: OK
+                    data:
+                      ping: pong
+                'Hello World':
+                  value:
+                    code: 200
+                    status: OK
+                    data:
+                      text: Hello World!
+    post:
+      tags:
+      - Development
+      summary: Call function and process request
+      operationId: call_function.post
+      parameters:
+      - $ref: '#/components/parameters/Path'
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              type: object
+              additionalProperties: true
+            examples: 
+              'Ping API':
+                value: {}
+              'Hello World':
+                value:
+                  name: Mars
+          text/plain:
+            schema: 
+              type: string
+            examples:
+              'Ping API':
+                value: |
+                  ping: pong
+              'Hello World':
+                value: |
+                  name: Jupyter
+          multipart/form-data: 
+            schema:
+              properties: 
+                meta-data:
+                  type: string
+                  format: binary
+                  example: |
+                    {"file_name": "someimage.jpg", "file_size_kb": "100"}
+                file:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  example:
+                  - externalValue: http://wwww.someimage.com
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OK/application_json'
+              examples:
+                'Ping API':
+                  value:
+                    code: 200
+                    status: OK
+                    data:
+                      ping: pong
+                'Hello World':
+                  value:
+                    code: 200
+                    status: OK
+                    data:
+                      text: Hello World!
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Ping API': 
+                  value: |
+                    code: 200
+                    status: OK
+                    data:
+                      ping: pong
+                'Hello World':
+                  value: |
+                    code: 200
+                    status: OK
+                    data:
+                      text: Hello World!
+components:
+  securitySchemes:
+  # https://swagger.io/docs/specification/authentication/
+    bearer_auth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  # responses:
+  #   200:
+  #     description: Successful Response
+  #     content: 
+  #       application/json:
+      # code: 200
+      # data: 
+      #   schema:
+      #     anyOf:
+      #     - type: string
+      #     - type: object
+      # status: OK
+      
+  parameters:
+    Path:
+      in: path
+      name: function_path
+      schema:
+        type: string
+      required: True
+      examples:
+        'Ping API':
+          value: functions.ping
+          summary: Ping API
+        'Hello World':
+          value: functions.hello_world
+          summary: Hello World
+      description: |
+        Dot delimited path to a function to call to process the request. The path starts from a folder in the working directory of the app, which is set to the environment variable `WORKDIR`, and the **main** function in the module **app.py** is returned.
+  schemas:
+    OK:
+      text_plain:
+        type: string
+        schema: 
+          type: string
+          code: number
+          status: string
+          data: AnyValue
+      application_json:
+        type: object
+        properties:
+          code:
+            type: integer
+          data:
+            type:
+              AnyValue: {}
+          status: 
+            type: string
+        example:
+          code: 200
+          status: OK
+          data:
+            text: Successful Response
+      anyOf:
+      - $ref: '#/components/schemas/OK/text_plain'
+      - $ref: '#/components/schemas/OK/application_json'
+    Error:
+      anyOf:
+      - type: string
+        example: |
+          code: 500
+          message: Internal Server Error
+      - type: object
+        properties:
+          code:
+            type: integer
+          message:
+            type: string
+        example:
+          code: 500
+          message: Internal Server Error
+security:
+- bearer_auth: []
+# - bearer_auth:
+#   - test: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiYW5vbnltb3VzXzAwIiwicm9sZSI6ImFub255bW91cyJ9fQ.I7cXyS8dN9QMjeWWaRPMZuMEdFHWk4A5yEBXNhSyKPE

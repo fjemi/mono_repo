@@ -1,0 +1,23 @@
+description: List files with certain extensions in a folder 
+links:
+  - https://stackoverflow.com/questions/2909975/python-list-directory-subdirectory-and-files
+todo: Finish execise
+tests: 
+  - function: get_score
+    description: Should produce the correct score for provided rolls
+    input: 
+      rolls: [2, 3, 5, 5, 6]
+    output: 
+      score: 10
+  - function: get_score
+    description: Should produce the correct score for provided rolls
+    ipnut: 
+      rolls: [1654, 1654, 50995, 30864, 1654, 50995, 22747, 1654, 1654, 1654, 1654, 1654, 30864, 4868, 1654, 4868, 1654, 30864, 4868, 30864]
+    output: 
+      score: 123456
+  - function: get_score
+    description: Should produce the correct score for provided rolls
+    input: 
+      rolls: [1, 2, 3, 4, 5]
+    output: 
+      score: 5

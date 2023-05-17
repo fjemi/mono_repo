@@ -1,0 +1,150 @@
+description: |
+  # Sorting: Comparator
+  Comparators are used to compare two objects. In this challenge, you'll create 
+  a comparator and use it to sort an array. The Player class is provided in the 
+  editor below. It has two fields:
+    - `name`: a string
+    - `score`: an integer
+  
+  Given an array of Player objects, write a comparator that sorts them in order
+  of decreasing score. If or more players have the same score, sort those 
+  players alphabetically ascending by name. To do this, you must create a 
+  Checker class that implements the Comparator interface, then write an `int 
+  compare(Player a, Player b)` method implementing the `Comparator.compare(T o1, 
+  T o2)`` method. In short, when sorting in ascending order, a comparator 
+  function returns `-1` if `a < b`, `0` if `b = 0`, `1` and  if `a > b`.
+
+  Declare a Checker class that implements the comparator method as described. 
+  It should sort first descending by score, then ascending by name. The code 
+  stub reads the input, creates a list of Player objects, uses your method to 
+  sort the data, and prints it out properly.
+
+links:
+  
+functions:
+  - name:  get_players_by_score
+    description: |
+      Example 1 - Should produce a dictionary with scores as keys in 
+      ascending order and values being lists of player names in ascendinng
+      order 
+    inputs: 
+      players:
+        - name: Smith
+          score: 15
+        - name: Jones
+          score: 20
+        - name: Jones
+          score: 15
+    outputs:
+      15: [Jones, Smith]
+      20: [Jones]
+  - name:  get_players_by_score
+    description: |
+      Example 2 - Should produce a dictionary with scores as keys in 
+      ascending order and values being lists of player names in ascendinng
+      order
+    inputs:
+      players:
+        - name: amy
+          score: 100
+        - name: david
+          score: 100
+        - name: heraldo
+          score: 50
+        - name: aakansha
+          score: 75
+        - name: aleksa
+          score: 150
+    outputs:
+      50: [heraldo]
+      75: [aakansha]
+      100: [amy, david]
+      150: [aleska]
+  - name:  get_sorted_players
+    description: | 
+      Example 1 - Should produce of list of dictionaries containing player
+      names and scores sorted in ascending order
+    inputs:
+      players_by_score:
+        15: [Jones, Smith]
+        20: [Jones]
+    outputs:
+      - name: Jones
+        score: 20
+      - name: Jones
+        score: 15
+      - name: Smith
+        score: 15
+  - name:  get_sorted_players
+    description: |
+      Example 2 - Should produce of list of dictionaries containing player
+      names and scores sorted in ascending order
+    inputs:
+      players_by_score:
+        50: [heraldo]
+        75: [aakansha]
+        100: [amy, david]
+        150: [aleska]
+    outputs:
+      - name: heraldo
+        score: 50
+      - name: aakansha
+        score: 75
+      - name: amy
+        score: 100
+      - name: david
+        score: 100
+      - name: aleska
+        score: 150
+  - name:  main
+    description: Example 1 - Should chain the other functions together
+      and produce the desired output
+    cast_inputs_as: Data
+    inputs:
+      players:
+        - name: Smith
+          score: 15
+        - name: Jones
+          score: 20
+        - name: Jones
+          score: 15
+    cast_outputs_as: dict
+    outputs:
+    - players:
+      - {name: Smith, score: 15}
+      - {name: Jones, score: 20}
+      - {name: Jones, score: 15}
+      players_by_score:
+        15: [Jones, Smith]
+        20: [Jones]
+      sorted_players:
+      - {name: Jones, score: 20}
+      - {name: Jones, score: 15}
+      - {name: Smith, score: 15}
+  - name:  main
+    description: Example 2 - Should chain the other functions together
+      and produce the desired output
+    inputs:
+      players:
+        - name: amy
+          score: 100
+        - name: david
+          score: 100
+        - name: heraldo
+          score: 50
+        - name: aakansha
+          score: 75
+        - name: aleksa
+          score: 150
+    outputs: 
+      - name: heraldo
+        score: 50
+      - name: aakansha
+        score: 75
+      - name: amy
+        score: 100
+      - name: david
+        score: 100
+      - name: aleska
+        score: 150
+      

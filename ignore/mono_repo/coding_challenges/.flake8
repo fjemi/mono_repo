@@ -1,0 +1,18 @@
+[flake8]
+# https://flake8.pycqa.org/en/latest/user/configuration.html
+extend-ignore = 
+  E203,
+  W291, # Trailing witespace
+exclude = 
+  .git,__pycache__,
+  docs/source/conf.py,
+  old,
+  build,
+  dist,
+  .venv,
+  ignore,
+  .pytest_cache,
+  _*,
+max-complexity = 10
+indent-size = 2
+max-line-length = 80

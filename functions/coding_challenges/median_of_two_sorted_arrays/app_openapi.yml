@@ -1,0 +1,57 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Median of Two Sorted Arrays
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              nums1: array[number]
+              nums2: array[number]
+            examples:
+              'Example 1':
+                value: |
+                  nums1: [1, 2]
+                  nums2: [3]
+              'Example 2':
+                value: |
+                  nums1: [1, 2]
+                  nums2: [3, 4]
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        nums1: [1, 2]
+                        nums2: [3]
+                      output: 
+                        median: 2
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        nums1: [1,2]
+                        nums2: [3,4]
+                      output: 
+                        median: 2.5
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://leetcode.com/problems/median-of-two-sorted-arrays/)

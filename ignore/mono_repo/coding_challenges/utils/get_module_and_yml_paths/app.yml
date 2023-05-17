@@ -1,0 +1,125 @@
+description: Returns the paths of associated python and yml files using a switch/case 
+  statment. If either or neither of the paths exists, returns `null` for both 
+  paths
+links:
+  - https://stackoverflow.com/questions/2063616/how-to-reference-a-yaml-setting-from-elsewhere-in-the-same-yaml-file
+functions:
+  - name: pass_through
+    description: Returns the functions that were entered 
+    cast_inputs_as: Path
+    inputs:
+      - module: module_1
+        yml: yml_1
+      - module: module_2
+        yml: yml_2
+      - module: module_3
+        yml: yml_3
+      - module: module_4
+        yml: yml_4
+    cast_outputs_as: dict
+    outputs:
+      - module: module_1
+        yml: yml_1
+      - module: module_2
+        yml: yml_2
+      - module: module_3
+        yml: yml_3
+      - module: module_4
+        yml: yml_4
+  - name: get_module_path
+    description: Returns the path of a module file associated with a yml file
+    cast_inputs_as: Path
+    inputs:
+      - module: null
+        yml: path_1.yml
+      - module: null
+        yml: path_2.yml
+      - module: null
+        yml: path_3.yml
+      - module: null
+        yml: path_4.yml
+    cast_outputs_as: dict
+    outputs:
+      - module: path_1.py
+        yml: path_1.yml
+      - module: path_2.py
+        yml: path_2.yml
+      - module: path_3.py
+        yml: path_3.yml
+      - module: path_4.py
+        yml: path_4.yml
+  - name: get_yml_path
+    description: Returns the path of a yml file associated with a python file
+    cast_inputs_as: Path
+    inputs:
+      - module: path_1.py
+        yml: null
+      - module: path_2.py
+        yml: null
+      - module: path_3.py
+        yml: null
+      - module: path_4.py
+        yml: null
+    cast_outputs_as: dict
+    outputs:
+      - module: path_1.py
+        yml: path_1.yml
+      - module: path_2.py
+        yml: path_2.yml
+      - module: path_3.py
+        yml: path_3.yml
+      - module: path_4.py
+        yml: path_4.yml
+  - name: main
+    # TODO: map to description at root
+    description: ${description}
+    inputs:
+    - module_path: null
+      yml_path: null
+    - module: path_does_not_exists.py
+      yml_path: null
+    - module_path: null
+      yml_path: path_does_not_exists.yml
+    - module_path: ${test_resources_dir}/test.py
+      yml_path: null
+    - module_path: null
+      # TODO: path/app.yml replace `app.yml` with `test_resources` -> path/test_resources
+      yml_path: ${test_resources_dir}/test.yml  
+    - module_path: ${test_resources_dir}/test.py
+      yml: ${test_resources_dir}/test.yml
+    cast_outputs_as: dict
+    outputs:
+    - module: null
+      yml: null
+    - module: null
+      yml: null
+    - module: null
+      yml: null
+    - module: ${test_resources_dir}/test.py
+      yml: ${test_resources_dir}/test.yml
+    - module: ${test_resources_dir}/test.py
+      yml: ${test_resources_dir}/test.yml  
+    - module: ${test_resources_dir}/test.py
+      yml: ${test_resources_dir}/test.yml
+  - name: check_if_path_exists
+    description: 
+    inputs:
+    - module: ${test_resources_dir}/test.py
+      yml: ${test_resources_dir}/test.yml
+    - module: null
+      yml: ${test_resources_dir}/test.yml
+    - module: ${test_resources_dir}/test.py
+      yml: null
+    - module: null
+      yml: null
+    - module: path_does_not_exist.py
+      yml: null
+    - module: null
+      yml: path_does_not_exist.ym
+    outputs:
+    - "{'module': 0, 'yml': 0}"
+    - "{'module': 1, 'yml': 0}"
+    - "{'module': 0, 'yml': 1}"
+    - "{'module': 1, 'yml': 1}"
+    - "{'module': 1, 'yml': 1}"
+    - "{'module': 1, 'yml': 1}"

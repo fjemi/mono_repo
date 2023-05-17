@@ -1,0 +1,21 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+requests = "*"
+pyaml = "*"
+python-box = "*"
+fastapi = "*"
+uvicorn = {extras = ["standard"], version = "*"} 
+
+[dev-packages]
+pytest = "*"
+pytest-cov = "*"
+pytest-json-report = "*"
+flake8 = "*"
+behave = "*"
+
+[requires]
+python_version = "3.10"

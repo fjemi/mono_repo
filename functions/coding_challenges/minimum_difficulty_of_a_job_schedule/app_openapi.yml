@@ -1,0 +1,71 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Minimum Difficulty of a Job Schedule
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              days: number
+              job_difficulty: array[number]
+            examples:
+              'Example 1':
+                value: |
+                  job_difficulty: [6, 5, 4, 3, 2, 1]
+                  days: 2
+              'Example 2':
+                value: |
+                  job_difficulty: [9, 9, 9]
+                  days: 4
+              'Example 3':
+                value: |
+                  job_difficulty: [1, 1, 1]
+                  days: 3
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        job_difficulty: [6, 5, 4, 3, 2, 1]
+                        days: 2
+                      output: 
+                        minimum_difficulty: 7
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        job_difficulty: [9, 9, 9]
+                        days: 4
+                      output: 
+                        minimum_difficulty: 
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        job_difficulty: [9, 9, 9]
+                        days: 4
+                      output: 
+                        minimum_difficulty: 
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://leetcode.com/problems/minimum-difficulty-of-a-job-schedule/)

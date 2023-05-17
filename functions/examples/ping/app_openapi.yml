@@ -1,0 +1,67 @@
+paths: 
+  '/{path}/':
+    get:
+      tags:
+      - Examples
+      summary: Ping the API
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OK/application_json'
+              examples:
+                'Ping API':
+                  value:
+                    code: 200
+                    status: OK
+                    data:
+                      ping: pong
+
+    post:
+      tags:
+      - Examples
+      summary: Ping the API
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              type: object
+            examples: 
+              'Ping API':
+                value: {}
+          text/plain:
+            schema:
+              type: string
+            examples:
+              'Ping API':
+                value: |
+                  {}
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OK/application_json'
+              examples:
+                'Ping API':
+                  value:
+                    code: 200
+                    status: OK
+                    data:
+                      ping: pong
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Ping API': 
+                  value: |
+                    code: 200
+                    status: OK
+                    data:
+                      ping: pong
+tags:
+- name: Examples
+  description: Example functions

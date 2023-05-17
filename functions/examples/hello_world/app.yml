@@ -1,0 +1,2 @@
+environment:
+  API_RELOAD: ${API_RELOAD}

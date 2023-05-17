@@ -1,0 +1,19 @@
+tests:
+  - description: Should produce of list of files in the directory with matching
+      extensions
+    function: get_files_by_extension
+    inputs: 
+      directories: [WORKING_DIR/test_folder]
+      extensions: [.json, .csv]
+    output: 
+      files: [WORKING_DIR/test_folder/test.json, WORKING_DIR/data/test.csv]
+    output_type: list
+  - description: Should result in a empty list of files when have a matching 
+      extension
+    function: get_files_by_extension
+    inputs: 
+      directories: [WORKING_DIR/test_folder]
+      extensions: [.py]
+    output: 
+      files: []
+    output_type: list

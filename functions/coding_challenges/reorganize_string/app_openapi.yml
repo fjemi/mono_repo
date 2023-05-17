@@ -1,0 +1,64 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Reorganize String
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              string: string
+            examples:
+              'Example 1':
+                value: |
+                  string: aab
+              'Example 2':
+                value: |
+                  string: aaab
+              'Example 3':
+                value: |
+                  string: abc
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        string: aab
+                      output: 
+                        reorganizes_string: aba
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        string: aaab
+                      output: 
+                        reorganized_string: ''
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        string: abc
+                      output:
+                        reorganized_string: cba
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://leetcode.com/problems/reorganize-string/)

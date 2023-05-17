@@ -1,0 +1,11 @@
+TODO:
+- Implement html page for GET route
+  - Add user field so that we can preform operations by user
+  - display the last grid non completed (started or hit a mine)
+  - If last grid is completed or no grid display options to create a new
+    grid 
+  - Store results to filesystem, S3, or DynamoDB
+
+links:
+  - https://techdevguide.withgoogle.com/resources/former-interview-question-minesweeper/
+tests: 

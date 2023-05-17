@@ -1,0 +1,100 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Fizz Buzz
+      description: |
+        [Challenge](https://leetcode.com/problems/fizz-buzz/)
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              numbers: array[number] | number
+            examples:
+              'Example 1':
+                value: |
+                  numbers: 3
+              'Example 2':
+                value: |
+                  numbers: 5
+              'Example 3':
+                value: |
+                  numbers: 15
+              'Example 4':
+                value: |
+                  numbers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        numbers: 3
+                      output:
+                        deletions: 2 
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        numbers: 5
+                      output:
+                        deletions: 3
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        numbers: 15
+                      output:
+                        deletions: 4
+                'Example 4':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        numbers: 
+                        -1
+                        -2
+                        -3
+                        -4
+                        -5
+                        - 6
+                        - 7
+                        - 8
+                        - 9
+                        - 10
+                        - 11
+                        - 12
+                        - 13
+                        - 14
+                        - 15
+                      output:
+                      - '1'
+                      - '2'
+                      - fizz
+                      - '4'
+                      - buzz
+                      - fizz
+                      - '7'
+                      - '8'
+                      - fizz
+                      - buzz
+                      - '11'
+                      - fizz
+                      - '13'
+                      - '14'
+                      - fizz_buzz

@@ -1,0 +1,14 @@
+functions:
+  - hello_world
+docstrings: |
+  description: A simple greeting
+  parameters:
+    - name: name
+      type: str
+      description: The name of person or thing to greet
+  returns: str
+tests:
+  - name:
+    result: hello world
+  - name: earth
+    result: hello earth

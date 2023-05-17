@@ -1,0 +1,145 @@
+data_classes:
+- Data:
+  - name: digits
+    type: str
+    default: ''
+  - name: combinations
+    type: List[str] | List[List[str]]
+    default: []
+  - name: digit_letter_mapping
+    type: Dict[str, List[str]]
+    default: 
+      '2': [A, B, C]
+      '3': [D, E, F]
+      '4': [G, H, I]
+      '5': [J, K, L]
+      '6': [M, N, O]
+      '7': [P, Q, R, S]
+      '8': [T, U, V]
+      '9': [W, X, Y, Z]
+  - name: remove_fields
+    type: List[str]
+    default:
+    - remove_fields
+    - digit_letter_mapping
+tests:
+- function_name: pre_processing
+  description: |
+    Format data for processing downstream
+    - Converts digits to a string
+  inputs_values:
+  - digits: 1
+  - digits: 12
+  - digits: 123
+  cast_as: Data
+  expected_outputs:
+  - digits: '1'
+  - digits: '12'
+  - digits: '123'
+  assertions: has_values
+- function_name: case_digits_greater_than_one
+  description: |
+    Returns the combinations of letters for the digits as
+    a tree with the root being the first chars for each
+    combinations, and the remaining branches being the
+    different combinations at the remaining digits
+  inputs_values:
+  - digits: '24'
+    digit_letter_mapping:
+      '2': [A, B, C]
+      '3': [D, E, F]
+      '4': [G, H, I]
+      '5': [J, K, L]
+      '6': [M, N, O]
+      '7': [P, Q, R, S]
+      '8': [T, U, V]
+      '9': [W, X, Y, Z]
+  - digits: '23'
+    digit_letter_mapping:
+      '2': [A, B, C]
+      '3': [D, E, F]
+      '4': [G, H, I]
+      '5': [J, K, L]
+      '6': [M, N, O]
+      '7': [P, Q, R, S]
+      '8': [T, U, V]
+      '9': [W, X, Y, Z]
+  inputs_cast_as: null
+  expected_outputs:
+  - - [A, B, C]
+    - [AG, AH, AI, BG, BH, BI, CG, CH, CI]
+  - - [A, B, C]
+    - [AD, AE, AF, BD, BE, BF, CD, CE, CF]
+  assertions: equals
+- function_name: get_combinations
+  descriptions: Returns combinatins of the letters for the string of digits
+  inputs_values:
+  - digits: ''
+    digit_letter_mapping: 
+      '2': [A, B, C]
+      '3': [D, E, F]
+      '4': [G, H, I]
+      '5': [J, K, L]
+      '6': [M, N, O]
+      '7': [P, Q, R, S]
+      '8': [T, U, V]
+      '9': [W, X, Y, Z]
+  - digits: '2'
+    digit_letter_mapping:
+      '2': [A, B, C]
+      '3': [D, E, F]
+      '4': [G, H, I]
+      '5': [J, K, L]
+      '6': [M, N, O]
+      '7': [P, Q, R, S]
+      '8': [T, U, V]
+      '9': [W, X, Y, Z]
+  - digits: '23'
+    digit_letter_mapping:
+      '2': [A, B, C]
+      '3': [D, E, F]
+      '4': [G, H, I]
+      '5': [J, K, L]
+      '6': [M, N, O]
+      '7': [P, Q, R, S]
+      '8': [T, U, V]
+      '9': [W, X, Y, Z]
+  inputs_cast_as: null
+  expected_outputs:
+  - - []
+  - - [A, B, C]
+  - - [A, B, C]
+    - [AD, AE, AF, BD, BE, BF, CD, CE, CF]
+  assertions:
+- function_name: post_processing
+  description: Sets combinations to the last item in
+    its list
+  inputs_values:
+  - combinations: [[]]
+  - combinations: [[A]]
+  - combinations: [[A], [B]]
+  inputs_cast_as: Data
+  expected_outputs:
+  - combinations: []
+  - combinations: [A]
+  - combinaitons: [B]
+  assertions: has_values
+- function_name: main
+  description: |
+    Orchestration function that executes the other
+    functions within the module
+  inputs_values: 
+  - digits: ''
+  - digits: '2'
+  - digits: '23'
+  inputs_cast_as: Data
+  expected_outputs:
+  - combinations:
+    - []
+  - combinations:
+    - [A, B, C]
+  - combinations:
+    - [A, B, C]
+    - [AD, AE, AF, BD, BE, BF, CD, CE, CF]
+  assertions: has_values
+  

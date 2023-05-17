@@ -1,0 +1,61 @@
+tests:
+- function_name: get_distance_between_two_points
+  description: |
+    Returns the distance between two points
+  inputs_values:
+  - point_one: [1, 1]
+    point_two: [1, 1]
+  - point_one: [2, 0]
+    point_two: [-1, 0]
+  - point_one: [8, 0]
+    point_two: [1, 0]
+  expected_outputs:
+  - 0
+  - 3
+  - 7
+  assertions:
+- function_name: get_distances_from_origin
+  description: | 
+    Returns a dictionary with values being Points
+    and keys being the distance the points are
+    from the origin
+  inputs_values:
+  - points: 
+    - [0, 0]
+  - points: 
+    - [0, 0]
+    - [1, 0]
+  - points: 
+    - [0, 0]
+    - [1, 0]
+    - [0, 2]
+  expected_outputs:
+  - 0: [0, 0]
+  - 0: [0, 0]
+    1: [1, 0]
+  - 0: [0, 0]
+    1: [1, 0]
+    2: [0, 2]
+  assertions: equals
+- function_name: main
+  description: | 
+    Orchestration function that executes the other
+    functions within the module
+  inputs_values:
+  - points: 
+    - [1,3]
+    - [-2,2]
+    k: 1
+  - points: 
+    - [3, 3] 
+    - [5, -1] 
+    - [-2, 4]
+    k: 2
+  expected_outputs:
+  - closest_points: 
+    - [-2, 2]
+  - closest_points: 
+    - [-2, 4]
+    - [5, -1]
+  assertions: has_values
+  

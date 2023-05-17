@@ -1,0 +1,36 @@
+tests:
+  - function: absolute_value
+    description: The absolute value of 5 is 5
+    inputs:
+      number: 5
+    output:
+      number: 5
+      operation: absolute_value
+      result: 5
+    output_type: [float, int]
+  - function: absolute_value
+    description: The absolute value of -5 is 5
+    inputs:
+      number: -5
+    output:
+      number: -5
+      operation: absolute_value
+      result: 5
+    output_type: [float, int]
+  - function: absolute_value
+    description: The absolute value of 0 is 0
+    inputs:
+      number: 0
+    output:
+      number: 0
+      operation: absolute_value
+      result: 0
+    output_type: [float, int]
+
+data = {'number': 5}
+  data = absolute_value(data)
+  print(data)
+
+  data = Data(number=-5)
+  data = absolute_value(data)
+  print(data)

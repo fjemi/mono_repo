@@ -1,0 +1,103 @@
+resources:
+- title: dataclasses — Data Classes
+  url: https://docs.python.org/3/library/dataclasses.html
+functions:
+  main: 
+    description: |
+      Orchestrates the execution of the other functions within the
+      module
+    tests:
+    - arguments:
+        yml_path: ${TEST_RESOURCES_DIR}/get_schema.yml
+        return_type: dict
+      assertions: 
+        equals: 
+        - cast_result_as: str
+          expected_result: | 
+            {'Model_1': <class 'types.Model_1'>, 'Model_2': <class 'types.Model_2'>}
+        type: dict
+    - arguments:
+        py_path: ${TEST_RESOURCES_DIR}/schema.py_path
+        return_type: dataclasses
+      assertions:
+        type: Models
+        equals: 
+        - cast_result_as: str
+          expected: |
+            Models(names=['Model_1', 'Model_2'], models=[<class 'types.Model_1'>, <class 'types.Model_2'>])
+  set_fields:
+    description: |
+      Returns a lists of values for fields, [name, type, default], 
+      from the model schema
+    tests:
+    - arguments:
+        schema:
+          fields:
+          - name: name
+            type: type
+            default: default
+      assertions: 
+        equals: [[name, type, default]]
+    - arguments:
+        schema:
+          fields:
+          - name: name_1
+            type: type_1
+            default: default_1
+      assertions: 
+        equals: [[name_1, type_1, default_1]]
+  get_models_as_dict:
+    description: |
+      Returns a dictionary, {name, model}, containing dataclasses
+      from the models defined in the schema
+    tests:
+    - arguments:
+        Model_1:
+          fields:
+          - name: name
+            type: type  
+            default: default
+        Model_2:
+          fields:
+          - name: name_1
+            type: type_1
+            default: default_1
+      assertions: 
+        equals:
+        - cast_result_as: str
+          expected: |
+            {'Model_1': <class 'types.Model_1'>, 'Model_2': <class 'types.Model_2'>}
+  get_models_as_dataclass:
+    description: |
+      Returns a dataclass containing a list of names and models
+      from the schema defined in a YML file
+    tests:
+    - arguments:
+        Model_1:
+          fields:
+          - name: name
+            type: type  
+            default: default
+        Model_2:
+          fields:
+          - name: name_1
+            type: type_1
+            default: default_1
+      assertions: 
+        equals:
+        - cast_result_as: str
+          expected: |
+            Models(names=['Model_1', 'Model_2'], models=[<class 'types.Model_1'>, <class 'types.Model_2'>])
+  get_schemas:
+    description: | 
+      Returns model schemas from a YML file given the path
+      to a YML or Python file.
+    tests:
+    - arguments:
+        yml_path:
+      assertions:
+        equals:
+    - arguments:
+        py_path:
+      assertions:
+        equals:

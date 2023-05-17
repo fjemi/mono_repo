@@ -1,0 +1,6 @@
+tests: 
+  - function: set_env_vars_in_text
+    description:
+    inputs: 
+    output:
+    output_type: dataclass

@@ -1,0 +1,184 @@
+description: Functions for calculating simple interest and associated data
+links:
+  - https://www.calculatorsoup.com/calculators/financial/simple-interest-plus-principal-calculator.php
+tests:
+  - name:  calculate_principal
+    description: Should return principal given rate, time, and amount accrued
+    inputs:
+      - principal: null
+        rate: 1
+        time: 1
+        time_ordinal: years
+        accrued: 1
+      - principal: null
+        rate: 1
+        time: 2
+        time_ordinal: months
+        accrued: 3
+      - principal: null
+        rate: 3
+        time: 4
+        time_ordinal: days
+        accrued: 5
+    outputs:
+      - principal: 2
+        rate: 1
+        time: 1
+        time_ordinal: years
+        accrued: 1
+      - principal: 3
+        rate: 1
+        time: 2
+        time_ordinal: months
+        accrued: 3
+      - principal: 13
+        rate: 3
+        time: 4
+        time_ordinal: days
+        accrued: 5
+  - name:  calculate_rate
+    description: Should return rate given principal amount, time, and amount 
+      accrued
+    inputs: 
+      - principal: 1
+        rate: null
+        time: 1
+        time_ordinal: 'years'
+        accrued: 1 
+      - principal: 5
+        rate: null
+        time: 4
+        time_ordinal: 'years'
+        accrued: 3
+      - principal: 3
+        rate: null
+        time: 2
+        time_ordinal: 'years'
+        accrued: 9
+    outputs:
+      - principal: 1
+        rate: 0
+        time: 1
+        time_ordinal: 'years'
+        accrued: 1 
+      - principal: 5
+        rate: -0.1
+        time: 4
+        time_ordinal: 'years'
+        accrued: 3
+      - principal: 3
+        rate: 1
+        time: 2
+        time_ordinal: 'years'
+        accrued: 9
+  - name:  calculate_time
+    description: Should time given the principal ammount, rate, and amount 
+      accured
+    inputs:
+      - principal: 1
+        rate: 1
+        time: null
+        time_ordinal: years
+        accrued: 1
+      - principal: 1
+        rate: 1
+        time: null
+        time_ordinal: years
+        accrued: 2
+      - principal: 4
+        rate: 2
+        time: null
+        time_ordinal: years
+        accrued: 8
+    outputs:
+      - principal: 1
+        rate: 1
+        time: 0
+        time_ordinal: years
+        accrued: 1
+      - principal: 1
+        rate: 1
+        time: 1
+        time_ordinal: years
+        accrued: 2
+      - principal: 4
+        rate: 2
+        time: 0.5
+        time_ordinal: years
+        accrued: 8
+  - name:  calculate_accrued
+    description: Should amount accrued given the principal amount, rate, and 
+      time
+    inputs:
+      - principal: 1
+        rate: 1
+        time: 1
+        time_ordinal: years
+        accrued: null
+      - principal: 2
+        rate: 3
+        time: 5
+        time_ordinal: years
+        accrued: null
+      - principal: 5
+        rate: 3
+        time: 7
+        time_ordinal: years
+        accrued: null
+    outputs:
+      - principal: 1
+        rate: 1
+        time: 1
+        time_ordinal: years
+        accrued: 2
+      - principal: 2
+        rate: 3
+        time: 5
+        time_ordinal: years
+        accrued: 32
+      - principal: 5
+        rate: 3
+        time: 7
+        time_ordinal: years
+        accrued: 110
+  - name:  calculate_total_accrued
+    description: Should return the sum of the amount accrued and principal 
+      time
+    inputs:
+      - principal: 1
+        rate: 1
+        time: 1
+        time_ordinal: years
+        accrued: 1
+        total_accrued: null
+      - principal: 2
+        rate: 3
+        time: 5
+        time_ordinal: years
+        accrued: null
+        total_accrued: null
+      - principal: 5
+        rate: 3
+        time: 7
+        time_ordinal: years
+        accrued: null
+        total_accrued: null
+    outputs:
+      - principal: 1
+        rate: 1
+        time: 1
+        time_ordinal: years
+        accrued: 1
+        total_accrued: 2
+      - principal: 2
+        rate: 3
+        time: 5
+        time_ordinal: years
+        accrued: 32
+        total_accrued: 34
+      - principal: 5
+        rate: 3
+        time: 7
+        time_ordinal: years
+        accrued: 110
+        total_accrued: 115

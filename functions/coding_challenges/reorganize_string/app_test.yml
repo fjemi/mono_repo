@@ -1,0 +1,119 @@
+functions: 
+- name: get_char_counts
+  description: Returns a dictionary with keys as chars and values as the 
+    number of occurances of the char in the string
+  input_dataclass: Data
+  inputs:
+    - string: ''
+    - string: 'a'
+    - string: 'ab'
+    - string: 'abc'
+    - string: 'abb'
+    - string: 'abbb'
+  outputs:
+    - {}
+    - {'a': 1}
+    - {'a': 1, 'b': 1}
+    - {'a': 1, 'b': 1, 'c': 1}
+    - {'a': 1, 'b': 2}
+    - {'a': 1, 'b': 3}
+- name:  get_upper_bound
+  description: Returns the upper bound for the max occurance of chars in s 
+    string of length n
+  inputs:
+    - string: ''
+    - string: 'aa'
+    - string: 'ab'
+    - string: 'aaa'
+    - string: 'abb'
+    - string: 'abab'
+  outputs:
+    - 0
+    - 2
+    - 2
+    - 3
+    - 3
+    - 4
+- name:  check_char_counts_values
+  description: Returns True if the char count exceeds the upper bound,
+    false other wise
+  input_dataclass: Data
+  inputs:
+    - count_upper_bound: 0
+      char_count_values: {}
+    - count_upper_bound: 2
+      char_count_values: {'a': 1}
+    - count_upper_bound: 2
+      char_count_values: {'a': 1, 'b': 1}
+    - count_upper_bound: 3
+      char_count_values: {'a': 1, 'b': 1, 'c': 1}
+    - count_upper_bound: 2
+      char_count_values: {'a': 1, 'b': 2}
+    - count_upper_bound: 2
+      char_count_values: {'a': 1, 'b': 3}
+    - count_upper_bound: 3
+      char_count_values: {'a': 2, 'b': 2, 'c': 1}
+  outputs:
+    - True
+    - True
+    - True
+    - True
+    - True
+    - False
+    - True
+- name: get_reorganized_string
+  description: Returns true if none of a strings char counts exceeds an upper 
+    bound, otherwise False
+  inputs:
+    - string: ''
+      char_counts_check: True
+      char_counts: {}
+    - string: 'a'
+      char_counts_check: True
+      char_counts: {a: 1}
+    - string: 'ab'
+      char_counts_check: True
+      char_counts: {a: 1, b: 1}
+    - string: 'abc'
+      char_counts_check: True
+      char_counts: {a: 1, b: 1, c: 1}
+    - string: 'abb'
+      char_counts_check: True
+      char_counts: {a: 1, b: 2}
+    - string: 'abbb'
+      char_counts_check: False
+      char_counts: {a: 1, b: 3}
+  outputs:
+    - ''
+    - a
+    - ba
+    - cba
+    - ba
+    - bab
+    - null
+- name: format_data
+description: Returns a basemodel with specified fields removed
+  cast_inputs_as: Data
+  inputs:
+    - items: ''
+  cast_outputs_as: dict
+  outputs:
+    - {reorganized_string: '', string: ''}
+- name:  main
+  description: Returns the a new string if a string is can be reogranized,
+    otherwise null
+  inputs:
+    - string: ''
+    - string: 'a'
+    - string: 'ab'
+    - string: 'abc'
+    - string: 'abb'
+    - string: 'abbb'
+  outputs:
+  - {reorganized_string: null, string: ''}
+  - {reorganized_string: a, string: a}
+  - {reorganized_string: ba, string: ab}
+  - {reorganized_string: cba, string: abc}
+  - {reorganized_string: ba, string: ab}
+  - {reorganized_string: bab, string: abb}
+  - {reorganized_string: null, string: abbb}

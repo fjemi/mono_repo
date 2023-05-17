@@ -1,0 +1,75 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Count Inversions
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              players: array[object]
+            examples:
+              'Example 1':
+                value: |
+                  array: [2, 4, 1]
+              'Example 2':
+                value: |
+                  array: [1, 1, 1, 2, 2]
+              'Example 3':
+                value: |
+                  array: [2, 1, 3, 1, 2]
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        array: [2, 4, 1]
+                      output:
+                        inversions:
+                          n: 2
+                          values: 
+                          - [4, 1]
+                          - [2, 1]
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        array: [1, 1, 1, 2, 2]
+                      output:
+                        inversions:
+                          n: 0
+                          values: []
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        array: [2, 1, 3, 1, 2]
+                      output:
+                        inversions:
+                          n: 4
+                          values:
+                          - 
+                          - 
+                          - 
+                          - 
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://www.hackerrank.com/challenges/ctci-merge-sort/problem)

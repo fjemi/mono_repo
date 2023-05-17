@@ -1,0 +1,27 @@
+description: Create a flowchart using flowchart.js
+# TODO: Format links
+links:
+- https://www.reddit.com/r/webdev/comments/7brjpn/looking_for_alternatives_to_gojs_interactive_flow/
+- https://stackoverflow.com/questions/4468364/graph-rendering-in-python-flowchart-visualization
+- https://pypi.org/project/nodeenv/
+- https://axios-http.com/docs/intro
+- https://blog.hubspot.com/website/center-div-css
+- https://egghead.io/lessons/javascript-developer-friendly-flow-charts-with-flowchart-js
+- https://stackoverflow.com/questions/62096269/cant-run-my-node-js-typescript-project-typeerror-err-unknown-file-extension
+resources:
+- title: How to Use Requests-HTML Library in Python
+  link: https://www.alixaprodev.com/2021/02/how-to-use-requests-html-library-in-python.html.html
+- title: flowchart.js
+  link: https://pypi.org/project/pyflowchart/
+- title: HTML and CSS for Python Developers
+  link: https://realpython.com/html-css-python/#continue-with-html-and-css-in-python
+- title: Generate HTML, CSS, JS project using Python
+  link: https://dev.to/victuk/generate-html-css-js-project-using-python-nce
+
+engines:
+- selenium
+- 
+
+environment:
+  DATA_DIR: ${DATA_DIR}
+  ENV: local

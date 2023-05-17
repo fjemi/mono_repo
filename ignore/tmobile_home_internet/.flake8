@@ -1,0 +1,11 @@
+[flake8]
+# ignore = 
+exclude =
+    .git,
+    __pycache__,
+    ignore,
+    data,
+    .pytest_cache,
+    coverage,
+    .venv
+max-complexity = 10

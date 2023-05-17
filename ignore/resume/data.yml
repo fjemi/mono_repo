@@ -1,0 +1,36 @@
+personal_information:
+  name:
+    first: Olufemi
+    last: Jemilohun
+  location: 
+    city: Austin
+    state: Texas
+  phone_number: 804-490-5397
+  email_address: olufemi.jemilohun@gmail.com
+education:
+  - degree: Bachelors of Science
+    major: Applied Mathematics
+    university: Virginia Commonwealth University
+    location:
+      city: Richmond
+      state: Virginia
+Programming Languages:
+  - python
+  - go
+  - typescript
+Webframeworks:
+  - React
+  - Vue
+Query Languages:
+  - SQL
+  - NoSQL
+  - MongoDB
+Experience:
+  - title: 
+    employer:
+    date:
+      - start:
+      - end: 
+    location:
+      city:
+      state: 

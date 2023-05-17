@@ -1,0 +1,8 @@
+description: 
+links:
+  - https://stackoverflow.com/questions/71703435/pass-argument-that-is-basemodel-class-or-null-everything-else-shouldnt-work
+  - https://stackoverflow.com/questions/1911281/how-do-i-get-list-of-methods-in-a-python-class
+  - https://docs.python.org/3/library/unittest.mock.html
+  - https://stackoverflow.com/questions/14095616/python-can-i-programmatically-decorate-class-methods-from-a-class-instance
+  - https://stackoverflow.com/questions/17606100/dynamically-build-a-lambda-function-in-python
+  - https://stackoverflow.com/questions/10829200/override-module-method-where-from-import-is-used

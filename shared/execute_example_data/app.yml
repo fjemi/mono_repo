@@ -1,0 +1,62 @@
+description: >
+  Runs example data through the main function of a module, when 
+  the module is ran the module is ran as a script (inside the
+  'if __name__ == '__main__' conditional block).
+environment:
+  DEBUG: true
+tests:
+- function_name: main
+  description: >
+    Executes the main function of modules using a list of example 
+    data. Formats the results of function executions as YAML, and
+    prints the results to the terminal. Returns true if successful.
+  inputs_values:
+  - examples:
+    - a: 0
+      b: 0
+    - a: 1
+      b: 1
+      return_result: false
+    main_function: main
+  inputs_cast_as:
+    # TODO: If caster is function then set key as function
+    main_function: test_resources.main
+  expected_outputs:
+  - true
+  - true
+  assertions: equals
+- functon_name: format_data_as_yaml
+  description: >
+    Returns a string consiting of data formatted as YAML
+  inputs_values:
+  - data:
+      a: 0
+      b: 0
+    i: 2
+  - data:
+      a: 1
+      b: 1
+      result: 2
+      return_result: false
+    i: 1
+  - data: [1, b, c]
+  inputs_cast_as: 
+    data: test_resources.Data
+  expected_outputs:
+  - >
+    example 2:
+      a: 0
+      b: 0
+      result: 0
+      return_result: false
+  - > 
+    example 1:
+      a: 1
+      b: 1
+      result: 2
+      return_result: false
+  - >
+    example 0:
+      [a, b, c]
+  assertions:
+  - equals

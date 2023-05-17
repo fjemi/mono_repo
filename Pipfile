@@ -1,0 +1,35 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+dacite = "*"
+pyyaml = "*"
+python-dotenv = "*"
+fastapi = "*"
+uvicorn = "*"
+boto3 = "*"
+numpy = "*"
+dotmap = "*"
+gunicorn = "*"
+requests = "*"
+jinja2 = "*"
+python-multipart = "*"
+"ruamel.yaml" = "*"
+requests-toolbelt = "*"
+bs4 = "*"
+pyjwt = "*"
+cryptography = "*"
+
+[dev-packages]
+pytest = "*"
+pylint = "*"
+s3fs = "*"
+psutil = "*"
+
+[requires]
+python_version = "3.11"
+
+[scripts]
+startup =  'bash ./startup.sh'

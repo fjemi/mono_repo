@@ -1,0 +1,6 @@
+tests:
+  - function: add
+    description: |
+      Test loading function from module and runing a tests that fails
+    inputs: {'a': 1, 'b': 1}
+    output: {'a': 1, 'b': 1, 'output': 3}

@@ -1,0 +1,78 @@
+tests:
+  - name:  main
+    tests: 
+      - description: Should produce the minimum number of jumps needed 
+        # TODO: Unpack input into dataclass 
+        input_dataclass: Data
+        inputs:
+          - data:
+              clouds: [0, 1, 0, 0, 0, 1, 0]
+          - data:
+              clouds: [0, 1, 0, 0, 0, 0, 1, 0]
+          - data:
+              clouds: [0, 0]
+          - data:
+              clouds: [0]
+          - data:
+              clouds: [1, 1]
+        # TODO: Unpack input into dataclass 
+        ouput_dataclass: null
+        outputs:
+          - 3
+          - 4
+          - 1
+          - 0
+          - -1
+  - name:  get_safe_cloud_positions
+    tests: 
+      - description: Should produce the minimum number of jumps needed 
+        # TODO: Testing framework - Unpack input into dataclass if not null
+        # If set input_type is dataclass and load dataclass from module
+        input_dataclass: Data 
+        inputs:
+          - data:
+              clouds: [0, 1, 0, 0, 0, 1, 0]
+          - data:
+              clouds: [0, 1, 0, 0, 0, 0, 1, 0]
+          - data:
+              clouds: [0, 0]
+          - data:
+              clouds: [0]
+          - data:
+              clouds: [1, 1]
+        # TODO: Testing framework - Unpack input into dataclass if not null
+        # If set output_type is dataclass and load dataclass from module
+        output_dataclass: null
+        # TODO: Testing framework - if output_type is defined, assert that
+        # output type matches output_type
+        output_type: list
+        outputs:
+          - [0, 2, 3, 4, 6]
+          - [0, 2, 3, 4, 5, 7]
+          - [0, 1]
+          - [0]
+          - []
+  - name:  get_jumps
+    tests: 
+      - description: Should produce a dictionary with keys as clouds jumped to
+          and values as possible clouds to jump to next
+        input_dataclass: Data 
+        inputs:
+          - data:
+              clouds: [0, 1, 0, 0, 0, 1, 0]
+          - data:
+              clouds: [0, 1, 0, 0, 0, 0, 1, 0]
+          - data:
+              clouds: [0, 0]
+          - data:
+              clouds: [0]
+          - data:
+              clouds: [1, 1]
+        output_dataclass: null
+        output_type: dict
+        outputs:
+          - {0: [2], 2: [3, 4], 4: [6], 6: []}
+          - {0: [2], 2: [3, 4], 4: [5], 5: [7], 7: []}
+          - {0: [1], 1: []}
+          - {0: []}
+          - {0: []}

@@ -1,0 +1,7 @@
+environment:
+  DEBUG: True
+resources:
+- title: Analyze User Website Visit Pattern
+  url: https://medium.com/@smartsplash/analyze-user-website-visit-pattern-357f20f147d2
+- title: How do I pad a string with zeros?
+  url: https://stackoverflow.com/questions/339007/how-do-i-pad-a-string-with-zeroes

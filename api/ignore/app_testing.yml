@@ -1,0 +1,15 @@
+environment:
+  API_HOST: ${API_HOST}
+  API_ENV: ${API_ENV}
+  API_PORT: ${API_PORT}
+  API_RELOAD: ${API_RELOAD}
+  DATA_PATH: ${DATA_PATH}
+  API_WORKERS: ${API_WORKERS}
+metadata:
+  tags:
+  - name: API
+    description: Single API for handling GET and POST routes.
+  - name: Functions
+    description: Functions description
+  - name: Pages
+    description: Pages description

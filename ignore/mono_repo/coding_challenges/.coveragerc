@@ -1,0 +1,36 @@
+# .coveragerc to control coverage.py
+[run]
+# branch = True
+source = .
+
+omit = 
+  *test_resources*
+  */*_test.py
+
+[pytest]
+python_classes = Test
+python_files = *_test.py
+python_functions = test_*.py
+adopts = --verbose
+
+[report]
+# Regexes for lines to exclude from consideration
+exclude_lines =
+  # Don't complain if non-runnable code isn't run:
+  if __name__ == '___main__':
+  # Ignore example functions
+  def example
+  # Ignore dataclass for storing test data
+  class TestData
+
+omit = 
+  # omit test_resources directory
+  *test_resources* 
+  # omit test files
+  */*_test.py
+
+
+ignore_errors = True
+
+[html]
+directory = ./coverage/

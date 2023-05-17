@@ -1,0 +1,71 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Merge Two Sorted Linked Lists
+      description: |
+        [Challenge](https://leetcode.com/problems/merge-two-sorted-lists/)
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              list1: array[number]
+              list2: array[number]
+            examples:
+              'Example 1':
+                value: |
+                  list1: [1, 2, 4]
+                  list2: [1, 3, 4]
+              'Example 2':
+                value: |
+                  list1: []
+                  list2: []
+              'Example 3':
+                value: |
+                  list1: []
+                  list2: [0]
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        list1: [1, 2, 4]
+                        list2: [1, 3, 4]
+                      output: 
+                        merged_list: [1, 1, 2, 3, 4, 4]
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        list1: []
+                        list2: []
+                      output: []
+                        merged_list: []
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        list1: []
+                        list2: [0]
+                      output: 
+                        merged_list = []
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://leetcode.com/problems/letter-combinations-of-a-phone-number/)

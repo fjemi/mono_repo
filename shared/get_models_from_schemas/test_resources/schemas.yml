@@ -1,0 +1,11 @@
+schemas:
+  Model_1:
+    fields:
+    - name: name
+      type: type
+      default: default
+  Model_2:
+    fields:
+    - name: name_1
+      type: type_1
+      default: name_1

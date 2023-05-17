@@ -1,0 +1,19 @@
+test_setup_data:
+  cases:
+  - values: None
+    values_n: None
+    constructors: None
+    constructors_n: None
+    modules: None
+    casted_values: None
+    cast_cases: None
+    cast_functions: None
+  expected_results:
+  - values: None
+    values_n: None
+    constructors: None
+    constructors_n: None
+    modules: None
+    casted_values: None
+    cast_cases: None
+    cast_functions: None

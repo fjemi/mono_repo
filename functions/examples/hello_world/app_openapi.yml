@@ -1,0 +1,77 @@
+paths: 
+  '/{path}/':
+    get:
+      tags:
+      - Examples
+      summary: Hello World      
+      description:
+        $ref: '#/components/examples/{path}.description'
+      parameters:
+      - in: query
+        name: name
+        type: string
+        examples: 
+          World:
+            value: World
+          Mars:
+            value: Mars
+      responses:
+        200:
+          description: Successful Response
+          content:
+            'text/html':
+              schema:
+                type: string
+                example: <html>Example HTML Response</html>
+    post:
+      tags:
+      - Examples
+      summary: Hello World
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              type: object
+            examples: 
+              'Earth':
+                value: 
+                  name: Earth
+          text/plain:
+            schema:
+              type: string
+            examples:
+              'Mars':
+                value: |
+                  name: Mars
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OK/application_json'
+              examples:
+                'Earth':
+                  value:
+                    code: 200
+                    status: OK
+                    data: 'Hello Earth!'
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Mars': 
+                  value: |
+                    code: 200
+                    status: OK
+                    data: Hello Mars!
+components:
+  examples:
+    '{path}.description': |
+      The GET route serves an HTML page that displays the greeting
+      **Hello World**. The greeting is generated when the page
+      loads and sends a POST request to the same URL. If the 
+      query parameter `name` is included in the URL, the generated
+      greeting is **Hello [name]**.

@@ -1,0 +1,118 @@
+description: Returns the data, cast to a specified output, from file given the 
+  files path. 
+links:
+  - https://docs.python.org/3/library/csv.html
+  - https://stackoverflow.com/questions/577234/python-extend-for-a-dictionary
+functions:
+  - name: does_path_exist
+    description: Returns true if a path exists, otherwise false
+    inputs:
+    - path: path_does_not_exist/app.py
+    - path: ${test_resources_dir}
+    - path: ${test_resources_dir}/test.csv
+    - path: ${test_resources_dir}/test.yml
+    outputs:
+    - false
+    - true
+    - true
+    - true
+  - name: get_file_extension
+    description: Returns the extension for a file given the files path. Returns 
+      null if the path does not exist
+    inputs:
+    - path: path_does_not_exist/app.py
+      path_exists: false
+    - path: ${test_resources_dir}/test.csv
+      path_exists: true
+    - path: ${test_resources_dir}/test.yml
+      path_exists: true
+    outputs:
+    - null
+    - .csv
+    - .yml
+  - name: yml_to_dict
+    description: Returns a stream of a yml file as a dictionary
+    imports:
+    - module: StringIO
+      function: StringIO
+    inputs_cast_as: StringIO
+    inputs:
+    - {key: value}
+    - {key: {key_1: value_1, key_2: value_2}}
+    - {key_1: value_1, key_2: value_2}
+    outputs:
+    - {key: value}
+    - {key: {key_1: value_1, key_2: value_2}}
+    - {key_1: value_1, key_2: value_2}
+  - name: csv_to_dict
+    description: Returns a stream of a csv file as a dictionary with keys being 
+      the field names and values being lists of field values
+    imports:
+    - module: StringIO
+      function: StringIO
+    inputs_cast_as: StringIO
+    inputs:
+    - field_0,field_1\nvalue_00,value_01\nvalue_10, value11
+    outputs:
+    - {'field_0': ['value_00', 'value_10'], 'field_1': ['value_01', ' value11']}
+  - name: csv_to_list_dict
+    description: Returns a stream of a csv file as a list of dictionaries. Rows
+      are represented as dictionarries keys/values being the fields/values.
+    imports:
+    - module: StringIO
+      function: StringIO
+    inputs_cast_as: StringIO
+    inputs:
+    - field_0,field_1\nvalue_00,value_01\nvalue_10, value11
+    outputs:
+    - - {'field_0': 'value_00', 'field_1': 'value_01'}
+      - {'field_0': 'value_10', 'field_1': ' value11'}
+  - name: get_file_contents
+    description: Should return the contents of a 
+    inputs:
+    - path: ${test_resources_dir}/test.yml
+      extension: null
+      cast_as: dict
+    - path: ${test_resources_dir}/test.yml
+      extension: .yml
+      cast_as: dict
+    - path: ${test_resources_dir}/test.csv
+      cast_as: list_dict
+    outputs:
+    - null
+    - {'key_0': {'key_1': 'value_1', 'key_2': 'value_2', 'key_3': 'value_3'}}
+    - - {'field_0': 'value_00', 'field_1': 'value_01'}
+      - {'field_0': 'value_10', 'field_1': ' value11'}
+  - name: main
+    description: ${description}
+    notes: Test with string and dictionary as inputs
+    inputs: 
+    - data: ${test_resources_dir}/test.yml
+    - data:
+      - path: ${test_resources_dir}/test.csv
+      - cast_as: list_dict
+    outputs:
+    - {'key_0': {'key_1': 'value_1', 'key_2': 'value_2', 'key_3': 'value_3'}}
+    - - {'field_0': 'value_00', 'field_1': 'value_01'}
+      - {'field_0': 'value_10', 'field_1': ' value11'}
+  - name: main
+    description: ${description}
+    notes: Test with Path basemodel as inputs
+    inputs_cast_as: Path
+    inputs: 
+    - data: 
+      - path: ${test_resources_dir}/test.yml
+        return_only_data: true
+    - data:
+      - path: ${test_resources_dir}/test.yml
+        return_only_data: false
+    outputs:
+    - {'key_0': {'key_1': 'value_1', 'key_2': 'value_2', 'key_3': 'value_3'}}
+    - path: '/home/femij/mono_repo/coding_challenges/utils/get_data_from_path/test_resources/test.yml'
+      path_exists: True
+      extension: .yml
+      cast_as: dict
+      data: {'key_0': {'key_1': 'value_1', 'key_2': 'value_2', 'key_3': 'value_3'}}
+      return_only_data: False
+      __pydantic_initialised__: True
+    outputs_cast_as: dict

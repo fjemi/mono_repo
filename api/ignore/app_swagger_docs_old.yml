@@ -1,0 +1,40 @@
+paths:
+  /:
+    post:
+      tags: 
+      - example
+      summary:
+      description: A simple python program
+      operationId: hello_world
+      requestBody:
+        description:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Data'
+      responses:
+        '200':
+          desription: Successful Response
+          content:
+            application/json:
+              schema: '#/components/schemas/Response'
+tags:
+- name: example
+  description: Example python programs
+  externalDocs:
+    description: Python
+    url: python.org
+
+
+
+schemas:
+  Request:
+    name: 
+      type: string
+      description: Name of person or thing to greet
+      example: World 
+  Reponse:
+    text:
+      type: string
+      description: Greeting for the person or thing
+      example: Hello World

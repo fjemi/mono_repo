@@ -1,0 +1,16 @@
+version: 0.1
+changelog:
+- date: 20230129
+  version: 0.1
+  text: |
+    Adding functionality for converting data to dataclasses to
+    facilitate processing downstream
+resources:
+- title:
+  url:
+- dependencies:
+  - name: dacite
+    version:
+  - name: pyyaml
+    version: 
+tests:

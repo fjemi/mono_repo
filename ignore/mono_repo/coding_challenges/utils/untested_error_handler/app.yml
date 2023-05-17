@@ -1,0 +1,6 @@
+resources:
+- title: Decorators with parameters?
+  link: https://stackoverflow.com/questions/5929107/decorators-with-parameters
+environment:
+  DEBUG: True
+  ENV: local

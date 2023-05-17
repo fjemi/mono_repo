@@ -1,0 +1,117 @@
+functions:
+  - name:  main
+    description: Returns a decompressed string form a compressed string
+    # TODO: cast_input_to_basemodel
+    cast_inputs_as: Data
+    inputs: 
+    - string: 3[abc]4[ab]c
+    - string: 2[3[a]b]
+    - string: 1[a]2[3[b]]
+    # cast_outputs_to: 
+    cast_outputs_as: dict
+    outputs: 
+    - abcabcabcababababc
+    - aaabaaab
+    - abbbbbb
+  - name:  get_bracket_indices
+    description: Gets the indices of the right most pair of ending and closing
+      brackets in a string. Brackets can be nested or unnested.
+    inputs:
+    - string: ''
+    - string: '[]'
+    - string: '1[]'
+    - string: '[]1[]'
+    - string: '[]a[]'
+    - string: '[[a]]'
+    - string: '[1[a]]'
+    - string: '[][1[a]]'
+    outputs:
+    - []
+    - [0, 1]
+    - [1, 2]
+    - [3, 4]
+    - [3, 4]
+    - [1, 3]
+    - [2, 4]
+    - [4, 6]
+  - name:  get_bracket_multiplier
+    description: Returns the multiplier for a pair of opening/closing bracket
+      in a string, given the brackets positions in the string. A multiplier 
+      can be the numbers preceding an opening bracket or the empty string
+    inputs:
+    - string: ''
+      bracket_indices: []
+    - string: '[]'
+      bracket_indices: [0, 1]
+    - string: '1[]'
+      bracket_indices: [1, 2]
+    - string: '[]1[]'
+      bracket_indices: [3, 4]
+    - string: '[]a[]'
+      bracket_indices: [3, 4]
+    - string: '[[a]]'
+      bracket_indices: [1, 3]
+    - string: '[1[a]]'
+      bracket_indices: [2, 4]
+    - string: '[][1[a]]'
+      bracket_indices: [4, 6]
+    outputs: ['', '', '1', '1', '', '', '1', '1']
+  - name: get_expanded_bracket
+    description: 
+    inputs:
+    - string: ''
+      bracket_indices: []
+      bracket_multiplier: ''
+    - string: '[]'
+      bracket_indices: [0, 1]
+      bracket_multiplier: ''
+    - string: '1[]'
+      bracket_indices: [1, 2]
+      bracket_multiplier: '1'
+    - string: '[]1[]'
+      bracket_indices: [3, 4]
+      bracket_multiplier: '1'
+    - string: '[]a[]'
+      bracket_indices: [3, 4]
+      bracket_multiplier: ''
+    - string: '[[a]]'
+      bracket_indices: [1, 3]
+      bracket_multiplier: ''
+    - string: '[1[a]]'
+      bracket_indices: [2, 4]
+      bracket_multiplier: '1'
+    - string: '[][1[a]]'
+      bracket_indices: [4, 6]
+      bracket_multiplier: '1'
+    outputs:
+    - {'' : ''}
+    - {'[]': ''}
+    - {'1[]': ''}
+    - {'1[]': ''}
+    - {'[]': ''}
+    - {'[a]': a}
+    - {'1[a]': a}
+    - {'1[a]': a}
+  - name: get_string_with_replaced_bracket
+    description:
+    inputs:
+    - expanded_bracket: {'' : ''}
+      string: ''
+    - expanded_bracket: {'[]': ''}    
+      string: '1[]'      
+    - expanded_bracket: {'1[]': ''}
+      string: '[]1[]'
+    - expanded_bracket: {'1[]': ''}
+      string: '[]a[]'
+    - expanded_bracket: {'[]': ''}
+      string: '[[a]]'
+    - expanded_bracket: {'[a]': a}
+      string: '[1[a]]'
+    - expanded_bracket: {'1[a]': a}
+      string: '[1[a]]'
+    - expanded_bracket: {'1[a]': a}
+      string: '[][1[a]]'
+    outputs: ['', '1', '[]', '[]a[]', '[[a]]', '[1a]', '[a]', '[][a]']
+
+    
+  

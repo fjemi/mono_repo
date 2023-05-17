@@ -1,0 +1,56 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Partition Labels
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              string: string
+            examples:
+              'Example 1':
+                value: |
+                  string: ababcbacadefegdehijhklij
+              'Example 2':
+                value: |
+                  string: eccbbbbdec
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        string: ababcbacadefegdehijhklij
+                      output: 
+                        partitions:
+                          sizes: [9, 7, 8]
+                          values: [ababcbaca, defegde, hijhklij]
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        string: eccbbbbdec
+                      output: 
+                        partitions: 
+                          size: [10]
+                          values: [eccbbbbdec]
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://leetcode.com/problems/partition-labels/)

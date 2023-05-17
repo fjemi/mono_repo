@@ -1,0 +1,59 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - TODO
+      - Coding Challenges
+      summary: User Info
+      description: |
+        [Challenge](https://www.reddit.com/r/dailyprogrammer/comments/pih8x/easy_challenge_1)
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              digits: string
+            examples:
+              'Example 1':
+                value: |
+                  digits: 23
+              'Example 2':
+                value: |
+                  digits: ''
+              'Example 3':
+                value: |
+                  digits: 2
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        digits: 23
+                      output: [AD, AE, AF, BD, BE, BF, CD, CE, CF]
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        digits: ''
+                      output: []
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        digits: 2
+                      output: [A, B, C]
+                      

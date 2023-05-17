@@ -1,0 +1,65 @@
+tests:
+- function_name: build_sentence
+  description: >
+    Returns a list of words. Starting with the word at a specified
+    index of a word dictionary. Words are added to the list if they
+    are at the index 0 of the string, and the word is removed from
+    the string. If the string has no more characters than the list
+    of words is returned, otherwise an empty list is returned
+  inputs_values:
+  - index: 0
+    word_dict: [a, b, c, d]
+    string: abcd
+  - index: 0
+    word_dict: [a, b, c, d]
+    string: abcde
+  - index: 1
+    word_dict: [a, b, c, d] 
+    string: bcd
+  expected_outputs: 
+  - [a, b, c, d]
+  - []
+  - [b, c, d]
+  assertions: equals
+- function_name: get_sentences
+  description: >
+    Returns combinations of words from the word dict that form 
+    sentences
+  inputs_values:
+  - word_dict: [a, b, c, b, d]
+    string: bd
+  - word_dict: [cat, cats, sand, and, dog]
+    string: catsanddog
+  - word_dict: [cat, cats, sand, and, dog] 
+    string: catandog
+  expected_outputs:
+  - [[b, d], [b, d]]
+  - [[cats, and, dog], [cat, sand, dog]]
+  - []
+  assertions: equals
+- function_name: process_sentences
+  description: >
+    Returns lists of word combinations as lists of strngs
+  inputs_values:
+  - [[b, d], [b, d]]
+  - [[cats, and, dog], [cat, sand, dog]]
+  - []
+  expected_outputs:
+  - ['b d', 'b d']
+  - ['cats and dog', 'cat sand dog']
+  - []
+  assertions: equals
+- function_name: main
+  description: >
+    Orchestrates the execution the other functions within the 
+    module. Returns words from a word dict that form sentences from
+    a string.
+  inputs_values:
+  - string: catsandog
+    word_dict: [cats, dog, sand, and, cat]
+  - string: catsanddog
+    word_dict: [cat, cats, and, sand, dog]
+  expected_outputs:
+  - sentences: []
+  - sentences: ['cat sand dog', 'cats and dog']
+  assertions: has_values

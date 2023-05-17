@@ -1,0 +1,13 @@
+tests:
+  - function: main
+    description:
+    # TODO: Testing framework - This will be mocked during running
+    autospec:
+      - module: get_input
+        spec: get_input
+        return_value: 1
+    data:
+      - a: 1
+        b: 2
+    output:
+      - 1

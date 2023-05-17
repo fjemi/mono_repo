@@ -1,0 +1,162 @@
+description: |
+  A wrapper over the AWS SDK for Python (Boto3) that allows one to make
+  requests through the SDK API by defining the service, request, and parameters
+  in a YAML string, as opposed to writing code.
+resources:
+- url: https://boto3.amazonaws.com/v1/documentation/api/latest/index.html
+- url: https://stackoverflow.com/questions/43875841/convert-boto3-output-to-convenient-format
+tests:
+- function_name: get_session
+  description: |
+    Returns a boto3 Session object
+  inputs_values:
+  - data: null
+  expected_outputs:
+  - Session(region_name=${S3_BUCKET})
+  outputs_cast_as: str
+  assertions:
+  - type: Session
+  - equals
+- function_name: get_session_from_cache
+  description: |
+    Returns a Session cached within a global variable. If the 
+    variable is None the Session is created, cached, and returned.
+  patch:
+    - object_name: SESSION_CACHE
+      return_value: null
+    - object_name: SESSION_CACHE
+      return_value: session_0
+  inputs_values:
+  - null
+  - null
+  expected_outputs:
+  - Session(region_name=${AWS_REGION_NAME})
+  - session_0
+  outputs_cast_as: str
+  assertions: equals
+- function_name: get_client
+  description: |
+    Returns a boto3 client object for interacing with AWS services
+  inputs_values:
+  - service_name: ec2
+  - service_name: s3
+  - service_name: lambda
+  - service_name: sqs
+  expected_outputs:
+  - <class 'botocore.client.EC2'>
+  - <class 'botocore.client.S3'>
+  - <class 'botocore.client.Lambda'>
+  - <class 'botocore.client.SQS'>
+  outputs_cast_as: str
+  assertions: equals
+- function_name: get_client_from_cache
+  description: |
+    Returns a cached Client. If the object hasn't been caches it
+    is created, cached, and returned.
+  patch:
+  - object_name: CLIENT_CACHE
+    return_value: 
+      s3: S3
+      amplify: Amplify
+  inputs_values:
+  - service_name: lambda
+  - service_name: s3
+  - service_name: amplify
+  expected_outputs:
+  - <class 'botocore.client.Lambda'>
+  - <class 'botocore.client.S3'>
+  - <class 'botocore.client.Amplify'>
+  outputs_cast_as: str
+  assertions: equals
+- function_name: get_request
+  description: | 
+    Returns a request object, a low level functon for 
+    intereacting with a service, from a client
+  inputs_values:
+  - request_name: s3.list_buckets
+  - request_name: account.list_regions
+  - request_name: apigateway.create_rest_api
+  expected_outputs:
+  - __name__: list_buckets
+  - __name__: list_regions
+  - __name__: create_rest_api
+  assertions: 
+  - type: method
+  - has_attributes
+- function_name: get_response
+  description: |
+    Returns the result of executing a client request with 
+    parameters
+  inputs_values:
+  - request_name: lambda.list_functions
+    request_params: null
+  - request_name: s3.list_objects
+    request_params: 
+      Bucket: ${S3_BUCKET}
+  - request_name: ec2.list_images_in_recycle_bin
+    request_params: null
+  expected_outputs:
+  - ResponseMetadata:
+      HTTPStatusCode: 200
+  - ResponseMetadata:
+      HTTPStatusCode: 200
+  - ResponseMetadata:
+      HTTPStatusCode: 200
+  assertions:
+  - - has_values
+    - type: dict
+- function_name: process_response_list
+  description: |
+    Iterates over a list of dictionaries and returns the values
+    of a specified key from the dictionaryies
+  inputs_values:
+  - key: key_0
+    parsed_response: 
+    - key_0: value_0
+  - key: key_0
+    parsed_response: 
+    - key_1: value_1
+  - key: key_1
+    parsed_response: 
+    - key_0: value_0
+    - key_1: value_1
+    - key_1: value_1
+  expected_outputs:
+  - [value_0]
+  - []
+  - [value_1, value_1]
+  assertons: equals
+- function_name: process_response
+  descripton: |
+  inputs_values:
+  - response: 
+      key_0: value_0
+    parse_response: key_0
+  - response:
+    - key_1: value_0
+    - key_1: value_1
+    parse_response: key_1
+  - response:
+      key_0:
+      - key_1: value_0
+      - key_1: value_1
+    parse_response: key_0.key_1
+  expected_outputs:
+  - value_0
+  - [value_0, value_1]
+  - [value_0, value_1]
+  assertions: equals
+- function_name: main
+  description: | 
+    Orchestrates the execution of the functions within the module.
+  inputs_values:
+  - request_name: s3.list_buckets
+    parse_response:
+    - ResponseMetadata.HTTPStatusCode
+  - request_name: lambda.list_functions
+    parse_response:
+    - ResponseMetadata.HTTPStatusCode
+  expected_outputs:
+  - 200
+  - 200
+  assertions: equals

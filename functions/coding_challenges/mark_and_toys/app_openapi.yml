@@ -1,0 +1,55 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Mark and Toys
+      description: |
+        [Challenge](https://www.hackerrank.com/challenges/mark-and-toys/problem)
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              prices: array[number]
+              budget: number
+            examples:
+              'Example 1':
+                value: |
+                  prices: [1, 12, 5, 111, 200, 1000, 10]
+                  budget: 50
+              'Example 2':
+                value: |
+                  prices: [1, 2, 3, 4]
+                  budget: 7
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        prices: [1, 12, 5, 111, 200, 1000, 10]
+                        budget: 50
+                      output: 
+                        max_price_combination:
+                          28: [1.5.10.12]
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        prices: [1, 2, 3, 4]
+                        budget: 7
+                      output: 
+                        max_price_combination:
+                          10: [1.2.3.4] 

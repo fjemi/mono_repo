@@ -1,0 +1,213 @@
+tests: 
+- function_name: main
+  description: >
+    Orchestrates the execution of the other functions within the 
+    module. Returns true if a list of integers represents a Binary
+    Search Tree, oterwise false
+  inputs_values:
+  - root: [1, 2, 3, 4, 5]
+  - root: [2, 1, 3]
+  - root: [5, 1, 4, null, null, 3, 6]
+  expected_outputs:
+  - bst_check: false
+  - bst_check: true
+  - bst_check: false
+  assertions:
+  - has_values
+  - type: Data
+- function_name: get_node_indices
+  description: >
+    Sets parent, left child, and right child indices for the
+    subtrees of a tree represented as a list of integers
+  inputs_values:
+  - root: [0]
+  - root: [0, 1, 2]
+  - root: [0, 1, 2, 3, 4, 5, 6]
+  expected_outputs:
+  - - [0, 1, 2]
+  - - [0, 1, 2]
+    - [1, 3, 4]
+    - [2, 5, 6]
+  - - [0, 1, 2]
+    - [1, 3, 4]
+    - [2, 5, 6]
+    - [3, 7, 8]
+    - [4, 9, 10]
+    - [5, 11, 12]
+    - [6, 13, 14]
+  assertions: 
+  - equals
+- function_name: get_node_keys
+  description: >
+    Returns the keys associated with a list of node indices.  
+  inputs_values:
+  - node_indices:
+    - [0, 1, 2]
+    root: [a, b, c]
+    root_n: 3
+  - node_indices:
+    - [0, 1, 2]
+    - [1, 3, 4]
+    - [2, 5, 6]
+    - [3, 7, 8]
+    - [4, 9, 10]
+    - [5, 11, 12]
+    root: [a, b, c, d, e, f]
+    root_n: 6
+  expected_outputs:
+  - - [a, b, c]
+    - [b, null, null]
+    - [c, null, null]
+  - - [a, b, c]
+    - [b, d, e]
+    - [c, f, null]
+  assertions: equals
+- function_name: case_parent_left_not_none_and_right_none
+  description: > 
+    Returns true if the left value is less than the parent value,
+    otherwise false
+  inputs_values:
+  - parent: 0
+    right: null
+    left: 0
+  - parent: 1
+    right: null
+    left: 0
+  - parent: 0
+    right: null
+    left: 1
+  - parent: 2
+    right: null
+    left: 0
+  expected_outputs:
+  - false
+  - true
+  - false
+  - true
+  assertions: equals
+- function_name: case_parent_right_not_none_and_left_none
+  description: >
+    Returns true if the parent value is less than the right value,
+    otherwise false
+  inputs_values:
+  - parent: 0
+    left: null
+    right: -1
+  - parent: 1
+    left: null
+    right: 0
+  - parent: 0
+    left: null
+    right: 1
+  - parent: 1
+    left: null
+    right: 2
+  expected_outputs:
+  - true
+  - true
+  - false
+  - false
+  assertions: equals
+- function_name: case_parent_left_and_right_not_none
+  description: >
+    Returns true if parent value is less than the right value and
+    the left value is less than the parent value, otherwise false
+  inputs_values:
+  - parent: 1
+    left: 2
+    right: 3
+  - parent: 1
+    left: 1
+    right: 1
+  - parent: 2
+    left: 1
+    right: 3
+  - parent: 1 
+    left: 0
+    right: 2
+  expected_outputs:
+  - false
+  - false
+  - true
+  - true
+  assertions: equals
+- function_name: case_parent_none_and_left_or_right_not_none
+  description: >
+    Returns false when the parent value is null, but the right or
+    left value is null
+  inputs_values:
+  - parent: null
+    left: 0
+    right: 0
+  - parent: null
+    left: 1
+    right: 1
+  - parent: null
+    left: 2
+    right: 2
+  expected_outputs:
+  - false
+  - false
+  - false
+  assertions: equals
+- function_name: case_parent_left_right_are_none
+  description: >
+    Returns true when the parent, left, and right values are null
+  inputs_values:
+  - parent: null
+    left: null
+    right: null
+  - parent: 1
+    left: 1
+    right: 1
+  expected_outputs:
+  - true
+  - true
+  assertions: equals
+- function_name: case_parent_not_none_and_left_and_right_none
+  description: >
+    Returns true when parent value is not none, but the left and
+    right values are
+  inputs_values:
+  - parent: 0
+    left: null
+    right: null
+  - parent: 1
+    left: null
+    right: null
+  - parent: 2
+    left: null
+    right: null
+  expected_outputs:
+  - true
+  - true
+  - true
+  assertions: equals
+- function_name: check_if_root_is_bst
+  description: >
+    Returns true if a list of node keys represents a binary
+    search tree, otherwise false
+  inputs_values: 
+  - node_keys: 
+    - [1, 2, 3]
+    - [2, 4, 5]
+    - [3, None, None]
+    - [4, None, None]
+    - [5, None, None]
+  - node_keys: 
+    - [2, 1, 3]
+    - [1, None, None]
+    - [3, None, None]
+  - node_keys: 
+    - [5, 1, 4]
+    - [1, None, None]
+    - [4, 3, 6]
+    - [None, None, None]
+    - [None, None, None]
+    - [3, None, None]
+    - [6, None, None]
+  expected_outputs:
+  - false
+  - true
+  - false
+  assertions: equals

@@ -1,0 +1,139 @@
+description: |
+  Netwon's second law of motion: F = Ma
+links:
+  - https://en.wikipedia.org/wiki/Newton%27s_laws_of_motion
+tests:
+  - name:  calculate_force
+    description: Should calculate and return force given mass and acceleration
+    input_data_class: Data
+    inputs: 
+      - mass: 1
+        acceleration: 0
+      - mass: 1
+        acceleration: 1
+      - mass: 2
+        acceleration: 1
+      - mass: 3
+        acceleration: 2
+    output_data_class: Data
+    outputs:
+      - force: 0
+        mass: 1
+        acceleration: 0
+      - force: 1
+        mass: 1
+        acceleration: 1
+      - force: 2
+        mass: 2
+        acceleration: 1
+      - force: 6
+        mass: 3
+        acceleration: 2
+  - name:  calculate_mass
+    description: Should calculate and return mass given force and acceleration
+    input_data_class: Data
+    inputs: 
+      - force: 0
+        acceleration: 1
+      - force: 1
+        acceleration: 1
+      - force: 2
+        acceleration: 1
+      - force: 3
+        acceleration: 2
+    output_data_class: Data
+    outputs:
+      - force: 0
+        mass: 1
+        acceleration: 0
+      - force: 1
+        mass: 1
+        acceleration: 1
+      - force: 2
+        mass: 2
+        acceleration: 1
+      - force: 3
+        mass: 3/2
+        acceleration: 2
+  - name:  calculate_acceleration
+    description: Should calculate and return acceleration given force and mass
+    input_data_class: Data
+    inputs: 
+      - force: 0
+        mass: 1
+      - force: 1
+        mass: 1
+      - force: 2
+        mass: 1
+      - force: 3
+        mass: 2
+    output_data_class: Data
+    outputs:
+      - force: 0
+        mass: 1
+        acceleration: 0
+      - force: 1
+        mass: 1
+        acceleration: 1
+      - force: 2
+        mass: 2
+        acceleration: 1
+      - force: 3
+        mass: 3/2
+        acceleration: 2
+  - name:  main
+    description: Should identify and calculate the missing value in the set of 
+      force, mass, and acceleration.
+    input_data_class: Data
+    output_data_class: Data
+    inputs: 
+      - force: 1
+        mass: 2
+        acceleration: null
+      - force: null
+        mass: 2
+        acceleration: 3
+      - force: 1
+        mass: null
+        acceleration: 3
+      - force: 1
+        mass: 2
+        acceleration: .5
+      - force: 1
+        mass: .5
+        acceleration: .5
+    outputs:
+      - force: 1
+        mass: 2
+        acceleration: .5
+      - force: 6
+        mass: 2
+        acceleration: 3
+      - force: 1
+        mass: 2
+        acceleration: .5
+      - force: 1
+        mass: 2
+        acceleration: .5
+      - force: 1
+        mass: 2
+        acceleration: .5
+  - name:  main
+    description: Should validate the accuracy of values if there are no missing 
+      values, and result in an error if the values are incorrect
+    input_data_class: Data
+    output_data_class: Data
+    inputs: 
+      - force: 6
+        mass: 2
+        acceleration: 3
+      - force: 1
+        mass: 2
+        acceleration: 3
+    outputs:
+      - force: 6
+        mass: 2
+        acceleration: 3
+      - force: 6
+        mass: 2
+        acceleration: 3

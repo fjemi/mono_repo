@@ -1,0 +1,61 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Jumping on Clouds
+      description: |
+        [Challenge](https://www.hackerrank.com/challenges/jumping-on-the-clouds/problem)
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              clouds: array[number]
+            examples:
+              'Example 1':
+                value: |
+                  clouds: [0, 1, 0, 0, 0, 0, 1, 0]
+              'Example 2':
+                value: |
+                  clouds: [0, 0, 0, 0, 1, 0]
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        clouds: [0, 1, 0, 0, 0, 0, 1, 0]
+                      output: 
+                        jumps:
+                          n: 4
+                          values:
+                            0: [2]
+                            2: [3, 4]
+                            4: [5]
+                            5: [7]
+                            7: []
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        clouds: [0, 0, 0, 0, 1, 0]
+                      output: 
+                        jumps:
+                          n: 3
+                          values:
+                            0: [1, 2]
+                            2: [3]
+                            3: [5]
+                            5: []

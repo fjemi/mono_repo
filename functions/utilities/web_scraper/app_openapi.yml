@@ -1,0 +1,66 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Utilities
+      summary: Web Scraper
+      description: |
+
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              nums: List[string]
+            examples:
+              'Example 1':
+                value: |
+                  sites: 
+              'Example 2':
+                value: |
+                  sites: 
+              'Example 3':
+                value: |
+                  sites: 
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        nums: [-1, 0, 1, 2, -1, -4]
+                      output:
+                        triplets:
+                        - [-1, -1, 2]
+                        - [-1, 0, 1]
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        nums: [0, 1, 1]
+                      output:
+                        triplets: []
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        nums: [0, 0, 0]
+                      ouptut:
+                        triplets: 
+                        - [0, 0, 0]
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://leetcode.com/problems/3sum/)

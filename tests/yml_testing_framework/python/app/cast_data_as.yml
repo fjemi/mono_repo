@@ -1,0 +1,171 @@
+description:
+links:
+- https://stackoverflow.com/questions/52656701/wildcard-in-dictionary-key
+- https://stackoverflow.com/questions/23337471/how-to-properly-assert-that-an-exception-gets-raised-in-pytest
+- https://stackoverflow.com/questions/63388571/locals-defined-inside-python-function-do-not-work
+- https://stackoverflow.com/questions/10724766/pythons-hasattr-on-list-values-of-dictionaries-always-returns-false
+- https://stackoverflow.com/questions/35353771/invoke-pytest-from-python-for-current-module-only
+unit_tests:
+- function_name: setup_modules_data
+  cast_inputs_as: Data
+  inputs:
+  - modules: null
+  - modules: []
+  - modules: ''
+  outputs_cast_as: str
+  outputs:
+  - "[None, <module 'builtins' (built-in)>]"
+  - "[<module 'builtins' (built-in)>]"
+  - "['', <module 'builtins' (built-in)>]"
+- function_name: setup_data 
+  cast_inputs_as: Data
+  inputs:
+  - modules: null
+    cast_object_names: null
+    cast_objects: null
+    values: null
+    casted_values: null
+    unpack: null
+  - modules: null
+    cast_object_names: [null]
+    cast_objects: null
+    values: [null, null, null]
+    casted_values: null
+    unpack: null
+  outputs:
+  - cast_object_names: [null]
+    cast_objects: [null]
+    casted_values: [null]
+    modules: null
+    unpack: [null]
+    values: [null]
+  cast_outputs_as: Data
+- function_name: case_one_to_one
+  inputs:
+  - values: [null]
+    cast_object_names: ['null']
+  - values: [null, null]
+    cast_object_names: ['null', 'null']
+  - values: [null, null, null]
+    cast_object_names: ['null', 'null', 'null']
+  outputs:
+  - [null]
+  - [null, null]
+  - [null, null, null]
+- function_name: case_one_to_many
+  inputs:
+  - values: [null]
+  - cast_object_names: ['null', 'null']
+  - values: [null]
+  - cast_object_names: ['null', 'null', 'null']
+  - values: [null]
+  - cast_object_names: ['null', 'null', 'null', 'null']
+  outputs:
+  - [null, null]
+  - [null, null, null]
+  - [null, null, null, null]
+# - function_name: case_many_to_many
+#   inputs:
+#   - values: [null, null]
+#     cast_object_names: ['null', 'null', 'null']
+#   - values: [null, null, null]
+#     cast_object_names: ['null', 'null', 'null', 'null']
+#   - values: [null, null]
+#     cast_object_names: ['null', 'null', 'null', 'null']
+#   outputs:
+#   - None
+#   - None
+#   - None
+#   # TODO - Testing Framework: Capture logs and errors
+#   # logs:
+#   # - function: case_many_to_many
+#   #   data:
+#   #     - values: [null, null]
+#   #       cast_object_names: ['null', 'null', 'null']
+#   #   message: There can only be a one to one or one to many relationship 
+#   #     between castors and values
+#   # -
+#   # -
+- function_name: match_field_lengths_with_values_length
+  cast_inputs_as_or_dataclass: Data
+  inputs:
+  - values: [null]
+    cast_object_names: ['null']
+  - values: [null]
+    cast_object_names: ['null', 'null', 'null']
+  # - values: [null, null]
+  #   cast_object_names: ['null', 'null', 'null']
+  outputs:
+  - [null]
+  - [null, null, null]
+  # - None
+- function_name: get_cast_object_from_modules
+  # TODO - Testing Framework: Function from the test resources directory that
+  # can be used to process inputs before they are used in the tests
+  # Functions should be placed in the test_resources directory
+  process_inputs: process_inputs.convert_strings_to_modules
+  inputs:
+  - cast_object_name: str
+    modules: [__builtins__]
+  - cast_object_name: int
+    modules: [__builtins__]
+  - cast_object_name: float
+    modules: [__builtins__]
+  - cast_object_name: does_not_exist
+    modules: [__builtins__]
+  cast_outputs_as: str
+  outputs:
+  - '[str]'
+  - '[int]'
+  - '[float]'
+  - 'None'
+- function_name: get_casted_values
+  process_inputs: process_inputs.convert_strings_to_objects
+  inputs:
+  - cast_object: str
+    value: 1
+    unpack: True
+  - cast_object: float
+    value: 1
+    unpack: True
+  - cast_object: int
+    value: '1'
+    unpack: True
+  - cast_object: int
+    value: '1'
+    unpack: False
+  outputs:
+  - '1'
+  - 1.0
+  - 1
+  - '1'
+- function_name: main
+  inputs:
+  - modules: test_resources 
+    cast_object_names:
+    - Data_1
+    - Data_2 
+    - null  
+    - Data_4
+  values:
+    - a: 1
+      b: 1
+    - a: 2
+      b: 2
+    - a: 3
+      b: 3
+    - 1
+  unpack:
+  - True
+  - True
+  - True
+  - False
+  cast_outputs_as:
+  - - dict
+    - dict
+    - null
+    - str
+  cast_outputs_as: str
+  outputs:
+  - "[Data_1(a=1, b=1), Data_2(a=1, b=1), {'a': 1, 'b': 1}, '1']"
+

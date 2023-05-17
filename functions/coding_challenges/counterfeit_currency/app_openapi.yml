@@ -1,0 +1,81 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Counterfeit Currency
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              serial_numbers: array[string]
+              valid_denominations: array[number] | null
+              year_bounds: array[number] | null
+              char_n_bounds: array[number] | null
+            examples:
+              'Example 1':
+                value: |
+                  serial_numbers: 
+                  - AVG190420T
+                  - RTF20001000Z
+                  - QWER201850G
+                  - AFA199620E
+                  - ERT1947200T
+                  - RTY20202004
+                  - DRV1984500Y
+                  - ETB2010400G
+              'Example 2':
+                value: |
+                  serial_numbers:
+                  - AVG190420T
+                  - RTF20001000Z
+                  - QWER201850G
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        serial_numbers: 
+                        - AVG190420T
+                        - RTF20001000Z
+                        - QWER201850G
+                        - AFA199620E
+                        - ERT1947200T
+                        - RTY20202004
+                        - DRV1984500Y
+                        - ETB2010400G
+                      output:
+                        currency: 
+                          valid: [20, 1000, 0, 20, 200, 0, 500, 0]
+                          total: 1740
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        serial_numbers:
+                        - AVG190420T
+                        - RTF20001000Z
+                        - QWER201850G
+                      output:
+                        currency:
+                          valid: [20, 1000, 0]
+                          total: 1020
+
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://leetcode.com/discuss/interview-question/917616/counterfeit-currency/)

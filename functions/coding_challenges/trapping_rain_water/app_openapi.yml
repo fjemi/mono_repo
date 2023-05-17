@@ -1,0 +1,66 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Trapping Rain Water
+      description: |
+        [Challenge](https://leetcode.com/problems/trapping-rain-water/)
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              height: array[number]
+            examples:
+              'Example 1':
+                value: |
+                  height: [0,1,0,2,1,0,1,3,2,1,2,1]
+              'Example 2':
+                value: |
+                  height: [4,2,0,3,2,5]
+              'Example 3':
+                value: |
+                  height: [1, 3, 2, 4, 1, 3, 1, 4, 5, 2, 2, 1, 4, 2, 2]
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        height: [0,1,0,2,1,0,1,3,2,1,2,1]
+                      output: 
+                        trapped_rain:
+                          amount: 6
+                          values: [1, 1, 2, 1, 0, 1]
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        height: [4,2,0,3,2,5]
+                      output: 
+                        trapped_rain:
+                          amount: 9
+                          values: [2, 4, 1, 2]
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        height: [1, 3, 2, 4, 1, 3, 1, 4, 5, 2, 2, 1, 4, 2, 2]
+                      output:
+                        trapped_rain:
+                          amount: 15
+                          values: [1, 3, 1, 3, 0, 2, 2, 3]

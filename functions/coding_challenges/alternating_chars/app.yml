@@ -1,0 +1,27 @@
+resources:
+- title: Alternating Characters
+  url: https://www.hackerrank.com/challenges/alternating-characters/problem
+environment:
+  DEBUG: True
+tests:
+- function_name: main
+  description: Given a string, returns the minimum number of deletions 
+    required such that there are no matching adjacent characters in the string
+  inputs: 
+    values:
+    - string: AABAAB
+    - string: AAABBB
+    - string: BBBBB
+    - string: ABABABAB
+    - string: BABABA
+  expected_outputs:
+  - string: AABAAB
+    count: 2
+  - string: AAABBB
+    count: 4
+  - string: BBBBB
+    count: 4
+  - string: ABABABAB
+    count: 0
+  - string: BABABA
+    count: 0

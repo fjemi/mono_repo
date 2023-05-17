@@ -1,0 +1,142 @@
+resources:
+- title: Number of Provinces
+  url: https://leetcode.com/problems/number-of-provinces/
+notes: 
+  - The example outputs don't appear to take adjacent diagonal
+    connections into account. My solution does so won't match 
+    the example outputs. There is a TODO to add flags to diagonals
+    ino account.
+tests:
+- function_name: get_adjacent_positions
+  description: Should return positions adjacent to a position `[i, j]`, 
+    within a matrix
+  inputs:  
+    values:
+    - position: [0, 0]
+      n: 0
+    - position: [0, 0]
+      n:  1
+    - position: [0, 0]
+      n:  2
+    - position: [1, 1]
+      n: 1
+    - position: [1, 1]
+      n: 2
+    - position: [0, 1]
+      n: 3
+  outputs:
+  - ['0_0', '0_2', '1_0', '1_1', '1_2']
+  - []
+  - ['0_0', '0_2', '1_0', '1_1', '1_2']
+  - [0, 0]
+  - ['0_0', '0_1', '1_0']
+  - ['0_0', '0_2', '1_0', '1_1', '1_2']
+- function_name: get_direct_connections
+  description: Should return a dictionary with cities as keys and values
+      as list of cities directly connected to the key
+  inputs:
+    values:
+    - cities: [[1, 1, 0], [1, 1, 0], [0, 0, 1]]
+    - cities: [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+    - cities: [[0, 0, 0], [0, 0, 0], [0, 0, 1]]
+    cast_as: Data
+  outputs:
+  - '0_0': ['0_1', '1_0', '1_1']
+    '0_1': ['0_0', '0_2', '1_0', '1_1', '1_2']
+    '1_0': ['0_0', '0_1', '1_1', '2_0', '2_1']
+    '1_1': ['0_0', '0_1', '0_2', '1_0', '1_2', '2_0', '2_1', '2_2']
+    '2_2': ['1_1', '1_2', '2_1']
+  - {}
+  - '2_2': ['1_1', '1_2', '2_1']
+- function_name: get_indirect_connection
+  description: Should return a dictionary with cities as keys and values
+    as list of cities indirectly connected to the key
+  inputs:
+    values:
+    - direct_connections: {}
+    - direct_connections: {'2_2': ['2_2']}
+    - direct_connections: {'2_1': ['2_1', '2_2'], '2_2': ['2_1', '2_2']}
+    - direct_connections: {
+        '0_0': ['0_0'], 
+        '2_1': ['2_1', '2_2'], 
+        '2_2': ['2_1', '2_2'],
+      }
+    - direct_connections: {
+        '0_0': ['0_0', '1_1', '2_2'], 
+        '1_1': ['0_0', '1_1', '2_2'], 
+        '2_2': ['1_1', '2_2']
+      }
+    - direct_connections: {
+        '0_0': ['0_0', '0_1', '1_0', '1_1', '2_2'], 
+        '0_1': ['0_0', '0_1', '1_0', '1_1', '2_2'], 
+        '1_0': ['0_0', '0_1', '1_0', '1_1', '2_2'], 
+        '1_1': ['0_0', '0_1', '1_0', '1_1', '2_2'], 
+        '2_2': ['1_1', '2_2']
+      }
+    cast_as:
+    - Data
+  outputs:
+  - {}
+  - {'2_2': []}
+  - {'2_1': [], '2_2': []}
+  - {'0_0': [], '2_1': [], '2_2': []}
+  - {'0_0': ['2_2'], '1_1': [], '2_2': []}
+  - {
+      '0_0': ['2_2'], 
+      '0_1': ['2_2'], 
+      '1_0': ['2_2'], 
+      '1_1': [], 
+      '2_2': []
+    }
+- function_name: get_provinces
+  description: null
+  inputs:
+    cast_as: Data
+    values:
+    - direct_connections: {}
+      indirect_connections: {}
+    - direct_connections: {'2_2': ['2_2']}
+      indirect_connections: {'2_2': ['2_2']}
+    - direct_connections: {'2_1': ['2_1', '2_2'], '2_2': ['2_1', '2_2']}
+      indirect_connections: {'2_1': ['2_1', '2_2'], '2_2': ['2_1', '2_2']}
+    - direct_connections: {
+        '0_0': ['0_0'], 
+        '2_1': ['2_1', '2_2'], 
+        '2_2': ['2_1', '2_2']
+      }
+      indirect_connections: {
+        '0_0': ['0_0'], 
+        '2_1': ['2_1', '2_2'], 
+        '2_2': ['2_1', '2_2']
+      }
+    - direct_connections: {
+        '0_0': ['0_0', '1_1', '2_2'], 
+        '1_1': ['0_0', '1_1', '2_2'], 
+        '2_2': ['1_1', '2_2']
+      }
+      indirect_connections: {
+        '0_0': ['0_0', '1_1', '2_2'], 
+        '1_1': ['0_0', '1_1', '2_2'], 
+        '2_2': ['1_1', '2_2']
+      }
+    - direct_connections: {
+        '0_0': ['0_0', '0_1', '1_0', '1_1', '2_2'], 
+        '0_1': ['0_0', '0_1', '1_0', '1_1', '2_2'], 
+        '1_0': ['0_0', '0_1', '1_0', '1_1', '2_2'], 
+        '1_1': ['0_0', '0_1', '1_0', '1_1', '2_2'], 
+        '2_2': ['1_1', '2_2']
+      }
+      indirect_connections: {
+        '0_0': ['0_0', '0_1', '1_0', '1_1', '2_2'], 
+        '0_1': ['0_0', '0_1', '1_0', '1_1', '2_2'], 
+        '1_0': ['0_0', '0_1', '1_0', '1_1', '2_2'], 
+        '1_1': ['0_0', '0_1', '1_0', '1_1', '2_2'], 
+        '2_2': ['1_1', '2_2']
+      }
+  outputs:
+  - []
+  - [['2_2']]
+  - [['2_1', '2_2']]
+  - [['0_0'], ['2_1', '2_2']]
+  - [['0_0', '1_1', '2_2'], ['1_1', '2_2']]
+  - [['0_0', '0_1', '1_0', '1_1', '2_2'], ['1_1', '2_2']]

@@ -1,0 +1,86 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Password Generator
+      description: 
+        Generates a random password of length `n` that contains numbers,
+        uppercase, lowercase, and special characters if specified.
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              required_chars: array[string]
+              length: number
+            examples:
+              'Example 1':
+                value: |
+                  required_chars: 
+                  - number
+                  - uppercase
+                  - lowercase
+                  - special
+                  length: 4
+              'Example 2':
+                value: |
+                  required_chars: 
+                  - number
+                  - uppercase
+                  - lowercase
+                  length: 10
+              'Example 3':
+                value: |
+                  required_chars: 
+                  - number
+                  - lowercase
+                  length: 8
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        required_chars: 
+                        - number
+                        - uppercase
+                        - lowercase
+                        - special
+                        length: 4
+                      output:
+                        password: password
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        required_chars: 
+                        - number
+                        - uppercase
+                        - lowercase
+                        length: 10
+                      output:
+                        password: password
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        required_chars: 
+                        - number
+                        - lowercase
+                        length: 8
+                      output:
+                        password: password

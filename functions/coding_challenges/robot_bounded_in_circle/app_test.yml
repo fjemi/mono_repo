@@ -1,0 +1,242 @@
+functions:
+  - name: set_initial_state
+    description: Returns the `Data` basemodel with the robot's initial position 
+      and direction set to `[0, 0]` and `north`
+    cast_inputs_as: Data
+    inputs: 
+      - instructions: ''
+      - instructions: null
+    # TODO - Testing Framework: When this key is true, convert the basemodel
+    # to a dict then verify outputs
+    cast_outputs_as: dict
+    outputs:
+      - instructions: ''
+        positions: [[0, 0]]
+        directions: ['north']
+        bound_in_circle: False
+        direction_map': 
+          north: [0, 1]
+          east: [1, 0]
+          south: [0, -1]
+          west: [-1, 0]
+        run_limit: 10}
+      - instructions: null
+        positions: [[0, 0]]
+        directions: ['north']
+        bound_in_circle: False
+        direction_map: 
+          north: [0, 1]
+          east: [1, 0]
+          south: [0, -1]
+          west: [-1, 0]
+        run_limit: 10
+  - name: case_step_ahead
+    description: Return the direction and position increment for the robot when
+      the instruction is `G`. Direction remains the same and step foward.
+    inputs:
+      - instruction: 'G'
+        direction: north
+        direction_map: 
+          north: [0, 1]
+          east: [1, 0]
+          south: [0, -1]
+          west: [-1, 0]
+      - instruction: 'G'
+        direction: south
+        direction_map: 
+          north: [0, 1]
+          east: [1, 0]
+          south: [0, -1]
+          west: [-1, 0]
+      - instruction: 'G'
+        direction: east
+        direction_map: 
+          north: [0, 1]
+          east: [1, 0]
+          south: [0, -1]
+          west: [-1, 0]
+      - instruction: 'G'
+        direction: west
+        direction_map: 
+          north: [0, 1]
+          east: [1, 0]
+          south: [0, -1]
+          west: [-1, 0]
+    cast_outputs_as: dict
+    outputs:
+      - direction: north
+        position: [0, 1]
+      - direction: south
+        position: [1, 0]
+      - direction: east
+        position: [0, -1]
+      - direction: west
+        position: [-1, 0]
+  - name: case_step_left_or_right
+    description: Return the direction and position increment for the robot when
+      the instruction is `G`. Direction remains the same and step foward.
+    inputs:
+      - instruction: 'L'
+        direction: north
+        direction_map: 
+          north: [0, 1]
+          east: [1, 0]
+          south: [0, -1]
+          west: [-1, 0]
+      - instruction: 'L'
+        direction: south
+        direction_map: 
+          north: [0, 1]
+          east: [1, 0]
+          south: [0, -1]
+          west: [-1, 0]
+      - instruction: 'L'
+        direction: east
+        direction_map: 
+          north: [0, 1]
+          east: [1, 0]
+          south: [0, -1]
+          west: [-1, 0]
+      - instruction: 'L'
+        direction: west
+        direction_map: 
+          north: [0, 1]
+          east: [1, 0]
+          south: [0, -1]
+          west: [-1, 0]
+      - instruction: 'R'
+        direction: north
+        direction_map: 
+          north: [0, 1]
+          east: [1, 0]
+          south: [0, -1]
+          west: [-1, 0]
+      - instruction: 'R'
+        direction: south
+        direction_map: 
+          north: [0, 1]
+          east: [1, 0]
+          south: [0, -1]
+          west: [-1, 0]
+      - instruction: 'R'
+        direction: east
+        direction_map: 
+          north: [0, 1]
+          east: [1, 0]
+          south: [0, -1]
+          west: [-1, 0]
+      - instruction: 'R'
+        direction: west
+        direction_map: 
+          north: [0, 1]
+          east: [1, 0]
+          south: [0, -1]
+          west: [-1, 0]
+    cast_outputs_as: dict
+    outputs:
+      - direction: west
+        position: [0, 0]
+      - direction: east
+        position: [0, 0]
+      - direction: north
+        position: [0, 0]
+      - direction: south
+        position: [0, 0]
+      - direction: east
+        position: [0, 0]
+      - direction: west
+        position: [0, 0]
+      - direction: south
+        position: [0, 0]
+      - direction: north
+        position: [0, 0]
+  - name: step_through_instructions
+    description: Returns the `Data` basemodel with the positions and directions
+      associated with Robot stepping through a set of instructions
+    cast_inputs_as: Data
+    inputs:
+      - instructions: ''
+      - instructions: 'GG'
+      - instructions: 'GL'
+      - instructions: 'GGLLGG'
+      - instructions: 'GLGLGLGL'
+    cast_outputs_as: dict
+    outputs:
+      - {'instructions': '', 'positions': [[0, 0]], 'directions': ['north'], 'bound_in_circle': False, 'direction_map': {'north': [0, 1], 'east': [1, 0], 'south': [0, -1], 'west': [-1, 0]}, 'run_limit': 10}
+      - {'instructions': 'GG', 'positions': [[0, 0]], 'directions': ['north'], 'bound_in_circle': False, 'direction_map': {'north': [0, 1], 'east': [1, 0], 'south': [0, -1], 'west': [-1, 0]}, 'run_limit': 10}
+      - {'instructions': 'GL', 'positions': [[0, 0]], 'directions': ['north'], 'bound_in_circle': False, 'direction_map': {'north': [0, 1], 'east': [1, 0], 'south': [0, -1], 'west': [-1, 0]}, 'run_limit': 10}
+      - {'instructions': 'GGLLGG', 'positions': [[0, 0]], 'directions': ['north'], 'bound_in_circle': False, 'direction_map': {'north': [0, 1], 'east': [1, 0], 'south': [0, -1], 'west': [-1, 0]}, 'run_limit': 10}
+      - {'instructions': 'GLGLGLGL', 'positions': [[0, 0]], 'directions': ['north'], 'bound_in_circle': False, 'direction_map': {'north': [0, 1], 'east': [1, 0], 'south': [0, -1], 'west': [-1, 0]}, 'run_limit': 10}
+  - name: format_data
+    description: Returns formatted data with fields removed
+    cast_inputs_as: Data
+    inputs:
+    - bound_in_circle: false
+      direction_map:
+        east: [1, 0]
+        north: [0, 1]
+        south: [0, -1]
+        west: [-1, 0]
+      directions: []
+      instructions: ''
+      positions: []
+      run_limit: 10
+    cast_outputs_as: dict
+    outputs:
+    - bound_in_circle: false
+      directions: []
+      instructions: ''
+      positions: []
+  - name: main
+    descriptions: 
+    cast_inputs_as: Data
+    inputs:
+      - instructions: ''
+      - instructions: GG
+      - instructions: GL
+      - instructions: GGLLGG
+    cast_outputs_as: dict
+    outputs:
+      - bound_in_circle: false
+        directions: [north]
+        instructions: ''
+        positions:
+        - [0, 0]
+      - bound_in_circle: false
+        directions: [north, north, north]
+        instructions: GG
+        positions:
+        - [0, 0]
+        - [0, 1]
+        - [0, 2]
+      - bound_in_circle: false
+        directions: [north, north, west]
+        instructions: GL
+        positions:
+        - [0, 0]
+        - [0, 1]
+        - [0, 1]
+      - bound_in_circle: false
+        directions: [north, north, north, west, south, south, south]
+        instructions: GGLLGG
+        positions:
+        - [0, 0]
+        - [0, 1]
+        - [0, 2]
+        - [0, 2]
+        - [0, 2]
+        - [0, 1]
+        - [0, 0]
+      - bound_in_circle: false
+        directions: [north, north, west, west, south, south, east, east, north]
+        instructions: GLGLGLGL
+        positions:
+        - [0, 0]
+        - [0, 1]
+        - [0, 1]
+        - [-1, 1]
+        - [-1, 1]
+        - [-1, 0]
+        - [-1, 0]
+        - [0, 0]
+        - [0, 0]

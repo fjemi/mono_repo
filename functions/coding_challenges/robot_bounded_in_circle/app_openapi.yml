@@ -1,0 +1,139 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Robot Bounded in Circle
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              instructions: string
+            examples:
+              'Example 1':
+                value: |
+                  instructions: GLGLGLGL
+              'Example 2':
+                value: |
+                  instructions: GGLLGG
+              'Example 3':
+                value: |
+                  instructions: GG
+              'Example 4':
+                value: |
+                  instructions: GL
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        instructions: GLGLGLGL
+                      output: 
+                        states:
+                          bound_in_circle: true
+                          facing: [north, north, west, west, south, south, east, east, north]
+                          position:
+                          - [0, 0]
+                          - [0, 1]
+                          - [0, 1]
+                          - [-1, 1]
+                          - [-1, 1]
+                          - [-1, 0]
+                          - [-1, 0]
+                          - [0, 0]
+                          - [0, 0]
+                          repeats: 0
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        instructions: GGLLGG
+                      output:
+                        states:
+                          bound_in_circle: true
+                          facing: [north, north, north, west, south, south, south]
+                          position:
+                          - [0, 0]
+                          - [0, 1]
+                          - [0, 2]
+                          - [0, 2]
+                          - [0, 2]
+                          - [0, 1]
+                          - [0, 0]
+                          repeats: 0
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        instructions: GG
+                      output:
+                        states:
+                          bound_in_circle: false
+                          facing: [north, north, north, north, north, north, north, north, north, north,
+                            north, north, north, north, north, north, north, north, north, north, north]
+                          position:
+                          - [0, 0]
+                          - [0, 1]
+                          - [0, 2]
+                          - [0, 3]
+                          - [0, 4]
+                          - [0, 5]
+                          - [0, 6]
+                          - [0, 7]
+                          - [0, 8]
+                          - [0, 9]
+                          - [0, 10]
+                          - [0, 11]
+                          - [0, 12]
+                          - [0, 13]
+                          - [0, 14]
+                          - [0, 15]
+                          - [0, 16]
+                          - [0, 17]
+                          - [0, 18]
+                          - [0, 19]
+                          - [0, 20]
+                          repeats: 10
+                'Example 4':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        instructions: GL
+                      output:
+                        states:
+                          bound_in_circle: true
+                          facing: [north, north, west, west, south, south, east, east, north]
+                          position:
+                          - [0, 0]
+                          - [0, 1]
+                          - [0, 1]
+                          - [-1, 1]
+                          - [-1, 1]
+                          - [-1, 0]
+                          - [-1, 0]
+                          - [0, 0]
+                          - [0, 0]
+                          repeats: 3
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://leetcode.com/problems/robot-bounded-in-circle/)

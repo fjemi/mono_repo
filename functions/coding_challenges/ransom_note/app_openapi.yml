@@ -1,0 +1,74 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Ransome Note
+      description: |
+        [Challenge](Ransom Note)
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              magazine: string
+              note: string
+              case_sesensitive: bool | null
+              n: number
+            examples:
+              'Example 1':
+                value: |
+                  magazine: ive got a lovely bunch of coconuts
+                  note: ive got some coconuts
+              'Example 2':
+                value: |
+                  magazine: Give me one grand today night
+                  note: give one grand today
+                  case_sensitive: True
+              'Example 3':
+                value: |
+                  magazine: Give me one grand today night
+                  note: give one grand today
+                  case_sensitive: False 
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        magazine: ive got a lovely bunch of coconuts
+                        note: ive got some coconuts
+                      output:
+                        magazine_contains_note: false
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        magazine: Give me one grand today night
+                        note: give one grand today
+                        case_sensitive: True
+                      output:
+                        magazine_contains_note: false
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        magazine: Give me one grand today night
+                        note: give one grand today
+                        case_sensitive: False 
+                      output:
+                        magazine_contains_note: true
+      

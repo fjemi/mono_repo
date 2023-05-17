@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device_width, initial-scale=1.0'>
+  <title>Upload Files</title>
+</head>
+<body>
+  <input 
+    type='hidden' 
+    id='data' 
+    value='{{ data }}'
+  >
+  <div id='header'>
+    <h2>Upload File</h2>  
+  </div>
+  <div id='paragraphs'>
+    <p><input type='file' id='file'></p>
+    <p><button id='upload'>Upload</button></p>
+    <p><small id='status'></small></p>
+  </div>  
+
+  <script
+    type='text/javascript'
+    src='https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.js'
+  ></script>
+  
+  {% block javascript %}
+  <script type='text/javascript'>
+    {% include 'script.js'  %}
+  </script>
+  {% endblock %}
+
+</body>
+</html>

@@ -1,0 +1,15 @@
+resources:
+- name: OpenAPI Specification
+  url: https://swagger.io/specification/
+- name: how to split a dos path into its components in python
+  url: https://stackoverflow.com/questions/3167154/how-to-split-a-dos-path-into-its-components-in-python
+functions:
+- name:
+  description:
+  tests:
+  - arguments:
+    cast_arguments:
+    assertions:
+    - has_attributes:
+      cast_result:
+        data: Data

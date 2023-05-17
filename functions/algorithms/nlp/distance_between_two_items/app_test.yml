@@ -1,0 +1,38 @@
+functions:
+- name: get_distance_between_two_items
+  description: Distance between two strings with order
+  tests:
+  - arguments:
+      item_1: bo
+      item_2: ob
+      ordered: True
+    assertions:
+      difference: 100
+  output_type: dict
+- name: get_distance_between_two_items
+  description: Distance between two strings without order
+  inputs:
+    item_1: bo
+    item_2: ob
+    ordered: False
+  output: 
+    difference: 0
+  output_type: dict
+- name: get_distance_between_two_items
+  description: Distance between two strings without order
+  inputs:
+    item_1: [a, b, c]
+    item_2: [a, b ,c]
+    ordered: False
+  output: 
+    difference: 0
+  output_type: dict
+- name: get_distance_between_two_items
+  description: Distance between two list of items without order
+  inputs:
+    item_1: [1, d, c]
+    item_2: [a, b ,c]
+    ordered: True
+  output: 
+    difference: 66
+  output_type: dict

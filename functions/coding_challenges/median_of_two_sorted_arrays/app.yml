@@ -1,0 +1,359 @@
+tests:
+- function_name: pre_processing
+  description: Copy two arrays and set the array's lengths within the data object
+  inputs_values:
+  - nums1: []
+    nums2: []
+  - nums1: [1, 2]
+    nums2: [3]
+  - nums1: [1, 2, 3]
+  - nums2: [3, 4, 5]
+  inputs_cast_as: Data
+  expected_outputs:
+  - m: 0
+    n: 0
+    array_copies:
+    - nums1: []
+      nums2: []
+  - m: 2
+    n: 1
+    array_copies:
+    - nums1: [1, 2]
+      nums2: [3]
+  - m: 3
+    n: 3
+    array_copies:
+    - nums1: [1, 2, 3]
+      nums2: [3, 4, 5]
+  assertions: has_values
+- function_name: case_nums1_equal_nums2
+  description: > 
+    Handles cases where the first values of  arrays 'nums1' and 
+    'nums2' are equal by adding both values to the merged array 
+    and removing the values from arrays 'nums1' and 'nums2
+  inputs_values: 
+  - nums1: [1]
+    nums2: [1]
+  - nums1: [2, 3]
+    nums2: [2]
+  - nums1: [3, 4]
+    nums2: [3, 2]
+  inputs_cast_as: Data
+  expected_outputs:
+  - nums1:  []
+    nums2: []
+    array: [1, 1]
+  - nums1: [3] 
+    nums2: []
+    array: [2, 2]
+  - nums1: [3, 4]
+    nums2: [3, 2]
+    array: [3, 3]
+  assertions: has_values
+- function_name: case_nums1_equal_nums2
+  description: > 
+    Handles cases where the first values of 
+    arrays 'nums1' and 'nums2' are equal
+  inputs_values: 
+  - nums1: [1]
+    nums2: [1]
+  - nums1: [2, 3]
+    nums2: [2]
+  - nums1: [3, 4]
+    nums2: [3, 2]
+  inputs_cast_as: Data
+  expected_outputs:
+  - nums1:  []
+    nums2: []
+    array: [1, 1]
+  - nums1: [3] 
+    nums2: []
+    array: [2, 2]
+  - nums1: [3, 4]
+    nums2: [3, 2]
+    array: [3, 3]
+  assertions: has_values
+- function_name: case_nums1_greater_than_nums2
+  description: > 
+    Handles cases where the first value of array 'nums1' is 
+    greater than the first value of array 'nums2' by adding the 
+    first value of 'nums1' to the merged array and removing the values from 'nums1'
+  inputs_values: 
+  - nums1: [1]
+    nums2: [0]
+  - nums1: [2, 3]
+    nums2: [1]
+  - nums1: [3, 4]
+    nums2: [2, 2]
+  inputs_cast_as: Data
+  expected_outputs:
+  - nums1: [1]
+    nums2: []
+    array: [0]
+  - nums1: [2, 3] 
+    nums2: []
+    array: [1]
+  - nums1: [3, 4]
+    nums2: [2]
+    array: [2]
+  assertions: has_values
+- function_name: case_nums1_less_than_nums2
+  description: > 
+    Handles cases where the first value of array 'nums1' 
+    is less than the first value of array 'nums2'
+  inputs_values: 
+  - nums1: [1]
+    nums2: [2]
+  - nums1: [2, 3]
+    nums2: [3]
+  - nums1: [3, 4]
+    nums2: [4, 2]
+  inputs_cast_as: Data
+  expected_outputs:
+  - nums1: []
+    nums2: [2]
+    array: [1]
+  - nums1: [3] 
+    nums2: [3]
+    array: [2]
+  - nums1: [4]
+    nums2: [4, 2]
+    array: [3]
+  assertions: has_values
+- function_name: case_nums1_empty
+  description: > 
+    Handles cases where array 'nums1' is an empty list by adding the 
+    remaining values from 'nums2' to the array and setting 'nums2' as an empty list
+  inputs_values: 
+  - nums1: []
+    nums2: [1]
+  - nums1: []
+    nums2: [1, 2]
+  - nums1: []
+    nums2: [3, 2, 1]
+  inputs_cast_as: Data
+  expected_outputs:
+  - nums1:  []
+    nums2: []
+    array: [1]
+  - nums1: [] 
+    nums2: []
+    array: [1, 2]
+  - nums1: []
+    nums2: []
+    array: [3, 2, 1]
+  assertions: has_values
+- function_name: case_nums2_empty
+  description: > 
+    Handles cases where array 'nums2' is an empty list by adding 
+    all of the values from array 'nums1' to the merged array, 
+    and setting 'nums1' as an empty list
+  inputs_values: 
+  - nums2: []
+    nums1: [1]
+  - nums2: []
+    nums1: [1, 2]
+  - nums2: []
+    nums1: [3, 2, 1]
+  inputs_cast_as: Data
+  expected_outputs:
+  - nums1:  []
+    nums2: []
+    array: [1]
+  - nums1: [] 
+    nums2: []
+    array: [1, 2]
+  - nums1: []
+    nums2: []
+    array: [3, 2, 1]
+  assertions: has_values
+- function_name: case_nums1_and_nums2_empty
+  description: >
+    Handles cases where arrays 'nums1' and 'nums2' are empty 
+    by returning the data object passed into the function
+  inputs_values:
+  - nums1: []
+    nums2: []
+    array: [1, 1]
+  - nums1: [] 
+    nums2: []
+    array: [2, 2]
+  - nums1: []
+    nums2: []
+    array: [3, 3]
+  inputs_cast_as: Data
+  expected_outputs:
+  - nums1: []
+    nums2: []
+    array: [1, 1]
+  - nums1: [] 
+    nums2: []
+    array: [2, 2]
+  - nums1: []
+    nums2: []
+    array: [3, 3]
+  assertions: has_values
+- function_name: case_nums1_and_nums2_values
+  description: >
+    Handles cases where the first values of 'nums1' and 'nums2' 
+    are values. Calls the equals, greater than,  or less than cases 
+    above, and executes them with the values. Used in a switcher
+  inputs_values:
+  - nums1: [1]
+    nums2: [1]
+  - nums1: [1]
+    nums2: [2]
+  - nums1: [2]
+    nums2: [1]
+  inputs_cast_as: Data
+  expected_outputs:
+  - nums1: []
+    nums2: []
+    array: [1, 1]
+  - nums1: []
+    nums2: [2]
+    array: [1]
+  - nums1: [2]
+    nums2: []
+    array: [1]
+  assertions: 
+  - - has_values
+    - function_called: case_nums1_equal_nums2
+  - - has_values
+    - function_called: case_nums1_less_than_nums2
+  - - has_values
+    - function_called: case_nums1_greater_than_nums2
+- function_name: get_merged_array
+  description: Combines arrays 'nums1' and 'nums2' into an order list
+  inputs_values:
+  - nums1: []
+    nums2: []
+  - nums1: [1, 2]
+    nums2: [1]
+  - nums1: [1, 3, 5]
+    nums2: [2, 4]
+  inputs_cast_as: Data
+  expected_outputs:
+  - array: []
+  - array: [1, 1, 2]
+  - array: [1, 2, 3, 4, 5]
+  assertions:
+  - has_values
+- function_name: post_processing
+  description: >
+    Sets array 'nums1' and 'nums2' back to their original values
+    and sets their copies as null
+  inputs_values: 
+  - nums1: []
+    nums2: []
+    array_copies: [[], []]
+  - nums1: []
+    nums2: []
+    array_copies: [[1], [2]]
+  - nums1: []
+    nums2: []
+    array_copies: [[1, 2], [1, 2]]
+  inputs_cast_as: Data
+  expected_outputs:
+  - nums1: []
+    nums2: []
+    array_copies: null
+  - nums1: [1]
+    nums2: [2]
+    array_copies: null
+  - nums1: [1, 2]
+    nums2: [1, 2]
+    array_copies: null
+- function_name: case_median_array_length_zero
+  description: Returns '0' as the median for any combination of input values.
+  inputs_values: 
+  - array: []
+    n: 0
+  - array: [1]
+    n: 1
+  - array: [1, 2]
+    n: 2
+  expected_outputs:
+  - 0
+  - 0
+  - 0
+  assertsions: equals
+- function_name: case_median_array_length_one
+  description: Returns the first value of an array for any combination of inputs
+  inputs_values: 
+  - array: [1]
+    n: 1
+  - array: [1, 2]
+    n: 2
+  - array: [3, 2, 1]
+    n: 3
+  expected_outputs:
+  - 1
+  - 1
+  - 3
+  assertsions: equals
+- function_name: case_median_array_length_even
+  description: Returns the median of an array of even length
+  inputs_values:
+  - array: [1, 1]
+  - array: [1, 2, 3, 4]
+  - array: [2, 2, 2, 2, 2, 2]
+  inputs_cast_as: Data
+  expected_outputs:
+  - 1
+  - 1.5
+  - 2
+  assertsions: equals
+- function_name: case_array_length_is_odd
+  description: Returns the median for an array of odd length
+  inputs_values:
+  - array: [1, 2, 3]
+  - array: [1, 2, 3, 4, 5]
+  - array: [1, 2, 3, 4, 5, 6, 7]
+  inputs_cast_as: Data
+  expected_outputs:
+  - 2
+  - 3
+  - 4
+  assertsions: equals
+- function_name: get_median
+  description: Returns the median for an array of values
+  inputs_values:
+  - array: []
+  - array: [1]
+  - array: [1, 2]
+  - array: [1, 2, 3]
+  - array: [1, 3, 3, 4]
+  inputs_cast_as: Data
+  expected_outputs:
+  - 0
+  - 1
+  - 1.5
+  - 2
+  - 3
+  assertions: equals
+- function_name: main
+  description: >
+    Orchestration function that executes the other functions within the module.
+    Combines values from two sorted lists into a single ordered list, and returns
+    the median of the single list.
+  inputs_values:
+  - nums1: []
+    nums2: []
+  - nums1: [2]
+    nums2: [1]
+  - nums1: [1, 2]
+    nums2: [3]
+  - nums1: [2]
+    nums1: []
+  inputs_cast_as: Data
+  expected_outputs:
+  - median: 0
+    array: []
+  - median: 1.5
+    array: [1, 2]
+  - median: [2]
+    array: [1, 2, 3]
+  - median: 2
+    array: [2]
+  assertions: has_values

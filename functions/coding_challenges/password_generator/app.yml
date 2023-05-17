@@ -1,0 +1,134 @@
+resources:
+- url: https://www.geeksforgeeks.org/python-select-random-value-from-a-list/
+- url: https://www.programiz.com/python-programming/methods/list/insert
+tests:
+- name:  main
+  tests:
+  - description: Should return password string for the given input
+    input_dataclass: Data
+    inputs:
+    - data:
+        chars: {}
+    - data:
+        chars: {'A': 'A'}
+        length: 1
+    - data:
+        chars: {'A': 'A'}
+        length: 2
+    - data:
+        chars: {'A': 'A', 'B': 'B'}
+        required_chars: ['B']
+        length: 1
+    - data:
+        chars: {'A': 'A', 'B': 'B'}
+        required_chars: ['A']
+        length: 1
+    - data:
+        chars: {'A': 'A', 'B': 'A'}
+        length: 8
+    outputs:
+    - ''
+    - A
+    - AA
+    - BB
+    - B
+    - A
+    - AAAAAAAA
+- name:  get_char_counts
+  tests:
+  - description: Should produce a dictionary with char types as keys and 
+      values as counts of chars
+    input_dataclass: Data
+    inputs:
+    - data:
+        chars: {}
+    - data:
+        chars: {'1': 'A'}
+    - data:
+        chars: {'A': 'A'}
+    - data:
+        chars: {'A': 'A', 'B': 'B'}
+    - data:
+        chars: {'A': 'A', 'B': 'BB', 'C': 'CCC'}
+    outputs:
+    - {}
+    - {'1': 1}
+    - {'A': 1}
+    - {'A': 1, 'B': 1}
+    - {'A': 1, 'B': 2, 'C': 3}
+- name:  set_char_positions
+  tests:
+    - description: Should produce a list of integers corresponding
+        to the position of char types in a list
+      input_dataclass: Data
+      inputs:
+        - data:
+            chars: {}
+            counts: {}
+        - data:
+            chars: {'1': 'A'}
+            counts: {'1': 1}
+            length: 2
+        - data:
+            chars: {'A': 'A'}
+            counts: {'A': 1}
+            length: 2
+        - data:
+            chars: {'A': 'A', 'B': 'B'}
+            required_chars: ['B']
+            counts: {'A': 1, 'B': 1}
+            length: 1
+        - data:
+            chars: {'A': 'A', 'B': 'BB', 'C': 'CCC'}
+            required_chars: ['A']
+            counts: {'A': 1, 'B': 2, 'C': 3}
+            length: 1
+      outputs:
+        - []
+        - [0, 0]
+        - [0, 0]
+        - [1]
+        - [0]
+- name:  get_password
+  tests:
+    - description: Should produce a randomly generated password
+      input_dataclass: Data
+      inputs:
+        - data:
+            chars: {}
+            counts: {}
+            char_positions: []
+        - data:
+            chars: {'1': 'A'}
+            counts: {'1': 1}
+            length: 2
+            char_positions: [0, 0]
+        - data:
+            chars: {'A': 'A'}
+            counts: {'A': 1}
+            length: 2
+            char_positions: [0, 0]
+        - data:
+            chars: {'A': 'A', 'B': 'B'}
+            required_chars: ['B']
+            counts: {'A': 1, 'B': 1}
+            length: 1
+            char_positions: [1]
+        - data:
+            chars: {'A': 'A', 'B': 'BB', 'C': 'CCC'}
+            required_chars: ['A']
+            counts: {'A': 1, 'B': 2, 'C': 3}
+            length: 1
+            char_positions: [0]
+      outputs:
+        - ''
+        - AA
+        - AA
+        - B
+        - A
+      # TODO: Testing framework - Add functionality to execute test files
+      # TODO: Password generator - Add tests for greater mix of chars and 
+      # length. Tests may need there own file b/c it hard to tests for 
+      # randomness using this framework
+      file: [app_test.py]
+      

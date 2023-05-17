@@ -1,0 +1,68 @@
+description: |
+  # Mark and Toys
+  Mark and Jane are very happy after having their first child. Their son loves 
+  toys, so Mark wants to buy some. There are a number of different toys lying 
+  in front of him, tagged with their prices. Mark has only a certain amount to 
+  spend, and he wants to maximize the number of toys he buys with this money. 
+  Given a list of toy prices and an amount to spend, determine the maximum 
+  number of gifts he can buy.
+  **Note** Each toy can be purchased only once.
+
+  ## Example
+  ```
+  prices = [1, 2, 3, 4]
+  k = 7
+  ```
+  The budget is `7` units of currency. He can buy items that cost `[1, 2, 3]` 
+  for `6`, or `[3, 4]` for `7` units. The maximum is `3` items.
+
+  ## Function Description
+  The function has the following parameter(s):
+  - int prices[n]: the toy prices
+  - int k: Mark's budget
+
+  ### Returns
+  int: the maximum number of toys
+
+  ### Input Format
+  The first line contains two integers, `n` and `k`, the number of priced toys 
+  and the amount Mark has to spend. The next line contains space-separated 
+  integers `prices[i]`
+
+  ### Constraints
+  - A toy can't be bought multiple times.
+links:
+  - tests:
+  - name:  main
+    test: 
+      - description: Should return the max number of toys that can be purchased
+          within budget
+        inputs:
+          - prices: [1,2,3,4]
+            budget: 7
+          - prices: [1,12,5,111,200,1000,10]
+            budget: 50
+        outputs:
+          - 3
+          - 4
+  - name:  get_max_toys_unber_budget
+    test: 
+      - description: Should return the maximum number of toys that can be 
+          purchased under budget
+        inputs:
+          - combinations: [
+              [1], [2], [3], [4],
+              [1, 2, 3, 4], 
+              [1, 2], [1, 3], [1, 4], [2, 3], [2, 4], [3, 4], [1, 2, 3], 
+              [1, 2, 4], [1, 3, 4], [2, 3, 4], 
+            ]
+            budget: 7
+          - prices: [
+              [10], [20], [30], 
+              [10, 20, 30], 
+              [10, 20], [10, 30], [20, 30], 
+            ]
+            budget: 50
+        outputs:
+          - 3
+          - 2

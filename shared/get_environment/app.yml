@@ -1,0 +1,79 @@
+description: >
+  Returns a dataclass containing environment variables
+  from a module's associated yml file or the virtual environment
+resources:
+- title: What is the use of PYTHONUNBUFFERED in a docker file?
+  url: https://stackoverflow.com/questions/59812009/what-is-the-use-of-pythonunbuffered-in-docker-file
+tests:
+- function_name: get_yml_path
+  description: Returns the path to a YAML file associated with a module
+  inputs:
+    values:
+    - module_path: module.py
+      yml_path: null
+    - module_path: null
+      yml_path: module.yml
+  expected_outputs:
+  - module.yml
+  - module.yml
+  assertions: equals
+- function_name: get_yml_data
+  description: Returns the environment variable data from a YAML file as a dictionary
+  inputs:
+    values:
+    - yml_path: ${WORKDIR}/utils/get_environment/test_resources/app.yml
+      key: environment
+    - yml_path: ${WORKDIR}/utils/get_environment/test_resources/app.yml
+      key: environment_dos
+    cast_as: Data
+  expected_outputs:
+  - ENV: ENV_VARIABLE
+    DEBUG: DEBUG_VARIABLE
+    EXAMPLE: EXAMPLE_VARIABLE
+  - ENV_DOS: ENV_VARIABLE_DOS
+    DEBUG_DOS: DEBUG_EXAMPLE_DOS
+    EXAMPLE_DOS: EXAMPLE_VARIABLE_DOS
+  assertions: equals
+- function_name: convert_dict_to_dataclass
+  description: Returns a the env dictionary from the YAML file as a dataclass
+  inputs:
+    values:
+    - yml_data: {}
+    - yml_data:
+        variable_uno:  variable_uno
+    - yml_data:
+        variable_one: variable_one
+        variable_two: variable_two
+  expected_outputs:
+  - {}
+  - variable_uno: variable_uno
+  - variable_one: variable_one
+    variable_two: variable_two
+  outputs:
+    cast_as: Data
+  assertions: equals
+- function_name: get_variables_from_venv
+  description: Overloads variables from the YML file with their values from the virtual environment
+  inputs:
+    values:
+    - {}
+    - ENV: ENV_EXAMPLE
+  expected_outputs:
+  - {}
+  - ENV: ${ENV}
+  assertions: equals
+- function_name: main
+  description: Orchestration function that executes the other function within the module
+  inputs:
+    values: 
+    - module_path: ${WORKDIR}/utils/get_environment/test_resources/app.py
+    - yml_path: ${WORKDIR}/utils/get_environment/test_resources/app.yml
+      yml_key: environment_dos
+  expected_outputs:
+  - ENV: ${ENV}
+    DEBUG: ${DEBUG}
+    EXAMPLE: EXAMPLE_VARIABLE
+  - ENV_DOS: ENV_VARIABLE_DOS
+    DEBUG_DOS: DEBUG_EXAMPLE_DOS
+    EXAMPLE_DOS: EXAMPLE_VARIABLE_DOS
+  assertions: has_values

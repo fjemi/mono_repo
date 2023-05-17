@@ -1,0 +1,63 @@
+environment:
+  DEBUG: True
+resources:
+- title: |
+    1010. Pairs of Songs With Total Durations 
+    Divisible by 60 
+  url: https://leetcode.com/problems/pairs-of-songs-with-total-durations-divisible-by-60/
+tests:
+- function_name: get_song_pairs
+  description: |
+    Returns a each song time paired with every other
+    song time within a list
+  inputs_values:
+  - times: [0, 1, 2]
+  - times: [0, 1, 2, 3]
+  expected_outputs:
+  - [[0, 1], [0, 2], [1, 2]]
+  - [[0, 1], [0, 2], [0, 3], [1, 2], [1, 3], [3, 2]]
+  assertions:
+- function_name: get_divisible_pairs
+  description: |
+    Returns pairs of song times whose total durations 
+    are divisible by a divisor
+  inputs_values:
+  - divisor: 60
+    song_pairs:
+    - [60, 60]
+    - [60, 60]
+    - [60, 60]
+  - divisor: 50
+    song_pairs:
+    - [100, 25]
+    - [100, 50]
+    - [50, 25]
+    - [25, 25]
+  expected_outputs:
+  - - pair: [60, 60]
+      total_duration: 120
+    - pair: [60, 60]
+      total_duration: 120
+    - pair: [60, 60]
+      total_duration: 120
+  - - pair: [100, 50]
+      total_duration: 150
+    - pair: [25, 25]
+      total_duration: 50
+  assertions:
+- function_name: main
+  description: |
+    Orchestration function that executes the other 
+    functions within the module
+  inputs_values:
+  - times: [60, 60, 60]
+  - times: [30, 20, 150, 100, 40]
+  expected_outputs:
+  - song_pairs:
+    - pair: [60, 60]
+      total_duration: 120
+    - pair: [60, 60]
+      total_duration: 120
+    - pair: [60, 60]
+      total_duration: 120
+  assertions: has_values

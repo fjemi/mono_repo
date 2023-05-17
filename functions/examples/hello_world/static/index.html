@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang='en'>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device_width, initial-scale=1.0'>
+  <title>Hello World</title>
+<head>
+</head>
+<body>
+  <input 
+    type='hidden' 
+    id='data' 
+    value='{{ data }}'
+  >
+  <h3>Greetings</h3>
+  <div id='greeting'></div>
+  
+  {% block javascript %}
+  <script type='text/javascript'>
+    {% include 'script.js'  %}
+  </script>
+  {% endblock %}
+  
+  </body>
+</html>

@@ -1,0 +1,141 @@
+resources:
+- title: Fraudulent Activity Notifications
+  url: 
+tests:
+- function_name: main
+  description:
+  inputs:
+    values:
+    - expenditures: [1,2,3,4,4]
+      trailing_days: 4
+  expected_outputs: 
+  - notifications: []
+- function_name: main
+  description:
+  inputs:
+    values:
+    - expenditures: [0, 1, 2, 1]
+      trailing_days: 3
+  expected_outputs: 
+    notifications: 
+      - trailing: [0, 1, 2]
+        current: 1
+        median: 1
+- function_name: calculate_median 
+  description: Should return median of zero for an empty list of numbers
+  inputs:
+    values: []
+  expected_outputs: 0
+- function_name: calculate_median 
+  description: Should return correct median for an odd list of numbers
+  inputs:
+    values: [1, 2, 3]
+  expected_outputs: 2
+- function_name: calculate_median 
+  description: Should return correct median  for an even list of numbers
+  inputs:
+    values: [1, 2, 3, 4]
+  expected_outputs: 2.5
+- function_name: get_trailing_windows
+  description: |
+    Should result in an empty list of windows when the number
+    of trailing days is greater than equal to the total
+    number of days of expenses
+  inputs:
+    values:
+    expenditures: [0, 1, 2, 3]
+    trailing_days: 5
+  expected_outputs:
+    expenditures: [0, 1, 2, 3]
+    trailing_days: 5
+    windows: []
+- function_name: get_trailing_windows
+  description: |
+    Should produce the correct windows for the given expenditures 
+    and trailing days
+  inputs:
+    values:
+    expenditures: [0, 1, 2, 3]
+    trailing_days: 2
+  expected_outputs:
+    expenditures: [0, 1, 2, 3]
+    trailing_days: 2
+    windows: 
+      - trailing_days: [0, 1]
+        median: null
+        current: 2
+      - trailing_days:  [1, 2]
+        median: null
+        current: 3
+- function_name: get_trailing_windows
+  description: |
+    Should produce the correct windows for the given expenditures 
+    and trailing days
+  inputs:
+    values:
+    expenditures: [0, 1, 2]
+    trailing_days: 1
+  expected_outputs:
+    expenditures: [0, 1, 2]
+    trailing_days: 1
+    windows: 
+      - trailing_days: [0]
+        median: null
+        current: 1
+      - trailing_days:  [1]
+        median: null
+        current: 2
+- function_name: get_notification_for_windows
+  description: Should produce no notifications
+  inputs:
+    values:
+    expenditures: [0, 1, 2]
+    trailing_days: 2
+  expected_outputs:
+    expenditures: [0, 1, 2]
+    trailing_days: 2
+    windows: 
+      - trailing_days: [0, 1]
+        median: null
+        current: 2
+    notifications: []
+- function_name: get_notification_for_windows
+  description: Should produce a notification
+  inputs:
+    values:
+    expenditures: [0, 1, 1]
+    trailing_days: 2
+  expected_outputs:
+    expenditures: [0, 1, 1]
+    trailing_days: 2
+    windows: 
+      - trailing_days: [0, 1]
+        median: null
+        current: 1
+    notifications: 
+      - trailing_days: [0, 1]
+        median: .5
+        current: 1
+- function_name: get_notification_for_windows
+  description: Should produce two notifications
+  inputs:
+    values:
+    expenditures: [0, 1, 1, 0]
+    trailing_days: 2
+  expected_outputs:
+    expenditures: [0, 1, 1, 0]
+    trailing_days: 2
+    windows: 
+      - trailing_days: [0, 1]
+        median: null
+        current: 1
+      - trailing_days: [1, 1]
+        median: null
+        current: 0
+    notifications: 
+      - trailing_days: [0, 1]
+        median: .5
+        current: 1
+      - trailing_days: [1, 1]
+        median: 1
+        current: 1

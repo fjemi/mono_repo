@@ -1,0 +1,56 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Logger Rate Limiter
+      description: |
+        [Challenge](https://tenderleo.gitbooks.io/leetcode-solutions-/content/GoogleEasy/359.html)
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              logs: array[array[number | string]]
+              time_s: number | null
+            examples:
+              'Example 1':
+                value: |
+                  logs:
+                  - [1, 'foo']
+                  - [2, 'bar']
+                  - [3, 'foo']
+                  - [8, 'bar']
+                  - [10, 'foo']
+                  - [11, 'foo']
+                  time_s: 10
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        logs:
+                        - [1, 'foo']
+                        - [2, 'bar']
+                        - [3, 'foo']
+                        - [8, 'bar']
+                        - [10, 'foo']
+                        - [11, 'foo']
+                        time_s: 10
+                      output: 
+                        printed_messages:
+                          n: 3
+                          values:
+                            bar: [2]
+                            foo: [1, 11]
+                            

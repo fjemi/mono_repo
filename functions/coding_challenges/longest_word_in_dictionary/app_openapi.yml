@@ -1,0 +1,75 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Longest Word in Dictionary
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              string: string
+            examples:
+              'Example 0':
+                value: |
+                  string: aaabbc
+              'Example 1':
+                value: |
+                  string: 3[a]2[bc]
+              'Example 2':
+                value: |
+                  string: 3[a2[c]]
+              'Example 3':
+                value: |
+                  string: 2[abc]3[cd]ef
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 0':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      inputs: 
+                        string: 3[abc]4[ab]c
+                      outputs: 
+                        decompressed_string: abcabcabcababababc
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      inputs: 
+                        string: 3[a2[c]]
+                      outputs: 
+                        decompressed_string: aaabcbc
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input: 
+                        string: 3[a2[c]]
+                      output: 
+                        decompressed_string: accaccacc
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input: 
+                        string: 2[abc]3[cd]ef
+                      output: 
+                        decompressed_string: abcabccdcdcdef
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://leetcode.com/problems/longest-word-in-dictionary/)

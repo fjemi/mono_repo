@@ -1,0 +1,126 @@
+environment:
+  DEBUG: True
+resources:
+- title: Baseball Game
+  url: https://leetcode.com/problems/baseball-game/
+- function_name: process_int_operation
+  description: Processes an operation that is integer by returning the record
+    with the integer appended
+  inputs_values:
+  - operation: 1 
+    store: []
+  - operation: 2
+    store: [1]
+  - operation: 3
+    store: [1, 2]
+  expected_outputs:
+  - [1]
+  - [1, 2]
+  - [1, 2, 3]
+  assertions: equals
+- function_name: case_operation_plus
+  description: Returns the list of recored scores with the sum of the last two
+    scores added to the list
+  inputs_values:
+  - [0, 1]
+  - [0, 1, 2]
+  - [0, 1, 2, 3]
+  expected_outputs:
+  - [0, 1, 1]
+  - [0, 1, 2, 3]
+  - [0, 1, 2, 3, 5]
+  assertions:
+- function_name: case_operation_c
+  description: Returns a list of recorded scores with the last score removed
+  inputs_values:
+  - store: [0]
+  - store: [0, 1]
+  - store: [0, 1, 2]
+  expected_outputs:
+  - []
+  - [0]
+  - [0, 1]
+  assertions: equals
+- function_name: case_operation_d
+  description: Returns the list of recorded scores with the last score 
+    doubled and appended to the list
+  inputs_values:
+  - store: [0]
+  - store: [0, 1]
+  - store: [0, 1, 2]
+  expected_outputs:
+  - [0, 0]
+  - [0, 1, 2]
+  - [0, 1, 2, 4]
+  assertions: equals
+- function_name: process_str_operation
+  description: Returns a list of recorded scores after a string operation (C, D, or +) has been processed
+  inputs_values:
+  - operation: C
+    store: [1, 2]
+  - operation: C
+    store: [1, 2, 3]
+  - operation: D
+    store: [1, 2]
+  - operation: D
+    store: [1, 2, 3]
+  - operation: +
+    store: [1, 2]
+  - operation: +
+    store: [1, 2, 3]
+  expected_outputs:
+  - [1]
+  - [1, 2]
+  - [1, 2, 4]
+  - [1, 2, 3, 6]
+  - [1, 2, 3]
+  - [1, 2, 3, 5]
+  assertions: equals
+- function_name: case_operation_plus
+  description: >
+    Sums a list of integers and returns the list with the sum 
+    appended to it.
+  inputs_values:
+  - store: [1]
+  - store: [1, 2]
+  - store: [1, 2, 3]
+  expected_outputs:
+  - [1, 1]
+  - [1, 2, 3]
+  - [1, 2, 3, 6]
+  assertions:
+- function_name: get_record
+  description: Returns a list of integers or recorded scores for the game
+  inputs_values:
+  - operations: [5, 2, C, D, +]
+  - operations: [1, C]
+  - operations: [5, -2, 4, C, D, 9, +, +]
+  expected_outputs:
+  - [5, 10, 15]
+  - []
+  - [5, -2, -4, 9, 5, 14]
+  assertions: equals
+- function_name: get_total_score
+  description: Returns the sum of a list of integers
+  inputs_values:
+  - record: []
+  - record: [1, 2, 3]
+  - record: [1, 2, 3, 4, 5]
+  expected_outputs:
+  - 0
+  - 5
+  - 14
+  assertions: equals
+- function_name: main
+  description: Orchestration function that executes the other functions within
+    the module. Determines the total score for a given set of operations
+  inputs_values:
+  - operations: [5, 2, C, D, +]
+  - operations: [5, -2, 4, C, D, 9, +, +]
+  - operations: [1, C]
+  expected_outputs:
+  - total_score: 15
+  - total_score: 27
+  - total_score: 0
+  assertions: has_fields
+  

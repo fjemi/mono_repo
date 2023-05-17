@@ -1,0 +1,53 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Best Time to Buy and Sell Stock
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              scores: List[number]
+              ages: List[number]
+            examples:
+              'Example 1':
+                value: |
+                  prices: [7, 1, 5, 3, 6, 4]
+              'Example 2':
+                value: |
+                  prices: [7, 6, 4, 3, 1]
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        prices: [7, 1, 5, 3, 6, 4]
+                      output:
+                        profit: 5
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        prices: [7, 6, 4, 3, 1]
+                      output:
+                        profit: 0
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://www.google.com/amp/s/www.geeksforgeeks.org/best-time-to-buy-and-sell-stock/amp/)

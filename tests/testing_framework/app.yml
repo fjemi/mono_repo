@@ -1,0 +1,10 @@
+links:
+  - https://stackoverflow.com/questions/893333/multiple-variables-in-a-with-statement
+  - https://www.programming-books.io/essential/python/mocking-functions-with-unittest.mock.create-autospec-302daf30e4504471a21acfb5f0e7d594.html
+  - https://docs.pytest.org/en/7.0.x/reference/plugin_list.html
+tests:
+  - function: 
+    description: 
+    data_class: 
+    data: 
+    output:

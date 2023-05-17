@@ -1,0 +1,6 @@
+tests:
+  - function_name: get_missing_number
+  - function_name: main
+resources:
+- title: Cracking the top Amazon coding interview questions
+  url: https://www.educative.io/blog/crack-amazon-coding-interview-questions

@@ -1,0 +1,100 @@
+resources:
+- title: Frequency Queries
+  url: https://www.hackerrank.com/challenges/frequency-queries/problem
+tests: 
+- function_name:  add_number
+  description:
+  inputs:
+    values:
+    - queries: [[1, 1]]
+      i: 0
+      store: []
+      outputs: []
+    - queries: [[1, 2]]
+      i: 0
+      store: [1]
+      outputs: []
+    - queries: [[1, 3]]
+      i: 0
+      store: [2, 2]
+      outputs: []
+    outputs:
+    - queries: [[1, 1]]
+      i: 0
+      store: [1]
+      outputs: []
+    - queries: [[1, 2]]
+      i: 0
+      store: [1, 2]
+      outputs: []
+    - queries: [[1, 3]]
+      i: 0
+      store: [2, 2, 3]
+  outputs: []
+- function_name:  remove_number
+  description: Should remove a number from the end of the store if
+    the number exists in the store
+  inputs:
+    values:
+    - queries: [[2, 1]]
+      i: 0
+      store: [1]
+      outputs: []
+    - queries: [[2, 1]]
+      i: 0
+      store: []
+      outputs: []
+    - queries: [[2, 1]]
+      i: 0
+      store: [1, 2, 1]
+      outputs: []
+    outputs:
+    - queries: [[2, 1]]
+      i: 0
+      store: []
+      outputs: []
+    - queries: [[2, 1]]
+      i: 0
+      store: []
+      outputs: []
+    - queries: [[2, 1]]
+      i: 0
+      store: [1, 2]
+  outputs: []
+- function_name:  get_number_frequencies
+  description: Should produce the correct output if the frequency of 
+    numbers in the store matches the query frequency
+  inputs:
+    values:
+    - queries: [[3, 1]]
+      i: 0
+      store: [1]
+      outputs: []
+    - queries: [[3, 1], [3, 2]]
+      i: 1
+      store: [1, 1]
+      outputs: []
+    - queries: [[3, 1], [3, 2], [3,3]]
+      i: 2
+      store: [1, 1, 1]
+      outputs: []
+  outputs:
+  - queries: [[3, 1]]
+    i: 0
+    store: [1]
+    outputs: [1]
+  - queries: [[3, 1], [3, 2]]
+    i: 1
+    store: [1, 1]
+    outputs: [1]
+  - queries: [[3, 1], [3, 2], [3,3]]
+    i: 2
+    store: [1, 1, 1]
+    outputs: [1]
+- function_name:  main
+  description: Should produce the correct output for the givn query
+  inputs:
+    values:
+    - queries: [[1, 1], [2, 2], [3, 2], [1, 1], [1, 1], [2, 1], [3, 2]]
+  outputs:
+    - [0, 1]

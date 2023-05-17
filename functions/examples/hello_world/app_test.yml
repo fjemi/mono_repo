@@ -1,0 +1,97 @@
+functions:
+- name: post_handler
+  description: |
+    Returns a response that contains a greeting for post requests.
+  tests:
+  - arguments: 
+      request:
+        data:
+          body: 
+            name: World
+        method: POST
+    cast_arguments:
+      request: Request
+    assertions:
+    - equals: 
+        values:
+          code: 200
+          status: OK
+          data: 'Hello World!'
+        cast_result: Response
+  - arguments: 
+      request:
+        data:
+          body: 
+            name: Mars
+        method: POST
+    cast_arguments:
+      request: Request
+    assertions:
+    - equals: 
+        values:
+          code: 200
+          status: OK
+          data: 'Hello Mars!'
+        cast_result: Response
+- name: get_handler
+  description: |
+    Returns an HTML template for get requests.
+  tests:
+  - description: Should return a template as the response
+    arguments: 
+      request:
+        data:
+          query_params: 
+            name: World
+        method: GET
+    cast_arguments:
+      request: Request
+    assertions:
+    - type: 
+        equals: _TemplateResponse
+- name: main
+  description: |
+    Orchestrates the execution of the other functions in the 
+    module.
+  tests:
+  - arguments: 
+      request:
+        data:
+          query_params: 
+            name: World
+        method: GET
+    cast_arguments:
+      request: Request
+    assertions:
+    - type: 
+        equals: _TemplateResponse
+  - arguments: 
+      request:
+        data:
+          body: 
+            name: World
+        method: POST
+    cast_arguments:
+      request: Request
+    assertions:
+    - equals: 
+        values:
+          code: 200
+          status: OK
+          data: 'Hello World!'
+        cast_result: Response
+  - arguments: 
+      request:
+        data:
+          body: 
+            name: Mars
+        method: POST
+    cast_arguments:
+      request: Request
+    assertions:
+    - equals: 
+        values:
+          code: 200
+          status: OK
+          data: 'Hello Mars!'
+        cast_result: Response

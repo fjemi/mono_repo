@@ -1,0 +1,22 @@
+functions:
+- name: main
+  description: Returns '{ping: pong}'
+  tests:
+  - arguments: 
+      data: null 
+    assertions:
+    - equals: 
+        code: 200
+        status: OK
+        data:
+          ping: pong
+      response_as: dict
+  - arguments: 
+      data: {}
+    assertions: 
+    - equals: 
+        code: 200
+        status: OK
+        data:
+          ping: pong
+      response_as: dict

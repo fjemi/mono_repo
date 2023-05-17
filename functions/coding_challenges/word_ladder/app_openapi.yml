@@ -1,0 +1,68 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Word Ladder
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              begin_word: string
+              end_word: string
+              word_list: array[string]
+            examples:
+              'Example 1':
+                value: |
+                  begin_word: hit
+                  end_word: cog
+                  word_list: [hot, dot, dog, lot, log, cog]
+              'Example 2':
+                value: |
+                  begin_word: hit
+                  end_word: cog
+                  word_list: [hot, dot, dog, lot, log]
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        begin_word: hit
+                        end_word: cog
+                        word_list: [hot, dot, dog, lot, log, cog]
+                      output:  
+                        shortest_transformation:
+                          n: 5
+                          values:
+                          - [hit, hot, dot, dog, log, cog]
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        begin_word: hit
+                        end_word: cog
+                        word_list: [hot, dot, dog, lot, log]
+                      output: 
+                        shortest_transformation:
+                          n: 0
+                          values: 
+                          - []
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://leetcode.com/problems/word-ladder/)

@@ -1,0 +1,2 @@
+environment:
+  DATA_PATH:${DATA_PATH}/web_scraper

@@ -1,0 +1,21 @@
+resources:
+- title: Decorators with parameters?
+  url: https://stackoverflow.com/questions/5929107/decorators-with-parameters
+- title: How to catch and print the full exception traceback without halting/exiting the program?
+  url: https://stackoverflow.com/questions/3702675/how-to-catch-and-print-the-full-exception-traceback-without-halting-exiting-the
+environment:
+  DEBUG: False
+  LOGS_DIR: ${PWD}/logs/
+  WORKDIR: ${PWD}
+tests:
+- function_name:
+  description:
+  inputs_values:
+  outputs_expected:
+  assertions:
+- function_name:
+  description:
+  inputs_values:
+  outputs_expected:
+  assertions:
+  

@@ -1,0 +1,64 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Word Square
+      description: |
+        [Challenge](https://leetcode.ca/all/425.html)
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              sequence: array[string]
+            examples:
+              'Example 1':
+                value: |
+                  sequence: [area, lead, wall, lady, ball]
+              'Example 2':
+                value: |
+                  sequence: [abat, baba, atan, atal]
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        sequence: [area, lead, wall, lady, ball]
+                      output: 
+                        word_square:
+                        - - wall
+                          - area
+                          - lead
+                          - lady
+                        - - ball
+                          - area
+                          - lead
+                          - lady
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        sequence: [abat, baba, atan, atal]
+                      output: 
+                        word_square:
+                        - - baba
+                          - abat
+                          - baba
+                          - atan
+                        - - baba
+                          - abat
+                          - baba
+                          - atal

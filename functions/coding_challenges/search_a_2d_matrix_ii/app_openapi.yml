@@ -1,0 +1,98 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Search a 2D Matrix II
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              matrix: array[array[number]]
+              target: number
+            examples:
+              'Example 1':
+                value: |
+                  matrix:
+                  - [1, 4, 7, 11, 15]
+                  - [2, 5, 8, 12, 19]
+                  - [3, 6, 9, 16, 22]
+                  - [10, 13, 14, 17, 24]
+                  - [18, 21, 23, 26, 30]
+                  target: 5
+              'Example 2':
+                value: |
+                  matrix:
+                  - [1, 4, 7, 11]
+                  - [2, 5, 8, 19]
+                  - [3, 6, 9, 22]
+                  - [10, 13, 17, 24]
+                  target: 12
+              'Example 3':
+                value: |
+                  matrix:
+                  - [1, 4, 7]
+                  - [2, 5, 8]
+                  - [3, 6, 9]
+                  - [10, 13, 17]
+                  target: 5
+                
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        matrix:
+                        - [1, 4, 7, 11, 15]
+                        - [2, 5, 8, 12, 19]
+                        - [3, 6, 9, 16, 22]
+                        - [10, 13, 14, 17, 24]
+                        - [18, 21, 23, 26, 30]
+                        target: 5
+                      output: 
+                        target_position: [1, 1]
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        matrix:
+                        - [1, 4, 7, 11]
+                        - [2, 5, 8, 19]
+                        - [3, 6, 9, 22]
+                        - [10, 13, 17, 24]
+                        target: 12
+                      output: 
+                        target_position: [1, 2]
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        matrix:
+                        - [1, 4, 7]
+                        - [2, 5, 8]
+                        - [3, 6, 9]
+                        - [10, 13, 17]
+                        target: 5
+                      output:
+                        target_position: [1, 1]
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://leetcode.com/problems/search-a-2d-matrix-ii/)

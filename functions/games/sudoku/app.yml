@@ -1,0 +1,13 @@
+resources:
+- title: The fastest Sudoku solver
+  url: https://codegolf.stackexchange.com/questions/190727/the-fastest-sudoku-solver
+- title: Sudoku.com
+  url: https://sudoku.com/
+todo:
+- Clean up `app.py`. Break out functionality into separate scripts to make
+  things more readable
+- Run `benchmark.py` and benchmark the solver with an api request
+- Add other ways to solve to 
+  - breaking `n*n` grids into sub-grids
+  - search for hidden values
+- Store moves and the kind of move

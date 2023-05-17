@@ -1,0 +1,65 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Pair of Songs with Total Duration Divisible by Divisor
+      description: |
+        [Challenge](https://leetcode.com/problems/pairs-of-songs-with-total-durations-divisible-by-60/)
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              times: array[number]
+              divisor: number
+            examples:
+              'Example 1':
+                value: |
+                  times: [30, 20, 150, 100, 40]
+                  divisor: 60
+              'Example 2':
+                value: |
+                  times: [60, 60, 60]
+                  divisor: 60
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        times: [30, 20, 150, 100, 40]
+                        divisor: 60
+                      output: 
+                        songs:
+                        - pairs: [30, 150]
+                          total_duration: 180
+                        - pairs: [20, 100]
+                          total_duration: 120
+                        - pairs: [20, 40]
+                          total_duration: 60
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        times: [60, 60, 60]
+                        divisor: 60
+                      output: 
+                        songs:
+                        - pairs: [60, 60]
+                          total_duration: 120
+                        - pairs: [60, 60]
+                          total_duration: 120
+                        - pairs: [60, 60]
+                          total_duration: 120

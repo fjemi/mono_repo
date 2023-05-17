@@ -1,0 +1,81 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Symmetric Tree
+      description: |
+        [Challenge](https://leetcode.com/problems/symmetric-tree/)
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              digits: string
+            examples:
+              'Example 1':
+                value: |
+                  root: [1,2,2,3,4,4,3]
+              'Example 2':
+                value: |
+                  root: [1,2,2,null,3,null,3]
+              'Example 3':
+                value: |
+                  root: [1]
+              'Example 4':
+                value: |
+                  root: [1,2]
+              'Example 5':
+                value: |
+                  root: [1,2,2]
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        root: [1,2,2,3,4,4,3]
+                      output: false
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        root: [1,2,2,null,3,null,3]
+                      output: true
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        root: [1]
+                      output: true
+                'Example 4':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        root: [1,2]
+                      output: false
+                'Example 5':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        root: [1,2,2]
+                      output: true
+
+                  

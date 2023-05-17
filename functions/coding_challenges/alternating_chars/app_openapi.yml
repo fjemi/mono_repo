@@ -1,0 +1,100 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Alternating Chars
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              string: string
+            examples:
+              'Example 1':
+                value: |
+                  string: AABAAB
+              'Example 2':
+                value: |
+                  string: AAAA
+              'Example 3':
+                value: |
+                  string: BBBBB
+              'Example 4':
+                value: |
+                  string: ABABABAB
+              'Example 5':
+                value: |
+                  string: BABABA
+              'Example 6':
+                value: |
+                  string: AAABBB
+                  
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        string: AABAAB
+                      output:
+                        deletions: 2 
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        string: AAAA
+                      output:
+                        deletions: 3
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        string: BBBBB
+                      output:
+                        deletions: 4
+                'Example 4':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        string: ABABABAB
+                      output:
+                        deletions: 0
+                'Example 5':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        string: BABABA
+                      output:
+                        deletions: 0
+                'Example 6':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        string: AAABBB
+                      output:
+                        deletions: 4
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://www.hackerrank.com/challenges/alternating-characters/problem)

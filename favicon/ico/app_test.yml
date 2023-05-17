@@ -1,0 +1,63 @@
+functions:
+- name: process_kwargs
+  description: |
+    Set attributes for a dataclass to keyword arguments present
+    in kwargs
+  tests:
+  - arguments:
+      data: {}
+      kwargs: 
+        filename: filename_0
+        directory: directory_0
+        work_dir: work_dir_0
+    cast_arguments_as:
+      data: Data
+    assertions:
+    - has_attributes:
+        filename: filename_0
+        directory: directory_0
+        work_dir: work_dir_0
+  - arguments:
+      data: {}
+      kwargs: 
+        filename: filename_1
+        directory: directory_1
+        work_dir: work_dir_1
+    cast_arguments_as:
+      data: Data
+    assertions:
+    - has_attributes:
+        filename: filename_1
+        directory: directory_1
+        work_dir: work_dir_1
+- name: get_favicon
+  description: |
+    Sets the path to the favicon and returns the favicon as a
+    FileResponse object
+  tests:
+  - arguments:
+      data:
+        filename: favicon.ico
+        directory: favicon.ico.test_resources 
+        work_dir: ${WORKDIR}
+    cast_arguments_as:
+      data: Data
+    assertions:
+    - find: starlette.responses.FileResponse
+      cast_result_as: str
+    - has_attributes:
+        path: ${WORKDIR}/favicon/ico/test_resources/favicon.ico
+        headers.content-disposition: filename=favicon.ico
+- name: main
+  description: |
+    Orchestrates the execution of the other functions within the 
+    module
+  tests:
+  - arguments:
+      directory: favicon.ico.test_resources 
+    assertions:
+    - find: starlette.responses.FileResponse
+      cast_result_as: str
+    - has_attributes:
+        path: ${WORKDIR}/favicon/ico/test_resources/favicon.ico
+        headers.content-disposition: filename=favicon.ico

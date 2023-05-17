@@ -1,0 +1,57 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Word Break II
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              string: string
+              word_dict: array[string]
+            examples:
+              'Example 1':
+                value: |
+                  string: catsandog
+                  word_dict: [cats, dog, sand, and, cat]
+              'Example 2':
+                value: |
+                  string: catsanddog
+                  word_dict: [cat, cats, and, sand, dog]
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        string: catsandog
+                        word_dict: [cats, dog, sand, and, cat]
+                      output:  
+                        sentences: []
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        string: catsanddog
+                        word_dict: [cat, cats, and, sand, dog]
+                      output:  
+                        sentences: ['cats and dog', 'cat sand dog']
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://leetcode.com/problems/word-break-ii/)

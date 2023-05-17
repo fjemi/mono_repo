@@ -1,0 +1,122 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Number of Provinces
+      description: |
+        [Challenge](https://leetcode.com/problems/number-of-provinces/)
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              cities: array[array[number]]
+              exclude_diagonals: bool | null
+            examples:
+              'Example 1':
+                value: |
+                  cities: 
+                  - [1, 0, 0]
+                  - [0, 1, 0]
+                  - [0, 0, 1]
+                  exclude_diagonals: true
+              'Example 2':
+                value: |
+                  cities: 
+                  - [1, 0, 0]
+                  - [0, 1, 0]
+                  - [0, 0, 1]
+                  exclude_diagonals: false
+              'Example 3':
+                value: |
+                  cities:
+                  - [1, 1, 0]
+                  - [1, 1, 0]
+                  - [0, 0, 1]
+              'Example 4':
+                value: |
+                  cities:
+                  - [1, 1, 0]
+                  - [1, 1, 0]
+                  - [0, 0, 1]
+                  exclude_diagonals: true
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        cities:
+                        - [1, 0, 0]
+                        - [0, 1, 0]
+                        - [0, 0, 1]
+                        exclude_diagonals: true
+                      output: 
+                        provinces:
+                          n: 3
+                          values:
+                          - []
+                          - ['0.0']
+                          - ['1.1']
+                          - ['2.2']
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        cities:
+                        - [1, 0, 0]
+                        - [0, 1, 0]
+                        - [0, 0, 1]
+                        exclude_diagonals: false
+                      output: 
+                        provinces:
+                          n: 1
+                          values:
+                          - []
+                          - ['0.0', '1.1', '2.2']
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        cities:
+                        - [1, 1, 0]
+                        - [1, 1, 0]
+                        - [0, 0, 1]
+                      output: 
+                        provinces:
+                          n: 1
+                          values:
+                          - []
+                          - ['0.0', '0.1', '1.0', '1.1', '2.2']
+                'Example 4':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        cities:
+                        - [1, 1, 0]
+                        - [1, 1, 0]
+                        - [0, 0, 1]
+                        exclude_diagonals: true
+                      output: 
+                        provinces:
+                          n: 2
+                          values:
+                          - []
+                          - ['0.0', '0.1', '1.0', '1.1']
+                          - ['2.2']

@@ -1,0 +1,123 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Count Primes
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              n: number
+            examples:
+              'Example 1':
+                value: |
+                  n: 0
+              'Example 2':
+                value: |
+                  n: 1
+              'Example 3':
+                value: |
+                  n: 2
+              'Example 4':
+                value: |
+                  n: 3
+              'Example 5':
+                value: |
+                  n: 4
+              'Example 6':
+                value: |
+                  n: 5
+              'Example 7':
+                value: |
+                  n: 14
+              'Example 8':
+                value: |
+                  n: 50
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 0':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        n: 0
+                      output:
+                        primes: []
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        n: 1
+                      output:
+                        primes: []
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        n: 2
+                      output:
+                        primes: []
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        n: 3
+                      output:
+                        primes: [2]
+                'Example 4':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        n: 4
+                      output:
+                        primes: [2, 3]
+                'Example 5':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        n: 5
+                      output:
+                        primes: [2, 3]
+                'Example 6':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        n: 14
+                      output:
+                        primes: [2, 3, 5, 7, 11, 13]
+                'Example 7':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        n: 50
+                      output:
+                        primes: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://leetcode.com/problems/count-primes/)

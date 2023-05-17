@@ -1,0 +1,75 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Fraudulent Activity Notifications
+      description: |
+        [Challenge](https://www.hackerrank.com/challenges/fraudulent-activity-notifications/problem)
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              expenditures: array[number]
+              trailing_days: number
+            examples:
+              'Example 1':
+                value: |
+                  expenditures: [1, 2, 3, 4, 4]
+                  trailing_days: 4
+              'Example 2':
+                value: |
+                  expenditures: [10, 20, 30, 40, 50]
+                  trailing_days: 3
+              'Example 3':
+                value: |
+                  expenditures: [2, 3, 4, 2, 3, 6, 8, 4, 5]
+                  trailing_days: 5
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        expenditures: [1, 2, 3, 4, 4]
+                        trailing_days: 4
+                      output:
+                        windows: []
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        expenditures: [10, 20, 30, 40, 50]
+                        trailing_days: 3
+                      output:
+                        windows:
+                        - current: 40
+                          median: 20
+                          trailing: [10, 20, 30]
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        expenditures: [2, 3, 4, 2, 3, 6, 8, 4, 5]
+                        trailing_days: 5
+                      output:
+                        windows:
+                        - current: 6
+                          median: 3
+                          trailing: [2, 2, 3, 3, 4]
+                        - current: 8
+                          median: 3
+                          trailing: [2, 3, 3, 4, 6]

@@ -1,0 +1,115 @@
+functions:
+- name: get_triplet_indices
+  description: |
+    Returns a list of unique triplet indices as dot delimited strings, such that the indices i, j, and k of the triplet are not the same
+  tests:
+  - arguements:
+      data:
+        nums: [0, 0, 0]
+    cast_arguments: 
+      data: Data
+    assertions:
+    - has_attributes:
+      - triplet_indices:
+        - [0.1.2]
+  - arguements:
+      data:
+        nums: [-1, 0, 1, 2, 1, -4]
+    cast_arguments:
+      data: Data
+    assertions:
+    - has_attributes:
+      - triplet_indices: 
+        - - 0.1.2
+          - 0.1.3
+          - 0.1.4
+          - 0.1.5
+          - 0.2.3
+          - 0.2.4
+          - 0.2.5
+          - 0.3.4
+          - 0.3.5
+          - 0.4.5
+          - 1.2.3
+          - 1.2.4
+          - 1.2.5
+          - 1.3.4
+          - 1.3.5
+          - 1.4.5
+          - 2.3.4
+          - 2.3.5
+          - 2.4.5
+          - 3.4.5
+- name: get_triplets
+  description: Process the triplets to find unique triplets whose sums equal zero
+  tests:
+  - arguments:
+      data:
+        nums:
+        - -1
+        - 0
+        - 1
+        - 2
+        - -1
+        - -4
+        triplet_indices:
+        - 0.1.2
+        - 0.1.3
+        - 0.1.4
+        - 0.1.5
+        - 0.2.3
+        - 0.2.4
+        - 0.2.5
+        - 0.3.4
+        - 0.3.5
+        - 0.4.5
+        - 1.2.3
+        - 1.2.4
+        - 1.2.5
+        - 1.3.4
+        - 1.3.5
+        - 1.4.5
+        - 2.3.4
+        - 2.3.5
+        - 2.4.5
+        - 3.4.5
+    cast_arguments:
+      data: Data
+    assertions:
+    - has_attributes:
+        triplets: [-1.0.1, -1.-1.2]
+  assertions: equals
+- name: process_triplets
+  desciption: 
+  tests:
+  - arguments:
+      data:
+        triplets: [-1.0.1, -1.-1.2]
+    cast_arguments:
+      data: Data
+    assertions:
+    - has_attributes:
+        triplets: 
+        - [-1, 0, 1]
+        - [-1, -1, 2]
+- name: main
+  description: Orchestrates the execution of the other functions in the module
+  tests:
+  - arguments:
+      data:
+        nums: [-1, 0, 1, 2, -1, -4]
+    cast_arguments:
+      data: Data
+    assertions:
+    - has_attributes:
+        triplets: 
+        - [-1, 0, 1]
+        - [-1, -1, 2]
+  - arguments:
+      data:
+        nums: [0, 0, 0]  
+    cast_arguments:
+      data: Data
+    assertions:
+    - has_attributes:
+        triplets: [0, 0, 0]

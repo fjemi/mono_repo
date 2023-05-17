@@ -1,0 +1,214 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Algorithms
+      summary: Linked Lists Algorithms
+      description: |
+        Functions for working with linked lists:
+        * Convert a list of items to a linked list
+        * Convert a linked list to a list of items
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              values: array[any] | null
+            examples:
+              'Example 1':
+                value: |
+                  values: [1, 2, 3 ,4, 5]
+              'Example 2':
+                value: |
+                  values: []
+              'Example 3':
+                value: |
+                  values: ['value']
+              'Example 4':
+                value: |
+                  values: ['head', 'node_1', 'node_2']
+              'Example 5':
+                value: |
+                  linked_list:
+                    head:
+                      next_node:
+                        next_node:
+                          next_node:
+                            next_node:
+                              next_node: null
+                              value: 5
+                            value: 4
+                          value: 3
+                        value: 2
+                      value: 1
+              'Example 6':
+                value: |
+                  linked_list:
+                    head: null
+              'Example 7':
+                value: |
+                  linked_list:
+                    head:
+                      next_node: null
+                      value: value
+              'Example 8':
+                value: |
+                  linked_list:
+                    head:
+                      next_node:
+                        next_node:
+                          next_node: null
+                          value: node_2
+                        value: node_1
+                      value: head
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        input:
+                          linked_list: null
+                          values:
+                          - 1
+                          - 2
+                          - 3
+                          - 4
+                          - 5
+                        output:
+                          linked_list:
+                            head:
+                              next_node:
+                                next_node:
+                                  next_node:
+                                    next_node:
+                                      next_node: null
+                                      value: 5
+                                    value: 4
+                                  value: 3
+                                value: 2
+                              value: 1
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data:
+                      input:
+                        linked_list: null
+                        values: []
+                      output:
+                        linked_list:
+                          head: None
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data:
+                      input:
+                        linked_list: null
+                        values:
+                        - value
+                      output:
+                        linked_list:
+                          head:
+                            next_node: null
+                            value: value
+                'Example 4':
+                  value: |
+                    code: 200
+                    status: OK
+                    data:
+                      input:
+                        linked_list: null
+                        values:
+                        - head
+                        - node_1
+                        - node_2
+                      output:
+                        linked_list:
+                          head:
+                            next_node:
+                              next_node:
+                                next_node: null
+                                value: node_2
+                              value: node_1
+                            value: head
+                'Example 5':
+                  value: |
+                    code: 200
+                    status: OK
+                    data:
+                      input:
+                        linked_list:
+                          head:
+                            next_node:
+                              next_node:
+                                next_node:
+                                  next_node:
+                                    next_node: null
+                                    value: 5
+                                  value: 4
+                                value: 3
+                              value: 2
+                            value: 1
+                        values: null
+                      output:
+                        values:
+                        - 1
+                        - 2
+                        - 3
+                        - 4
+                        - 5
+                'Example 6':
+                  value: |
+                    code: 200
+                    status: OK
+                    data:
+                      input:
+                        linked_list:
+                          head: null
+                        values: null
+                      output:
+                        values: []
+                'Example 7':
+                  value: |
+                    code: 200
+                    status: OK
+                    data:
+                      input:
+                        linked_list:
+                          head:
+                            next_node: null
+                            value: value
+                        values: null
+                      output:
+                        values:
+                        - value
+                'Example 8':
+                  value: |
+                    code: 200
+                    status: OK
+                    data:
+                      input:
+                        linked_list:
+                          head:
+                            next_node:
+                              next_node:
+                                next_node: null
+                                value: node_2
+                              value: node_1
+                            value: head
+                        values: null
+                      output:
+                        values:
+                        - head
+                        - node_1
+                        - node_2

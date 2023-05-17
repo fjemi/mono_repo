@@ -1,0 +1,65 @@
+tests:
+  - name:  main
+    description: 
+    inputs:
+    - card_points: [1,2,3,4,5,6,1]
+      k: 3
+    - card_points: [9,7,7,9,7,7,9]
+      k: 7
+    - card_points: [100,40,17,9,73,75]
+      k: 3
+    - card_points: [2,2,2]
+      k: 2
+    - card_points: [1,79,80,1,1,1,200,1]
+      k: 3
+    - card_points: [1,1000,1]
+      k: 1
+    outputs:
+      - 12
+      - 55
+      - 157
+      - 4
+      - 202
+      - 1
+  - name:  get_max_points
+    description: Should produce the expected output for 
+    inputs:
+    - card_points: [1,2,3,4,5,6,1]
+      k: 3
+    - card_points: [9,7,7,9,7,7,9]
+      k: 7
+    - card_points: [100,40,17,9,73,75]
+      k: 3
+    - card_points: [2,2,2]
+      k: 2
+    - card_points: [1,79,80,1,1,1,200,1]
+      k: 3
+    - card_points: [1,1000,1]
+      k: 1
+    outputs:
+      - card_points: [1, 2, 3, 4, 5, 6, 1]
+        k: 3
+        k_cards: [[1, 2, 3], [5, 6, 1]]
+        totals: [6, 12]
+        max_points: 12
+      - card_points: [100, 40, 17, 9, 73, 75]
+        k: 3
+        k_cards: [[100, 40, 17], [9, 73, 75]]
+        totals: [157, 157]
+        max_points: 157
+      - card_points: [2, 2, 2]
+        k: 2
+        k_cards: [[2, 2], [2, 2]]
+        totals: [4, 4]
+        max_points: 4
+      - card_points: [1, 79, 80, 1, 1, 1, 200, 1]
+        k: 3
+        k_cards: [[1, 79, 80], [1, 200, 1]]
+        totals: [160, 202]
+        max_points: 202
+      - card_points: [1, 1000, 1]
+        k: 1
+        k_cards: [[1], [1]]
+        totals: [1, 1]
+        max_points: 1
+

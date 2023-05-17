@@ -1,0 +1,24 @@
+resources:
+- title: 'Hash Tables: Ransom Note'
+  url: https://www.hackerrank.com/challenges/ctci-ransom-note/problem
+tests:
+- function_name:  main
+  description: Should output `yes` if the all the words in the note
+    are in the magazine clippings, otherwise `no`.
+  inputs:
+    values:
+    - magazine: ive got a lovely bunch of coconuts
+      note: ive got some coconuts
+    - magazine: Give me one grand today night
+      note: give one grand today
+      case_sensitive: True
+    - magazine: Give me one grand today night
+      note: give one grand today
+      case_sensitive: False
+  expected_outputs:
+  - magazine_contains_note: False
+  - magazine_contains_note: False
+  - magazine_contains_note: True
+  assertions:
+  - has_values
+  - has_values

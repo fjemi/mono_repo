@@ -1,0 +1,4 @@
+resources:
+- url: https://pyjwt.readthedocs.io/en/stable/usage.html
+- url: https://stackoverflow.com/questions/55459528/using-private-key-in-a-env-file
+- url: https://cryptotools.net/rsagen

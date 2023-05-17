@@ -1,0 +1,60 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Remove Vowels from String
+      description: |
+        [Challenge](https://leetcode.com/problems/reorganize-string/)
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              string: string
+            examples:
+              'Example 1':
+                value: |
+                  string: test
+              'Example 2':
+                value: |
+                  string: hello
+              'Example 3':
+                value: |
+                  string: world
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        string: test
+                      output: 
+                        vowelless_string: tst
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        string: hello
+                      output: 
+                        vowelless_string: hll
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        string: world
+                      output:
+                        vowelless_string: wrld

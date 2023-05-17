@@ -1,0 +1,66 @@
+description: Returns an imported module from an absolute file path
+links:
+functions:
+- name: type_handler
+  description: Returns the Data basemodel dependent on the type of data passed
+    to the function
+  notes: Test using str and dictionary as inputs
+  inputs:
+  - data: ${test_resources_dir}/test.py
+  - data:
+    - path: 
+  outputs: 
+  - module_name: app
+    module_path: ${test_resources_dir}/test.py
+    module: None
+    return_module_only: True
+    __pydantic_initialised__: True
+  - module_name: app
+    module_path: ${test_resources_dir}/test.py
+    module: None
+    return_module_only: True
+    __pydantic_initialised__: True
+  outputs_cast_as: dict
+- name: type_handler
+  description: Returns the Data basemodel dependent on the type of data passed
+    to the function
+  notes: Test using basemodel as input
+  inputs_cast_as: Data
+  inputs: 
+  - module_name: app
+    module_path: ${test_resources_dir}/test.py
+  outputs_cast_as: dict
+  outputs:
+  - module_name: app
+    module_path: ${test_resources_dir}/test.py
+    module: None
+    return_module_only: True
+    __pydantic_initialised__: True
+- name: get_module_at_path
+  description: Returns a module imported from an existing absolute file path,
+    otherwise null
+  inputs:
+  - module_name: test
+    module_path: null
+  - module_name: test
+    module_path: path_does_not_exist/test.py
+  - module_name: test
+    module_path: ${test_resources_dir}/test.py
+  outputs_cast_as: str
+  outputs:
+  - null
+  - null
+  - <module 'test' from '${test_resources_dir}/test.py'>
+- name: main
+  description: Returns an imported module from an absolute file path
+  inputs:
+  - path: ${test_resources_dir}/test.py
+    return_module_only: True
+  - path: ${test_resources_dir}/test.py
+    return_module_only: False
+  outputs_cast_as: str
+  outputs:
+  - <module 'app' from '${test_resources_dir}/test.py'>
+  - Data(module_name='app', module_path='${test_resources_dir}/test.py'>, return_module_only=False)
+
+

@@ -1,0 +1,130 @@
+tests:
+  - name:  set_combinations_and_positions
+    test:
+      - description: Should produce the starting state for the given input
+        inputs:
+          - items: []
+          - items: [0]
+          - items: [0, 1]
+          - items: [a, b]
+        outputs:
+          - items: []
+            combinations: []
+            positions: []
+            return_positions: false
+            values: []
+          - items: [0]
+            combinations: [[0]]
+            positions: [[0]]
+            return_positions: false
+            values: []
+          - items: [0, 1]
+            combinations: [[0, 1]]
+            positions: [[0], [1], [0, 1]]
+            return_positions: false
+            values: []
+          - items: [a, b, c]
+            combinations: [[0, 1, 2]]
+            positions: [[0], [1], [2], [0, 1, 2]]
+            return_positions: false
+            values: []
+        output_type: dataframe
+  - name:  get_combinations
+    test:
+      - description: Should produce combinations for the given input
+        inputs:
+          - items: []
+            combinations: []
+            positions: []
+            return_positions: false
+            values: []
+          - items: [0]
+            combinations: [[0]]
+            positions: [[0]]
+            return_positions: false
+            values: []
+          - items: [0, 1]
+            combinations: [[0, 1]]
+            positions: [[0], [1], [0, 1]]
+            return_positions: false
+            values: []
+          - items: [a, b, c]
+            combinations: [[0, 1, 2]]
+            positions: [[0], [1], [2], [0, 1, 2]]
+            return_positions: false
+            values: []
+        outputs:
+          - items: []
+            combinations: [[]]
+            positions: [[]]
+            return_positions: false
+            values: []
+          - items: [0]
+            combinations: [[0]]
+            positions: [[0]]
+            return_positions: false
+            values: []
+          - items: [0, 1]
+            combinations: [[0, 1]]
+            positions: [[0], [1], [0, 1], [0, 1]]
+            return_positions: false
+            values: []
+          - items: [a, b, c]
+            combinations: [[0, 1, 2], [[0, 1], [0, 2], [1, 2]]]
+            positions: [[0], [1], [2], [0, 1, 2], [0, 1], [0, 2], [1, 2]]
+            return_positions: false
+            values: []
+  - name:  get_combination_values
+    test:
+      - description: Should return 
+        inputs:
+        - items: []
+          combinations: [[]]
+          positions: [[]]
+          return_positions: false
+          values: []
+        - items: [0]
+          combinations: [[0]]
+          positions: [[0]]
+          return_positions: false
+          values: []
+        - items: [0, 1]
+          combinations: [[0, 1]]
+          positions: [[0], [1], [0, 1], [0, 1]]
+          return_positions: false
+          values: []
+        - items: [a, b, c]
+          combinations: [[0, 1, 2], [[0, 1], [0, 2], [1, 2]]]
+          positions: [[0], [1], [2], [0, 1, 2], [0, 1], [0, 2], [1, 2]]
+          return_positions: true
+          values: []
+        outputs:
+          - [[]]
+          - [[0], [0]]
+          - [[0], [1], [0, 1], [0, 1]]
+          - [[0], [1], [2], [0, 1, 2], [0, 1], [0, 2], [1, 2]]
+          - [
+              ['a'], ['b'], ['c'], 
+              ['a', 'b', 'c'], 
+              ['a', 'b'], ['a', 'c'], ['b', 'c'], 
+            ]
+  - name:  main
+    test:
+      - description:
+        inputs:
+          - items: []
+          - items: [0]
+          - items: [0, 1]
+          - items: [0, 1, 2]
+          - items: [a, b, c]
+        outputs:
+          - [[]]
+          - [[0], [0]]
+          - [[0], [1], [0, 1], [0, 1]]
+          - [[0], [1], [2], [0, 1, 2], [0, 1], [0, 2], [1, 2]]
+          - [
+              ['a'], ['b'], ['c'], 
+              ['a', 'b', 'c'], 
+              ['a', 'b'], ['a', 'c'], ['b', 'c'], 
+            ]
+  

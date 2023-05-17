@@ -1,0 +1,193 @@
+description: |
+  # Guess a Number Game
+  we all know the classic "guessing game" with higher or lower prompts. lets do 
+  a role reversal; you create a program that will guess numbers between 1-100, 
+  and respond appropriately based on whether users say that the number is too 
+  high or too low. Try to make a program that can guess your number based on 
+  user input and great code!
+links: 
+  - https://www.reddit.com/r/dailyprogrammer/comments/pii6j/difficult_challenge_1/
+  - https://stackoverflow.com/questions/47690020/python-3-unit-tests-with-user-input
+  - https://stackoverflow.com/questions/1187970/how-to-exit-from-python-without-traceback
+functions:
+  # - name:  set_lower_and_upper_bounds
+  #   description: Returns the upper and lower bounds for a guess
+  #   inputs:
+  #   - guess: 1
+  #     lower_bound: 5
+  #     upper_bound: 10 
+  #     number: 6
+  #   - guess: 11
+  #     lower_bound: 5
+  #     upper_bound: 10 
+  #     number: 6   
+  #   - guess: 1
+  #     lower_bound: 0
+  #     upper_bound: 10
+  #     number: 5
+  #   - lower_bound: 0
+  #     upper_bound: 10
+  #     guess: 3
+  #     number: 3
+  #   - lower_bound: 0
+  #     upper_bound: 10
+  #     guess: 6
+  #     number: 7
+  #   - lower_bound: 0
+  #     upper_bound: 10
+  #     guess: 5
+  #     number: 4
+  #   outputs_basemodel: True
+  #   outputs:
+  #   - {lower: 5, upper: 10}
+  #   - {lower: 5, upper: 10}
+  #   - {lower: 1, upper: 0}
+  #   - {lower: 3, upper: 3}
+  #   - {lower: 6, upper: 0}
+  #   - {lower: 0, upper: 5}
+  # - name: get_message
+  #   description: Returns an input message instructing the user to pick a number
+  #     between a and b
+  #   inputs:
+  #   - guess: -1
+  #     lower_bound: 0
+  #     upper_bound: 100
+  #   - guess: 5
+  #     lower_bound: 5
+  #     upper_bound: 100
+  #   - guess: -1
+  #     lower_bound: 0
+  #     upper_bound: 5
+  #   - guess: 5
+  #     lower_bound: null
+  #     upper_bound: null
+  #   outputs: 
+  #   - 'Enter a number between 0 and 100:\n'
+  #   - 'Enter a number between 5 and 100:\n'
+  #   - 'Enter a number between 0 and 5:\n'
+  #   - 'Good guess! 5 is the correct number.'
+  # - name: get_input
+  #   description: Returns user input from the command line interface (CLI)
+  #   patches:
+  #     - function: input
+  #       return_value: return_value
+  #   inputs:
+  #     - string: input_value
+  #   outputs:
+  #     - return_value
+  # - name: get_user_input
+  #   description: Gets user input from the command line interface (cli)
+  #   patches:
+  #     - function: get_input
+  #       return_value: patched_get_input
+  #   inputs:
+  #   outputs:
+  - name: get_guess
+    description:
+    patches:
+    - function: get_input
+      return_value: 1
+    inputs:
+    - message: null
+      previous_guess: 5
+      correct_guess: False
+    outputs:
+  # - name:  set_processed_input_result
+  #   test:
+  #     - description: Should return None when guess is None
+  #       inputs:
+  #         guess: -1
+  #       outputs: '' 
+  #     - description: Should return `=` when the guess and number are equal
+  #       inputs:
+  #         number: 5
+  #         guess: 5
+  #       outputs: '='
+  #     - description: Should return null if the guess exceeds the upper bound
+  #       inputs:
+  #         number: 2
+  #         lower_bound: 0
+  #         upper_bound: 10
+  #         guess: 11
+  #         result: ''
+  #       outputs: ''
+  #     - description: Should return null if the guess is less than the lower bound
+  #       inputs:
+  #         number: 2
+  #         lower_bound: 0
+  #         upper_bound: 10
+  #         guess: -1
+  #         result: ''
+  #       outputs: ''
+  #     - description: Should return the greater than symbol when the guess is less
+  #         than the number
+  #       inputs:
+  #         number: 6
+  #         lower_bound: 0
+  #         upper_bound: 10
+  #         guess: 5
+  #       outputs: '>'
+  #     - description: Should return the less than symbol when the guess greater than 
+  #         the number
+  #       inputs:
+  #         number: 6
+  #         lower_bound: 0
+  #         upper_bound: 10
+  #         guess: 8
+  #       outputs: '<'
+  # - name:  get_user_input
+  #   description: Should return 5 when the user inputs 5
+  #   patches:
+  #     - method: input
+  #       return_value: 5
+  #       assert_called_with: 'input message'
+  #   inputs:
+  #     - input_message: 'input message'
+  #   outputs: 5
+  # - description: Should return None when the result is the equal sign
+  #   patch:
+  #     - method: input
+  #       return_value: 5
+  #       assert_called_with: 'input message'
+  #   inputs:
+  #     number: 5
+  #     result: '='
+  #     input_message: 'input message'
+  #   outputs: 5
+  # - name:  main
+  #   test:
+  #     - description: Should result in a success message when 
+  #       patch:
+  #         - method: input
+  #           return_value: 5
+  #           assert_called_with: input message
+  #       inputs: 
+  #         - number: 1
+  #           lower_bound: 0
+  #           upper_bound: 10
+  #           guess: 1
+  #           input_message: input_message
+  #           result: ''
+  #         - number: 2
+  #           lower_bound: 0
+  #           upper_bound: 10
+  #           guess: 2
+  #           input_message: input_message
+  #           result: '='
+  #       outputs: 
+  #         - Good guess! 1 is the correct number.
+  #         - Good guess! 2 is the correct number.
+  #     - description: Should result in a success message when 
+  #       patch:
+  #         - method: input
+  #           return_value: 5
+  #           assert_called_with: input message
+  #       inputs: 
+  #         - number: 5
+  #           lower_bound: 0
+  #           upper_bound: 100
+  #           guess: -1
+  #           input_message: input_message
+  #           result: ''
+  #       outputs: 
+  #         - Good guess! 5 is the correct number.

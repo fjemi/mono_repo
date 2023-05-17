@@ -1,0 +1,81 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Coding Challenges
+      summary: Longest Common Substring
+      description: |
+        [Challenge](https://www.geeksforgeeks.org/longest-common-substring-dp-29/)
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              digits: string
+            examples:
+              'Example 1':
+                value: |
+                  str1: GeeksforGeeks
+                  str2: GeeksQuiz
+              'Example 2':
+                value: |
+                  str1: abcdxyz
+                  str2: xyzabcd
+              'Example 3':
+                value: |
+                  str1: zxabcdezy
+                  str2: yzabcdezx
+      responses:
+        200:
+          description: Successful Response
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+                'Example 1':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        str1: GeeksforGeeks
+                        str2: GeeksQuiz
+                      output: 
+                        common_substrings:
+                          0: ['']
+                          1: [G, e]
+                          2: [Ge, ee]
+                          3: [Gee, eek]
+                          4: [Geek, eeks, eeks]
+                          5: [Geeks, Geeks]
+                'Example 2':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        str1: abcdxyz
+                        str2: xyzabcd
+                      output: 
+                        common_substrings:
+                          0: ['']
+                          2: [yz]
+                          3: [bcd, xyz]
+                          4: [abcd]
+                'Example 3':
+                  value: |
+                    code: 200
+                    status: OK
+                    data: 
+                      input:
+                        str1: zxabcdezy
+                        str2: yzabcdezx
+                      output: 
+                        common_substrings:
+                          0: ['']
+                          1: [z, x, y]
+                          2: [zx]
+                          5: [abcde]
+                          6: [abcdez]

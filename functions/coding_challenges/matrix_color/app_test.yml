@@ -1,0 +1,122 @@
+description: | 
+  Returns the connected elements of a amtrix. Connected elements are 
+  adjacent elements that share the same value. 
+links:
+  - http://www.youtube.com/watch?v=IWvbPIYQPFM
+tests:
+  - name:  get_shape
+    description:
+    inputs:
+      - matrix: [[]]
+      - matrix: [[1], [1], [1]]
+      - matrix: [[], [], []]
+      - matrix: [[B, G, R], [B, B, G], [R, B, G], [R, R, B]]
+    # TODO: Testing Framework: If output is a dataclass, cast it to a dictionary
+    # outputs_dataclass: Shape
+    # Use BaseModels, which can be converted to dictionaries easier than dataclasses
+    outputs_basemodel: True
+    outputs:
+      - m: 1
+        n: 0
+      - m: 3
+        n: 1
+      - m: 3
+        n: 0
+      - m: 4
+        n: 3
+  - name:  get_elements
+    description:
+    inputs:
+      - matrix: [[B, G, R], [B, B, G], [R, B, G], [R, R, B]]
+        shape:
+          m: 4
+          n: 3
+    outputs_basemodel: True
+    outputs:
+      - positions: [
+          0_0, 0_1, 0_2, 1_0, 1_1, 1_2, 
+          2_0, 2_1, 2_2, 3_0, 3_1, 3_2,
+        ]
+        values: [
+          B, G, R, B, B, G, 
+          R, B, G, R, R, B,
+        ]
+        connections: [
+          [1_0, 1_1], [1_2], [], [2_1], [], [2_2], 
+          [3_0, 3_1], [3_2], [], [], [], [],
+        ]
+  - name:  expand_connections
+    description:
+    inputs_basemodel: Elements
+    inputs:
+      - positions: [
+          0_0, 0_1, 0_2, 1_0, 1_1, 1_2, 
+          2_0, 2_1, 2_2, 3_0, 3_1, 3_2,
+        ]
+        values: [
+          B, G, R, B, B, G, 
+          R, B, G, R, R, B,
+        ]
+        connections: [
+          [1_0, 1_1], [1_2], [], [2_1], [], [2_2], 
+          [3_0, 3_1], [3_2], [], [], [], [],
+        ]
+    outputs_basemodel: True
+    outputs:
+      - matrix: [[B, G, R], [B, B, G], [R, B, G], [R, R, B]]
+        shape: 
+          m: 4
+          n: 3
+        elements: 
+          values: [B, G, R, R]
+          connections: [
+            [0_0, 1_0, 1_1, 2_1, 3_2], [0_1, 1_2, 2_2], 
+            [0_2], [2_0, 3_0, 3_1]
+          ]
+  - name:  remove_sub_connections
+    description:
+    inputs_basemodel: Elements
+    inputs:
+      - matrix: [[B, G, R], [B, B, G], [R, B, G], [R, R, B]]
+        shape: 
+          m: 4
+          n: 3
+        elements: 
+          values: [B, G, R, R]
+          connections: [
+            [0_0, 1_0, 1_1, 2_1, 3_2], [0_1, 1_2, 2_2], 
+            [0_2], [2_0, 3_0, 3_1]
+          ]
+    outputs_basemodel: True
+    outputs:
+      - values: [B, G, R, R]
+        connections: [
+          [0_0, 1_0, 1_1, 2_1, 3_2], [0_1, 1_2, 2_2], 
+          [0_2], [2_0, 3_0, 3_1]
+        ]
+  - name:  main
+    description:
+    inputs:
+      - matrix: [[B, G, R], [B, B, G], [R, B, G], [R, R, B]]
+    outputs_basemodel: True
+    outputs:
+      - values: [B, G, R, R]
+        connections: [
+          
+        ]
+# TODO - Flowchart Framework: integrate with grpahviz or another flowchart package
+flowchart:
+  - node: 01
+    text: Start
+  - node: 02
+    text: Get the dimensions of the matrix
+  - node: 03
+    text: Store element's position, value, and adjacent positions with 
+      matching value each element of the matrix
+  - node: 04
+    text: Last element
+    line:
+      - text: yes
+        connects_to_node_id: 
+      - text: no
+        connects_to_node_id: 02 

@@ -1,7 +1,7 @@
 
 
 from dataclasses import dataclass, field
-from os import path
+from os import path, makedirs
 from shelve import DbfilenameShelf
 import zlib
 from urllib.request import urlopen
@@ -9,7 +9,7 @@ from urllib.request import urlopen
 from api import models
 from shared.get_environment import app as get_environment
 # from shared.get_request_form_data import app as get_form_data
-from wrappers.aws import app as aws
+from functions.wrappers.aws import app as aws_wrapper
 
 
 ENV = get_environment.main(f'module_path: {__file__}')
@@ -106,13 +106,13 @@ async def set_final_storage(data: Data) -> Data:
 
 async def save_content_to_file_system(data: Data) -> bool:
   directory = path.join(
-    data.storage.directory, 
+    data.storage.directory,
     data.storage.folder,
   )
   if path.exists(directory) is False:
     makedirs(directory)
   file_path = path.join(
-    directory, 
+    directory,
     data.form.json.file_name,
   )
   mode = 'w+'
@@ -132,16 +132,16 @@ async def save_content_to_s3(data: Data) -> bool:
     folder=data.storage.folder,
     file_name=data.form.json.file_name,
   )
-  data = f'''
-    service_name: s3.put_object
-    service_params:
-      Bucket: {data.storage.s3_bucket}
-      Body: {data.content}
-      Key: {key}
-    parse_response:
-    - ResponseMetadata.HTTPStatusCode
+  services = f'''
+    - name: s3.put_object
+      parameters:
+        Bucket: {data.storage.s3_bucket}
+        Body: {data.content}
+        Key: {key}
+      parse_response:
+      - ResponseMetadata.HTTPStatusCode
   '''
-  response = aws.main(data=data)
+  response = aws_wrapper.main(services=services)
   return response.request_response
 
 
@@ -191,4 +191,4 @@ async def main(
   result = await save_content_to_final_destination(data=data)
   data.response = await get_response(data=data)
   return data.response
-f'File saved to {data.form.json.location}'
+  

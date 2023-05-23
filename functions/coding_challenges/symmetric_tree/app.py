@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
 from dataclasses import dataclass, asdict
-from typing import List, Dict, Any
+from typing import List, Any
 import yaml
 
 from api import models
-from shared.tree import app as shared_tree
-from shared.tree.app import Tree
+from functions.algorithms.trees import app as shared_tree
+from functions.algorithms.trees.app import Tree
 
 
 @dataclass

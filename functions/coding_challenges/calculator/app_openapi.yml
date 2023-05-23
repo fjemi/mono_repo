@@ -1,10 +1,34 @@
 paths: 
   '/{path}/':
+    get:
+      tags:
+      - TODO
+      - Calculator
+      summary: Calculator     
+      description:
+        $ref: '#/components/examples/{path}.description'
+      # parameters:
+      # - in: query
+      #   name: name
+      #   type: string
+      #   examples: 
+      #     World:
+      #       value: World
+      #     Mars:
+      #       value: Mars
+      responses:
+        200:
+          description: Successful Response
+          content:
+            'text/html':
+              schema:
+                type: string
+                example: <html>Example HTML Response</html>
     post:
       tags:
       - TODO
       - Coding Challenges
-      summary: Letter Combinations of Phone Numbers
+      summary: Calculator
       description:
         $ref: '#/components/examples/{path}.description'
       requestBody:
@@ -14,12 +38,24 @@ paths:
               type: string
               digits: string
             examples:
+              'List Operations':
+                value: |
+                  operations:
+                  - name: null
               'Example 1':
                 value: |
-                  digits: 23
+                  operations:
+                  - name: add
+                    a: 0
+                    b: 1
+                  - name: subtract
+                    ans: true
+                    a: [1, 2, 3]
               'Example 2':
                 value: |
-                  digits: ''
+                  operations:
+                    name: absolute_value
+                    a: 0
               'Example 3':
                 value: |
                   digits: 2

@@ -1,0 +1,8 @@
+resources: 
+  - url: https://www.reddit.com/r/dailyprogrammer/comments/pjbj8/easy_challenge_2/
+  - url: https://linuxhint.com/sys-path-append-python/
+  - url: https://stackoverflow.com/questions/582056/getting-list-of-parameter-names-inside-python-function
+  - url: https://www.geeksforgeeks.org/how-to-import-a-python-module-given-the-full-path/
+  - url: https://stackoverflow.com/questions/1187970/how-to-exit-from-python-without-traceback
+todo:
+- add get routes and html pages for operations

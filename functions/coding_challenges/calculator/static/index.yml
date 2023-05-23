@@ -1,0 +1,7 @@
+resources:
+- url: https://www.w3schools.com/howto/howto_css_round_buttons.asp
+- url: https://medium.com/@davidmellul/make-a-sidebar-for-your-website-the-easy-way-html5-css3-vanillajs-eccbb4d0cff6
+- url: https://stackoverflow.com/questions/13162245/flask-jinja2-insert-content-of-css-file-inline
+todo:
+- add vanilla js functional components
+- spa for vanilla js. content window is the only thing that changes and updates based off of clicks

@@ -1,0 +1,80 @@
+description: Returns the absolute value (abs), distance from zero, for a number or
+  array of numbers
+functions:
+- name: absolute_value
+  description: returns the abs of a number
+  tests:
+  - arguments:
+      inputs: 5
+    assertions:
+      equals: 5
+  - arguments:
+      inputs: -5
+    assertions:
+      equals: 5
+  - arguments:
+      inputs: 5.5
+    assertions:
+      equals: 5.5
+  - arguments:
+      inputs: 0
+    assertions:
+      equals: 0
+- name: handle_number
+  description: handle inputs that are a single number
+  tests:
+  - arguments:
+      data:
+        inputs: -5
+        operation: absolute_value
+    cast_arguments:
+      data: Data
+    assertions:
+      has_attribute:
+        result: 5
+  - arguments:
+      data:
+        inputs: 4
+        operation: absolute_value
+    cast_arguments:
+      data: Data
+    assertions:
+      has_attribute:
+        result: 4
+- name: handle_numbers
+  description: handle inputs that are an array number
+  tests:
+  - arguments:
+      data:
+        inputs: [-5, 5]
+        operation: absolute_value
+    cast_arguments:
+      data: Data
+    assertions:
+      has_attribute:
+        result: [5, 5]
+  - arguments:
+      data:
+        inputs: [4, -4]
+        operation: absolute_value
+    cast_arguments:
+      data: Data
+    assertions:
+      has_attribute:
+        result: [4, 4]
+- name: main
+  description: Orchestration function that executes the other funtions within
+    the module
+  tests:
+  - arguments:
+      inputs: [4, -4]
+      operation: absolute_value
+    assertions:
+      has_attribute:
+        result: [4, 4]
+  - arguments:
+      inputs: -4
+      operation: absolute_value
+    assertions:
+      has_attribute:
+        result: 4

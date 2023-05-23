@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang='en'>
+  <meta charset='utf-8'>
+  <meta name='viewport' content='width=device_width, initial-scale=1.0'>
+  <title>Calculator</title>
+<head>
+  {% block style %}
+  <style type='text/css'>
+    {% include 'style.css' %}
+  </style>
+  {% endblock %}
+</head>
+<body>
+  <input 
+    type='hidden' 
+    id='data' 
+    value='{{ data }}'
+  >
+  
+  <div id="sidebar" class="collapsed">
+    <h3><center>Operations</center></h3>
+    </br>
+    
+    <!-- {% for subject in data %}
+    <label for='{{ subject }}'>{{ subject.upper() }}</label>
+    </br>
+    <select name="{{ subject }}_operations" id='{{ subject }}'> 
+      <option value="blank"></option>
+      {% for operation in data.get(subject) %}
+        console.log({{ operation }})
+        <option value="{{ operation.name }}"><a href="">{{ operation.name }}</a></option>
+      {% endfor %}
+    </select>
+    </br>
+    {% endfor %} -->
+
+    <nav class="navbar">
+      <ul>
+        {% for subject in data %}
+        <li>
+          <a href="#">{{ subject }}</a>
+            <ul>
+              {% for operation in data.get(subject) %}
+              <li><a href="{{ operation.route }}">{{ operation.name }}</a></li>
+              {% endfor %}
+            </ul>
+        </li>
+        {% endfor %}      
+      </ul>
+    </nav>
+
+    </p>
+  </div>
+
+  <div id="content">
+    <h2>Calculator</h2>
+    <button class='sidebar_toggle_button' title='Toggle Sidebar'></button>
+    <h3>Content</h3>
+
+
+    <!-- {% for subject in data %}
+    <div class="subject_operation_dropdown">
+      <button
+        data-toggle="dropdown"
+        class="subject_operation_button">
+        {{ subject }}
+      </button>
+      <div class="subject_operation_dropdown_menu">
+        {% for operation in data.get(subject) %}
+        <a href="{{ operation.route }}">{{ operation.name }}</a>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %} -->
+
+
+  </div>
+  
+  {% block javascript %}
+  <script type='text/javascript'>
+    {% include 'script.js'  %}
+  </script>
+  {% endblock %}
+
+  </body>
+</html>

@@ -1,0 +1,252 @@
+description: Operations for calculating simple interest
+todo:
+- Add ordinal for time: years, months, days, hours, etc.
+resources:
+- url: https://www.calculatorsoup.com/calculators/financial/simple-interest-plus-principal-calculator.php
+functions:
+- name: calculate_principal
+  description: |
+    Calculate principal amount given rate, time, and amount accrued
+    Formula: P = A / (1 + rt)
+  tests:
+  - arguments:
+      data:
+        inputs:
+          principal: null
+          rate: 1
+          time: 1
+          accrued: 1
+    cast_arguments:
+      data: Data
+    assertions:
+      has_attributes:
+        result: 2
+  - arguments:
+      data:
+        inputs:
+          principal: null
+          rate: 1
+          time: 2
+          accrued: 3
+    cast_arguments:
+      data: Data
+    assertions:
+      has_attributes:
+        result: 3
+  - arguments:
+      data:
+        inputs:
+          principal: null
+          rate: 3
+          time: 4
+          accrued: 5
+    cast_arguments:
+      data: Data
+    assertions:
+      has_attributes:
+        result: 13
+- name: calculate_rate
+  description: |
+    Calculate rate given principal amount, time, and amount accrued
+    Formula: r = (A/P - 1) / t
+  tests:
+  - arguments:
+      data:
+        inputs: 
+          principal: 1
+          rate: null
+          time: 1
+          accrued: 1 
+    cast_arguments:
+      data: Data
+    assertions:
+      has_attributes:
+        result: 0
+  - arguments:
+      data:
+        inputs:
+          principal: 5
+          rate: null
+          time: 4
+          accrued: 3
+    cast_arguments:
+      data: Data
+    assertions:
+      has_attributes:
+        result: -0.1
+  - arguments:      
+      data:
+        inputs:
+          principal: 3
+          rate: null
+          time: 2
+          accrued: 9
+    cast_arguments:
+      data: Data
+    assertions:
+      has_attributes:
+        result: 1
+- name: calculate_time
+  description: |
+    Calculate time given the principal amount, rate, and amount accrued
+    Formula: t = (A/P - 1) / r
+  tests:
+  - arguments:
+      data:
+        inputs:
+          principal: 1
+          rate: 1
+          time: null
+          accrued: 1
+    cast_arguments:
+      data: Data
+    assertions:
+      has_attributes:
+        result: 0
+  - arguments:
+      data:
+        inputs:
+          principal: 1
+          rate: 1
+          time: null
+          accrued: 2
+    cast_arguments:
+      data: Data
+    assertions:
+      has_attributes:
+        result: 1
+  - arguments:
+      data:
+        inputs:
+          principal: 4
+          rate: 2
+          time: null
+          accrued: 8
+    cast_arguments:
+      data: Data
+    assertions:
+      has_attributes:
+        result: 0.5
+- name: calculate_accrued
+  description: |
+    Calculate amount accrued given the principal amount, rate, and time
+    Formula: A = P(1 + rt)
+  tests:
+  - arguments:
+      data:
+        inputs:
+          principal: 1
+          rate: 1
+          time: 1
+    cast_arguments:
+      data: Data
+    assertions:
+      has_attributes:
+        result: 2
+  - arguments:
+      data:
+        inputs:
+          principal: 2
+          rate: 3
+          time: 5
+    cast_arguments:
+      data: Data
+    assertions:
+      has_attributes:
+        result: 32
+  - arguments:
+      data:
+        inputs:
+          principal: 5
+          rate: 3
+          time: 7
+    cast_arguments:
+      data: Data
+    assertions:
+      has_attributes:
+        result: 110
+- name: calculate_total_accrued
+  description: |
+    Calculate total accrued amount; principal plus interest
+    Formula: Total = P + A
+  tests:
+  - arguments:
+      data:
+        inputs:
+          principal: 1
+          accrued: 1
+    cast_arguments:
+      data: Data
+    assertions:
+      has_attributes:
+        result: 2
+  - arguments:
+      data:
+        inputs:
+          principal: 2
+          accrued: 2
+    cast_arguments:
+      data: Data
+    assertions:
+      has_attributes:
+        result: 4
+  - arguments:
+      data:
+        inputs:
+          principal: 5
+          accrued: 10
+    cast_arguments:
+      data: Data
+    assertions:
+      has_attributes:
+        result: 15
+- name: main
+  description: |
+    Orchestration function that calls the function for an operation and 
+    passes the inputs to that function
+  tests:
+  - arguments:
+      inputs:
+        rate: 1
+        time: 1
+        accrued: 1
+      operation: simple_interest.principal
+    assertions:
+      has_attributes:
+        result: 2
+  - arguments:
+      inputs: 
+        principal: 1
+        time: 1
+        accrued: 1 
+      operation: simple_interest.rate
+    assertions:
+      has_attributes:
+        result: 0
+  - arguments:
+      inputs:
+        principal: 1
+        rate: 1
+        accrued: 2
+      operation: simple_interest.time
+    assertions:
+      has_attributes:
+        result: 0
+  - arguments:
+      inputs:
+        principal: 1
+        rate: 1
+        time: 1
+      operation: simple_interest.accrued
+    assertions:
+      has_attributes:
+        result: 2
+  - arguments:
+      inputs:
+        principal: 1
+        accrued: 1
+      operation: simple_interest.total_accrued
+    assertions:
+      has_attributes:
+        result: 2
+

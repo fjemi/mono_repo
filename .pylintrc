@@ -1,4 +1,6 @@
 [MAIN]
+# https://stackoverflow.com/questions/1899436/pylint-unable-to-import-error-how-to-set-pythonpath
+init-hook="import sys; sys.path.append('.')"
 
 disable=
   C0116, # missing-function-docstring

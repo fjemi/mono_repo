@@ -1,5 +1,6 @@
 const data = document.querySelector('#data').value
 const greeting = document.getElementById('greeting')
+
 let props = {
   data: JSON.parse(data),
   greeting: greeting,

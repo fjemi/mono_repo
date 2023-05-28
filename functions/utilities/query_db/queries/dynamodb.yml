@@ -1,0 +1,95 @@
+tables:
+  user_roles:
+    description: Store the roles of users. Roles are used to determine what 
+      functions a user is authorized to use.
+    schema:
+    - name: user_id
+      type: string
+      description: A unique ID for a user
+      primary_key: hash
+    - name: timestamp
+      type: number
+      description: |
+        The time that the user was added to. Sort in ascending order and get 
+        the first result to get the current role for a user.
+      primary_key: range
+    - name: roles
+      type: array[string]
+      description: A list of roles for a user
+create_user_roles_table: |
+  client: dynamodb
+  method: create_table
+  parameters: 
+    TableName: user_roles.${API_ENV}
+    KeySchema:
+    - AttributeName: user_id
+      KeyType: HASH
+    - AttributeName: timestamp
+      KeyType: RANGE
+    AttributeDefinitions:
+    - AttributeName: user_id
+      AttributeType: S
+    - AttributeName: timestamp
+      AttributeType: N
+    BillingMode: PAY_PER_REQUEST
+    Tags:
+    - Key: Environment
+      Value: Development
+    - Key: User
+      Value: Roles
+  parse_response:
+  - TableDescription.TableName
+  - TableDescription.TableStatus
+delete_table: |
+  client: dynamodb
+  method: delete_table
+  parameters: 
+    TableName: [table_name]
+  parse_response: 
+  - TableDescription.TableName
+  - TableDescription.TableStatus
+list_tables: |
+  client: dynamodb
+  method: list_tables
+get_a_users_role: |
+  client: dynamodb
+  method: query
+  parameters:
+    TableName: user_roles.${API_ENV}
+    ScanIndexForward: false
+    AttributesToGet:
+    - roles
+    Limit: 1
+    KeyConditions:
+      user_id:
+        AttributeValueList:
+        - S: [user_id]
+        ComparisonOperator: EQ
+  parse_response:
+  - Items.0.roles.SS
+add_a_users_role: |
+  client: dynamodb
+  method: put_item
+  parameters:
+    TableName: user_roles.${ENV.API_ENV}
+    Item:
+      user_id: 
+        S: [user_id]
+      timestamp: 
+        N: [timestamp]
+      roles: 
+        SS: [roles]
+  parse_response:
+  - ResponseMetadata.HTTPStatusCode
+create_table: |
+  client: dynamodb
+  method: create_table
+  parameters: 
+    TableName: [table_name]
+    KeySchema: [key_schema]
+    AttributeDefinitions: [attribute_definitions]
+    BillingMode: PAY_PER_REQUEST
+    Tags: [tags]
+  parse_response:
+  - TableDescription.TableName
+  - TableDescription.TableStatus

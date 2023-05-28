@@ -1,0 +1,146 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Utilities
+      summary: Query DB
+      description: |
+        Query databases within the application or API layer 
+        - Expandable; easily support a variety of databases and query languages.
+        - Supports parameterized queries.
+        - Sanitizes queries to prevent SQL injections.
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              database: string
+              query: string
+              parameters: object
+              text: string
+            examples:
+              "DynamoDB - Get a Existing User's Role":
+                value: |
+                  database: dynamodb
+                  query: get_a_users_role
+                  parameters: 
+                    user_id: user_00
+              "DynamoDB - Get a Non-Existing User's Role":
+                value: |
+                  database: dynamodb
+                  query: get_a_users_role
+                  parameters: 
+                    user_id: user_does_not_exist
+              'DynamoDB - Create Table':
+                value: |
+                  database: dynamodb
+                  query: create_table
+                  parameters:
+                    table_name: example_table
+                    key_schema:
+                    - AttributeName: example_hash
+                      KeyType: HASH
+                    - AttributeRange: example_range
+                      KeyType: RANGE
+                    attribute_definitions:
+                    - AttributeName: example_hash
+                      AttributeType: S
+                    - AttributeName: example_range
+                      AttributeType: N
+                    tags: 
+                    - key: example
+                      value: table
+              'DynamoDB - Delete Table':
+                value: |
+                  database: dynamodb
+                  query: delete_table
+                  parameters:
+                    table_name: example_table
+              'DynamoDB - Send Text as Query':
+                value: |
+                  database: dynamodb
+                  text: |
+                    client: dynamodb
+                    method: list_tables
+      responses:
+        200:
+          description: Success
+          content: 
+            text/plain:
+              schema:
+                type: string
+                $ref: '#/components/schemas/OK/text_plain'
+              examples:
+              "DynamoDB - Get a Existing User's Role":
+                value: |
+                  code: 200
+                  data:
+                  - [admin, guest, user]
+                  status: OK
+              "DynamoDB - Get a Non-Existing User's Role":
+                value: |
+                  code: 200
+                  data:
+                  - []
+                  status: OK
+              'DynamoDB - Create Table':
+                value: |
+                  code: 200
+                  data: [EXAMPLE_TABLE, CREATING]
+                  status: OK
+              'DynamoDB - Delete Table':
+                value: |
+                  code: 200
+                  data: [EXAMPLE_TABLE, DELETING]
+                  status: OK
+              'DynamoDB - Send Text as Query':
+                value: |
+                  code: 200
+                  data: [ ... ]
+                  status: OK
+        404: 
+          description: Not Found
+          content: 
+            text/plain:
+              schema:
+                type: string
+                detail: string
+              examples:
+                'Database does not exist':
+                  value: |
+                    detail: '[database] does not exist'
+                'Query does not exist for database':
+                  value: |
+                    detail: '[query] does not exist for [database]'
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail: string
+              examples:
+                'Database does not exist':
+                  value:
+                    detail: '[database] does not exist'
+                'Query does not exist for database':
+                  value:
+                    detail: '[query] does not exist for [database]'
+        500:
+          description: Error
+          content:
+            text/plain:
+              schema:
+                type: string
+                detail: string
+              examples:
+                'Internal Server Error':
+                  value: |
+                    detail: Internal Server Error
+            application/json:
+              schema:
+                type: string
+                detail: string
+              examples:
+                'Internal Server Error':
+                  value:
+                    detail: Internal Server Error
+        

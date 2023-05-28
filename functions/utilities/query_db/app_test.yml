@@ -1,0 +1,6 @@
+todo: 
+- add roles for authorizing tables and databases queries
+- add test data
+resources: 
+- https://stackoverflow.com/questions/74354046/dynamodb-securely-put-update-to-avoid-sql-injection-python
+functions:

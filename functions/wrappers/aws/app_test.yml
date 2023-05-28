@@ -5,6 +5,11 @@ description: |
 resources:
 - url: https://boto3.amazonaws.com/v1/documentation/api/latest/index.html
 - url: https://stackoverflow.com/questions/43875841/convert-boto3-output-to-convenient-format
+todo:
+- Return status codes from response. For example, the response can fail in AWS
+  but still return 200 within this api.
+- Update tests and openapi.yml
+
 tests:
 - function_name: get_session
   description: |
@@ -36,7 +41,7 @@ tests:
   assertions: equals
 - function_name: get_client
   description: |
-    Returns a boto3 client object for interacing with AWS services
+    Returns a boto3 client object for interacting with AWS services
   inputs_values:
   - service_name: ec2
   - service_name: s3

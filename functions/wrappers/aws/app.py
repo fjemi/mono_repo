@@ -7,7 +7,7 @@ from datetime import datetime
 import json
 import boto3
 import yaml
-
+from fastapi import HTTPException
 
 from api import models as api_models
 from shared.get_environment import app as get_environment
@@ -22,36 +22,29 @@ CLIENTS = {}
 
 
 @dataclass
-class Service:
-  name: str | None = None
-  parameters: Any | None = None
-  parse_response: List[str] | None = None
-  response: Any | None = None
-  error: Any | None = None
-
-
-@dataclass
 class Body(api_models.Body):
-  services: List[dict] | str | None = None
+  client: str | None = None
+  method: str | None = None
+  parameters: Any | None = None
+  response: Any | None = None
+  parse_response: List[str] | None = None
+  error: Any | None = None
 
 
 @dataclass
 class Data:
   body: Body | None = None
-  api_call: bool = False
   session: boto3.Session | None = field(default_factory=lambda: SESSION)
   clients: Dict[str, boto3.client] = field(default_factory=lambda: CLIENTS)
-  services: List[Service] | None = None
 
 
-async def process_request_argument(
-  _locals: dict,
-  data: Data = Data,
-  body: Body = Body,
+async def process_call_from_api(
+  request: api_models.Request,
+  service: None = None,
 ) -> Data:
-  request = _locals['request']
+  _ = service
+  body = Body()
 
-  body = body()
   for _field in fields(body):
     if not hasattr(request.data.body, _field.name):
       continue
@@ -60,37 +53,39 @@ async def process_request_argument(
       continue
     setattr(body, _field.name, value)
 
-  data = data(body=body, api_call=True)
+  data = Data(body=body)
   return data
 
 
-async def process_non_request_arguments(
-  _locals: dict,
-  data: Data = Data,
-  body: Body = Body,
+async def process_call_from_module(
+  service: str | dict,
+  request: None = None,
 ) -> Data:
-  body = body()
-  for _field in fields(body):
-    if _field.name not in _locals:
-      continue
-    value = _locals[_field.name]
-    if not value:
-      continue
-    setattr(body, _field.name, value)
-  data = data(body=body)
+  _ = request
+  if isinstance(service, str):
+    service = yaml.safe_load(service)
+
+  body = Body(**service)
+  data = Data(body=body)
   return data
 
 
 PROCESS_MAIN_ARGUMENTS = {
-  'request': process_request_argument,
-  'non_request': process_non_request_arguments,
+  'api_call': process_call_from_api,
+  'module_call': process_call_from_module,
 }
 
 
-async def process_main_arguments(_locals: dict) -> Data:
-  cases = 'request' if _locals['request'] else 'non_request'
+async def process_main_arguments(
+  request: api_models.Request,
+  service: str | dict,
+) -> Data:
+  cases = 'api_call' if request else 'module_call'
   switcher = PROCESS_MAIN_ARGUMENTS[cases]
-  data = await switcher(_locals=_locals)
+  data = await switcher(
+    request=request,
+    service=service,
+  )
   return data
 
 
@@ -114,30 +109,48 @@ async def get_client(
   clients: Dict[str, boto3.client],
 ) -> Dict[str, boto3.client]:
   if service_name in clients:
-    return clients
+    client = clients[service_name]
+    return client
 
+  services = session.get_available_services()
+  if service_name not in services:
+    raise HTTPException(
+      status_code=400,
+      detail=f'{service_name} does not exist'
+    )
+
+  # pylint: disable=global-variable-not-assigned
   global CLIENTS
   client = session.client(service_name=service_name)
   CLIENTS[service_name] = client
-  return CLIENTS
+  return client
 
 
-async def get_request(client: boto3.client, request: str) -> Callable:
-  request = getattr(client, request)
-  return request
+async def get_client_method(
+  client: boto3.client,
+  method: str,
+) -> Callable:
+  if not hasattr(client, method):
+    service = type(client).__name__
+    raise HTTPException(
+      status_code=400,
+      detail=f'{service} does not have the method {method}',
+    )
+  method = getattr(client, method)
+  return method
 
 
 GET_RESPONSE = {
-  0: lambda request, parameters: request(),
-  1: lambda request, parameters: request(parameters),
-  2: lambda request, parameters: request(*parameters),
-  3: lambda request, parameters: request(**parameters),
-  4: lambda request, parameters: request,
+  0: lambda method, parameters: method(),
+  1: lambda method, parameters: method(parameters),
+  2: lambda method, parameters: method(*parameters),
+  3: lambda method, parameters: method(**parameters),
+  4: lambda method, parameters: method,
 }
 
 
-async def get_service_request_response(
-  request: Callable,
+async def get_client_method_response(
+  method: Callable,
   parameters: Any | None,
 ) -> Any:
   params_type = type(parameters).__name__
@@ -151,10 +164,23 @@ async def get_service_request_response(
   }
   index = conditions[1]
   function = GET_RESPONSE[index]
-  response = function(
-    parameters=parameters,
-    request=request,
-  )
+
+  response = None
+  try:
+    response = function(
+      parameters=parameters,
+      method=method,
+    )
+  except Exception as e:
+    detail = {
+      'exception': type(e).__name__,
+      'message': str(e).split('\n'),
+    }
+    # pylint: disable=raise-missing-from
+    raise HTTPException(
+      status_code=500,
+      detail=detail,
+    )
   return response
 
 
@@ -185,21 +211,21 @@ def convert_datetime_to_seconds(json_object: Any):
     return json_object.timestamp()
 
 
-async def parse_response(service: Service) -> Service:
-  response_type = type(service.response).__name__.lower()
+async def parse_response(body: Body) -> Body:
+  response_type = type(body.response).__name__.lower()
   conditions = [
-    service.parse_response in ['', None],
-    service.response in [[], {}, None],
+    body.parse_response in ['', None],
+    body.response in [[], {}, None],
     response_type not in ['dict', 'list', 'nonetype'],
   ]
   if True in conditions:
-    return service
+    return body
 
   store = []
 
-  for parsers in service.parse_response:
+  for parsers in body.parse_response:
     keys = parsers.split('.')
-    response = deepcopy(service.response)
+    response = deepcopy(body.response)
     for key in keys:
       response_type = type(response).__name__
       switcher = PARSE_RESPONSE[response_type]
@@ -207,110 +233,70 @@ async def parse_response(service: Service) -> Service:
         key=key,
         response=response,
       )
+    response = {parsers: response}
     store.append(response)
 
-  service.response = store
-  return service
+  body.response = store
+  return body
 
 
-async def process_service_requests(data: Data) -> Data:
-  services = deepcopy(data.body.services)
-  if isinstance(services, str):
-    services = yaml.safe_load(services)
+async def process_service_request(data: Data) -> Data:
+  body = deepcopy(data.body)
+  if isinstance(body, str):
+    body = yaml.safe_load(body)
 
-  store = []
-  for service in services:
-    service = Service(**service)
-    service_name, request = service.name.split('.')
-    data.clients = await get_client(
-      session=data.session,
-      service_name=service_name,
-      clients=data.clients,
-    )
-    client = data.clients[service_name]
-    request = await get_request(
-      client=client,
-      request=request,
-    )
+  client = await get_client(
+    session=data.session,
+    service_name=body.client,
+    clients=data.clients,
+  )
+  method = await get_client_method(
+    client=client,
+    method=body.method,
+  )
+  body.response = await get_client_method_response(
+    method=method,
+    parameters=body.parameters,
+  )
+  # Convert datetime objects to seconds since epoch
+  body.response = json.dumps(
+    body.response,
+    default=convert_datetime_to_seconds,
+  )
+  body.response = json.loads(body.response)
+  body = await parse_response(body=body)
+  return body
 
-    try:
-      service.response = await get_service_request_response(
-        request=request,
-        parameters=service.parameters,
-      )
-    # pylint: disable=broad-exception-caught
-    except Exception as exception:
-      # pylint: disable=no-member
-      service.error = exception.response['Error']
 
-    # Convert datetime objects to seconds since epoch
-    service.response = json.dumps(
-      service.response,
-      default=convert_datetime_to_seconds,
-    )
-    service.response = json.loads(service.response)
-    service = await parse_response(service=service)
-    store.append(service)
-
-  data.services = store
+async def get_response(data: Data) -> api_models.Response:
+  data = api_models.Response(data=data.response)
   return data
 
 
-async def get_response(data: Data) -> Data:
-  store = []
-  for service in data.services:
-
-    # Error
-    if service.error:
-      response = f'''
-        code: 500
-        data:
-          error: 
-            {service.error}
-          service: {service.name}
-        status: error
-      '''
-
-    # OK
-    if not service.error:
-      n = len(service.response)
-      response = {}
-      for i in range(n):
-        response[service.parse_response[i]] = service.response[i]
-      response = f'''
-        code: 200
-        data:
-          service: {service.name}
-          response: {response}
-        status: ok
-      '''
-
-    response = yaml.safe_load(response)
-    store.append(response)
-  return store
-
-
-# pylint: disable=unused-argument
 async def main(
   request: api_models.Request | None = None,
-  services: str | List[str] | None = None,
+  service: str | None = None,
 ) -> api_models.Response | dict:
-  data = await process_main_arguments(_locals=locals())
+  data = await process_main_arguments(
+    request=request,
+    service=service,
+  )
   data = await get_session(data=data)
-  data = await process_service_requests(data=data)
+  data = await process_service_request(data=data)
   data = await get_response(data=data)
   return data
 
 
 async def example() -> None:
-  services = '''
-  - name: s3.list_buckets
+  service = '''
+    client: s3
+    method: list_buckets
     parameters: null
     parse_response:
     - Buckets.Name
     - Buckets.CreationDate
   '''
-  result = await main(services=services)
+  result = await main(service=service)
   print(result)
 
 

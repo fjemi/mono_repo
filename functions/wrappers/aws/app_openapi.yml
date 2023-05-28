@@ -5,7 +5,10 @@ paths:
       - Wrappers
       summary: Amazon Web Services (AWS)
       description: |
-        A wrapper over the AWS SDK for Python (Boto3) that allows one to make requests through the SDK API by defining the service, request, and parameters in a YAML string, as opposed to writing code.
+        A wrapper over the AWS SDK for Python (Boto3) that allows one to 
+        make requests through the SDK API by defining the service (client), 
+        request (method), and parameters in a YAML string, as opposed to 
+        writing code.
       requestBody:
         content:
           text/plain:
@@ -19,66 +22,67 @@ paths:
             examples:
               'S3 - List Buckets':
                 value: |
-                  services: 
-                  - name: s3.list_buckets
-                    parameters: null
-                    parse_response: 
-                    - Buckets.Name
+                  client: s3
+                  method: list_buckets
+                  parameters: null
+                  parse_response: 
+                  - Buckets.Name
               'S3 - List Bucket Objects':
                 value: |
-                  services:
-                  - name: s3.list_objects
-                    parameters:
-                      Bucket: ${S3_BUCKET}
-                    parse_response:
-                    - Contents.Key
+                  client: s3
+                  method: list_objects
+                  parameters:
+                    Bucket: ${S3_BUCKET}
+                  parse_response:
+                  - Contents.Key
               'S3 - Put Object':
                 value: |
-                  services:
-                  - name: s3.put_object
-                    parameters:
-                      Bucket: ${S3_BUCKET}
-                      Body: '{"test": "test"}'
-                      Key: test_000
-                    parse_response:
-                    - ResponseMetadata.HTTPStatusCode
-              'S3 - Create & Delete Bucket':
+                  client: s3
+                  method: put_object
+                  parameters:
+                    Bucket: ${S3_BUCKET}
+                    Body: '{"test": "test"}'
+                    Key: test_000
+                  parse_response:
+                  - ResponseMetadata.HTTPStatusCode
+              'S3 - Create Bucket':
                 value: |
-                  services:
-                  - name: s3.create_bucket
-                    parameters:
-                      Bucket: helloworld04232021
-                    parse_response:
-                    - ResponseMetadata.HTTPHeaders.location
-                  - name: s3.delete_bucket
-                    parameters: 
-                      Bucket: helloworld04232021
-                    parse_response:
-                    - ResponseMetadata.HTTPStatusCode
+                  client: s3
+                  method: create_bucket
+                  parameters:
+                    Bucket: helloworld04232021
+                  parse_response:
+                  - ResponseMetadata.HTTPHeaders.location
+              'S3 - Delete Bucket':
+                value: |
+                  client: s3
+                  method: delete_bucket
+                  parameters: 
+                    Bucket: helloworld04232021
+                  parse_response:
+                  - ResponseMetadata.HTTPStatusCode
               'ECR - Create Repository':
                 value: |
-                  services:
-                  - name: ecr.create_repository
-                    parameters:
-                      repositoryName: example_repository
-                      tags: 
-                        - Key: example
-                          Value: an example ecr repository
-                      imageScanningConfiguration:
-                        scanOnPush: true
-                      encryptionConfiguration:
-                        encryptionType: AES256
-                    parse_response: 
-                    - ResponseMetadata.HTTPStatusCode
+                  client: ecr
+                  method: create_repository
+                  parameters:
+                    repositoryName: example_repository
+                    tags: 
+                      - Key: example
+                        Value: an example ecr repository
+                    imageScanningConfiguration:
+                      scanOnPush: true
+                    encryptionConfiguration:
+                      encryptionType: AES256
+                  parse_response: 
+                  - ResponseMetadata.HTTPStatusCode
               'Lambda - List Functions':
                 value: |
-                  services:
-                  - name: lambda.list_functions
-                    parameters: null
-                    parse_response: 
-                    - Functions
-
-
+                  client: lambda
+                  method: list_functions
+                  parameters: null
+                  parse_response: 
+                  - Functions
 
       responses:
         200:
@@ -93,52 +97,56 @@ paths:
                   value: |
                     code: 200
                     data:
-                      chain: false
-                      services:
-                      - name: s3.list_buckets
-                        parameters: null
-                        parse_response: 
-                        - Buckets.Name
-                        response:
-                        - [${S3_BUCKET}]
+                    - Buckets.Name: [
+                        ${S3_BUCKET},
+                        ...
+                      ]
                     status: OK
                 'S3 - List Bucket Objects':
                   value: |
                     code: 200
                     data:
-                      chain: false
-                      services:
-                      - name: s3.list_objects
-                        parameters:
-                          Bucket: ${S3_BUCKET}
-                        parse_response: 
-                        - Contents.Key
-                        response: [...]
+                    - Contents.Key: [ ... ]
                     status: OK
-                'S3 - Create & Delete Bucket':
+                'S3 - Put Object':
                   value: |
                     code: 200
                     data:
-                    - name: s3.create_bucket
-                      response: [/helloworld04232021]
-                    - name: s3.delete_bucket
-                      parameters: {Bucket: helloworld04232021}
-                      parse_response: [ResponseMetadata.HTTPStatusCode]
-                      response: [204]
+                    - ResponseMetadata.HTTPStatusCode: 200
+                    status: OK
+                'S3 - Create Bucket':
+                  value: |
+                    code: 200
+                    data:
+                    - ResponseMetadata.HTTPHeaders.location: / ...
+                    status: OK
+                'S3 - Delete Bucket':
+                  value: |
+                    code: 200
+                    data:
+                    - ResponseMetadata.HTTPStatusCode: 204
+                    status: OK
+                'Lambda - List Functions':
+                  value: |
+                    code: 200
+                    data:
+                    - Functions: [ ... ]
                     status: OK
         500:
-          description: Successful Response
+          description: Internal Error
           content: 
             text/plain:
               schema:
                 type: string
                 $ref: '#/components/schemas/OK/text_plain'
               examples:
-                'ECR - Create Repository':
+                'ECR - Create Repository That Already Exists':
                   value: |
                     - code: 500
                       data:
-                        error: {Code: RepositoryAlreadyExistsException, Message: The repository with name
-                          'example_repository' already exists in the registry with id '364935968989'}
+                        error: 
+                          Code: RepositoryAlreadyExistsException
+                          Message: ...
                         service: ecr.create_repository
                       status: error
+        

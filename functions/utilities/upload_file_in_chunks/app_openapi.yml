@@ -2,6 +2,7 @@ paths:
   '/{path}/':
     get:
       tags:
+      - TODO
       - Utilities
       summary: Upload a File in Chunks
       description:
@@ -67,6 +68,7 @@ paths:
                 example: <html>Example HTML Response</html>
     post:
       tags:
+      - TODO
       - Utilities
       summary: Upload a File in Chunks
       description:

@@ -84,12 +84,16 @@ add_a_users_role: |
 create_table: |
   client: dynamodb
   method: create_table
-  parameters: 
-    TableName: [table_name]
-    KeySchema: [key_schema]
-    AttributeDefinitions: [attribute_definitions]
+  parameters:
+    TableName:
+      [table_name]
+    KeySchema:
+      [key_schema]
+    AttributeDefinitions: 
+      [attribute_definitions]
     BillingMode: PAY_PER_REQUEST
-    Tags: [tags]
+    Tags:
+      [tags]
   parse_response:
   - TableDescription.TableName
   - TableDescription.TableStatus

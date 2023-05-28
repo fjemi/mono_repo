@@ -1,0 +1,4 @@
+environment:
+  S3_BUCKET: ${S3_BUCKET}
+  DATA_PATH: ${DATA_PATH}
+  API_RELOAD: ${API_RELOAD}

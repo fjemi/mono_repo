@@ -151,5 +151,47 @@ async def main(
   request_handler = REQUEST_HANDLER[request.method]
   response = await request_handler(
     request=request, env=env)
-  print(response)
   return response
+
+
+# async def format_multipart_content_json(
+#   content: Any,
+# ) -> models.DataClass:
+#   content = content.decode('utf-8')
+#   content = json.loads(content)
+#   store = []
+#   for key, value in content.items():
+#     store.append([
+#       key,
+#       str,
+#       field(default_factory=lambda: value),
+#     ])
+#   content_dataclass = make_dataclass('JSON', store)
+#   return content_dataclass
+
+
+# async def format_multipart_content_binary(
+#   content: Any
+# ) -> models.DataClass:
+#   dataclass_fields = [[
+#     'content',
+#     ByteString,
+#     field(default_factory=lambda: content),
+#   ]]
+#   content_dataclass = make_dataclass('Binary', dataclass_fields)
+#   return content_dataclass
+
+
+# MULTIPART_CONTENT_MAPPER = {
+#   'json': format_multipart_content_json,
+#   'binary': format_multipart_content_binary,
+# }
+
+
+# async def format_multipart_content(
+#   content: Any,
+#   part_name: str,
+# ) -> dict:
+#   function = MULTIPART_CONTENT_MAPPER[part_name]
+#   result = await function(content=content)
+#   return result

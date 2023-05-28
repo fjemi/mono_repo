@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>User Information</h2>
+
+<form 
+  enctype="multipart/form-data" 
+  method="post" 
+  name="user-information-form"
+>
+  <p>
+    <label>Username</label>
+    <br>
+    <input
+      type="text"
+      autocomplete="on"
+      name="username"
+      placeholder="john.doe"
+      required
+      size="32"
+      maxlength="64" 
+    />
+  </p>
+  <p>
+    <label>Name</label>
+    <br>
+    <input
+      type="text"
+      autocomplete="on"
+      name="name"
+      placeholder="john doe"
+      required
+      size="32"
+      maxlength="64" 
+    />
+  </p>
+  <p>
+    <label>Age</label>
+    <br>
+    <input
+      type="text"
+      autocomplete="on"
+      name="age"
+      placeholder="20"
+      required
+      size="32"
+      maxlength="64" 
+    />
+  </p>
+  <p>
+  </p>
+    <input 
+    type="submit" 
+    value="Submit" 
+  />
+  </p>
+</form>
+<div id="output"></div>
+
+{% block javascript %}
+<script type='text/javascript'>
+  {% include 'script.js'  %}
+</script>
+{% endblock %}
+
+</body>
+</html>

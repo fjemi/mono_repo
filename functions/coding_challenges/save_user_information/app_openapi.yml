@@ -1,0 +1,143 @@
+paths: 
+  '/{path}/':
+    get:
+      tags:
+      - Coding Challenges - TODO
+      summary: Save User Information
+      description: 
+        $ref: '#/components/examples/{path}.description'
+      responses:
+        200:
+          description: Success
+          content:
+            'text/html':
+              schema:
+                type: string
+                html: string
+              examples: 
+                html:
+                  summary: A form for submitting user information
+                  value: <html>Example HTML Response</html>
+    post:
+      tags:
+      - Coding Challenges - TODO
+      summary: Save User Information
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: A unique username
+                  example: john.doe
+                name: 
+                  type: string
+                  description: The name of the user
+                  example: john doe
+                age:
+                  type: number
+                  description: The age of the user
+                  example: 50
+          text/plain:
+            schema:
+              type: string
+              username: string
+              age: number
+              name: string
+              save_to: string
+            examples:
+              'Save user information to S3':
+                value: |
+                  username: username
+                  age: 20
+                  name: name
+                  save_to: s3
+              'Save user information to file system':
+                value: |
+                  username: username
+                  age: 20
+                  name: name
+                  save_to: file_system
+              'Missing required parameters':
+                value: |
+                  username: null
+                  age: null
+                  name: null
+      responses:
+        200:
+          description: Success
+          content: 
+            text/plain:
+              schema:
+                type: string
+              examples:
+                'User information saved to S3':
+                  value: |
+                    bucket: ${S3_BUCKET}
+                    key: save_user_information/[username].[name].[age]
+                'User information saved to file system':
+                  value: |
+                    path: ${DATA_PATH}/save_user_information/[username].[name].[age].json
+            application/json:
+              schema:
+                object: string
+              examples:
+                'User information saved to S3':
+                  value:
+                    bucket: ${S3_BUCKET}
+                    key: save_user_information/[username].[name].[age]
+                'User information saved to file system':
+                  value:
+                    path: ${DATA_PATH}/save_user_information/[username].[name].[age].json
+        400:
+          description: Bad Request
+          content:
+            text/plain:
+              schema:
+                type: string
+                detail: string
+              examples:
+                'Missing request parameters':
+                  value: |
+                    detail: 'Missing request parameters: [ ... ]'
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+              examples:
+                'Missing request parameters':
+                  value:
+                    detail: 'Missing request parameters: [ ... ]'
+        409: 
+          description: Conflict
+          content:
+            text/plain:
+              schema:
+                type: string
+                detail: string
+              examples: 
+                'User information already submitted':
+                  value: |
+                    detail: User information has already been submitted
+            application/json:
+              schema:
+                type: object
+                properties:
+                  detail:
+                    type: string
+              examples:
+                'User information already submitted':
+                  value: 
+                    detail: User information has already been submitted
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://www.reddit.com/r/dailyprogrammer/comments/pih8x/easy_challenge_1)
+
+                 

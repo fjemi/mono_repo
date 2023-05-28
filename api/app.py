@@ -173,49 +173,6 @@ async def format_multipart_headers(headers: Any) -> dict:
   return store
 
 
-async def format_multipart_content_json(
-  content: Any,
-) -> models.DataClass:
-  content = content.decode('utf-8')
-  content = json.loads(content)
-  store = []
-  for key, value in content.items():
-    store.append([
-      key,
-      str,
-      field(default_factory=lambda: value),
-    ])
-  content_dataclass = make_dataclass('JSON', store)
-  return content_dataclass
-
-
-async def format_multipart_content_binary(
-  content: Any
-) -> models.DataClass:
-  dataclass_fields = [[
-    'content',
-    ByteString,
-    field(default_factory=lambda: content),
-  ]]
-  content_dataclass = make_dataclass('Binary', dataclass_fields)
-  return content_dataclass
-
-
-MULTIPART_CONTENT_MAPPER = {
-  'json': format_multipart_content_json,
-  'binary': format_multipart_content_binary,
-}
-
-
-async def format_multipart_content(
-  content: Any,
-  part_name: str,
-) -> dict:
-  function = MULTIPART_CONTENT_MAPPER[part_name]
-  result = await function(content=content)
-  return result
-
-
 async def handle_multipart_form_data(request: Request) -> Request:
   content = await request.body()
   decoder = MultipartDecoder(
@@ -228,26 +185,8 @@ async def handle_multipart_form_data(request: Request) -> Request:
     headers = await format_multipart_headers(
       headers=part.headers)
     part_name = headers['content_disposition']['name']
-    content = await format_multipart_content(
-      content=part.content,
-      part_name=part_name,
-    )
-    store[part_name] = deepcopy(content)
-
-  data_classes = [
-    [
-      'json',
-      'JSON',
-      field(default_factory=lambda: store['json']()),
-    ],
-    [
-      'binary',
-      'Binary',
-      field(default_factory=lambda: store['binary']()),
-    ],
-  ]
-  form = make_dataclass('Form', data_classes)
-  request.data.form = form()
+    store[part_name] = part.content
+  request.data.form = store
   return request
 
 

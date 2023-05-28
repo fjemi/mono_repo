@@ -40,7 +40,7 @@ paths:
                     key_schema:
                     - AttributeName: example_hash
                       KeyType: HASH
-                    - AttributeRange: example_range
+                    - AttributeName: example_range
                       KeyType: RANGE
                     attribute_definitions:
                     - AttributeName: example_hash
@@ -48,8 +48,8 @@ paths:
                     - AttributeName: example_range
                       AttributeType: N
                     tags: 
-                    - key: example
-                      value: table
+                    - Key: example
+                      Value: table
               'DynamoDB - Delete Table':
                 value: |
                   database: dynamodb

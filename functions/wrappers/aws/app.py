@@ -28,7 +28,6 @@ class Body(api_models.Body):
   parameters: Any | None = None
   response: Any | None = None
   parse_response: List[str] | None = None
-  error: Any | None = None
 
 
 @dataclass
@@ -36,6 +35,7 @@ class Data:
   body: Body | None = None
   session: boto3.Session | None = field(default_factory=lambda: SESSION)
   clients: Dict[str, boto3.client] = field(default_factory=lambda: CLIENTS)
+  call_method: str = 'module'
 
 
 async def process_call_from_api(
@@ -53,7 +53,7 @@ async def process_call_from_api(
       continue
     setattr(body, _field.name, value)
 
-  data = Data(body=body)
+  data = Data(body=body, call_method='api')
   return data
 
 
@@ -188,14 +188,28 @@ async def parse_response_list(
   key: str,
   response: List[Any],
 ) -> List[Any]:
-  store = []
-  for item in response:
-    value = item[key]
-    store.append(value)
+  if not response:
+    return response
+
+  store = None
+
+  if '-' in key:
+    a, b = key.split('-')
+    a, b = int(a), int(b)
+    store = response[a:b]
+
+  if '-' not in key:
+    key = int(key)
+    store = response[key]
   return store
 
 
-async def parse_response_dict(key: str, response: dict) -> dict:
+async def parse_response_dict(
+  key: str,
+  response: dict,
+) -> dict:
+  if not response:
+    return response
   response = response[key]
   return response
 
@@ -241,7 +255,7 @@ async def parse_response(body: Body) -> Body:
 
 
 async def process_service_request(data: Data) -> Data:
-  body = deepcopy(data.body)
+  body = data.body
   if isinstance(body, str):
     body = yaml.safe_load(body)
 
@@ -264,12 +278,15 @@ async def process_service_request(data: Data) -> Data:
     default=convert_datetime_to_seconds,
   )
   body.response = json.loads(body.response)
-  body = await parse_response(body=body)
-  return body
+  data.body = await parse_response(body=body)
+  return data
 
 
 async def get_response(data: Data) -> api_models.Response:
-  data = api_models.Response(data=data.response)
+  if data.call_method == 'module':
+    data = data.body.response
+  elif data.call_method == 'api':
+    data = api_models.Response(data=data.body.response)
   return data
 
 

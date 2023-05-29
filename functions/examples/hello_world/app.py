@@ -5,7 +5,7 @@ from os import path
 import json
 from fastapi.templating import Jinja2Templates
 
-from api import models
+from api import models as api_models
 from shared.get_environment import app as get_environment
 
 
@@ -24,11 +24,10 @@ class Body:
 
 
 @dataclass
-class Data(models.Data):
-  query_params: QueryParams = field(default_factory=lambda: 
-    QueryParams())
+class Data:
+  query_params: QueryParams = field(
+    default_factory=lambda: QueryParams())
   body: Body = field(default_factory=lambda: Body())
-  env: models.Env = field(default_factory=lambda: ENV)
 
 
 @dataclass
@@ -43,14 +42,13 @@ POST_DATA_SWITCH = {
 }
 
 
-async def post_handler(request: Request) -> models.Response:
+async def post_handler(request: api_models.Request) -> dict:
   _case = int(hasattr(request.data.body, 'name'))
   switch = POST_DATA_SWITCH[_case]
   data = switch(request=request)
-
   text = 'Hello World!'.replace('World', data.name)
-  response = models.Response(data=text)
-  return response
+  data = {'data': text}
+  return data
 
 
 GET_DATA_SWITCH = {
@@ -95,7 +93,8 @@ async def main(
   request: Request,
   *args,
   **kwargs,
-) -> models.Response | Jinja2Templates:
+) -> dict | Jinja2Templates:
+  _ = args, kwargs
   _case = request.method
   switch = REQUEST_METHOD_SWITCH[_case]
   response = await switch(request=request)
@@ -103,7 +102,6 @@ async def main(
 
 
 async def example() -> None:
-  request = Request()
   response = {
     'GET': await main(request=Request(method='GET')),
     'POST': await main(request=Request(method='POST')),

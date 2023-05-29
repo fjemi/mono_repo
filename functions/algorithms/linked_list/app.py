@@ -5,24 +5,14 @@ from dataclasses import dataclass, asdict
 from typing import List, Any
 import dacite
 
-from api import models
+from api import models as api_models
 
 
 @dataclass
-class Body(models.Body):
+class Body:
   values: List[Any] | None = None
   linked_list: dict | None = None
   api_response: bool = True
-
-
-@dataclass
-class RequestData(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
 
 
 @dataclass
@@ -88,12 +78,12 @@ async def convert_linked_list_to_list(data: Data) -> Data:
 
 
 ACTION_MAPPER = {
-  'values.': 'linked_list',
-  '.linked_list': 'values',
+  'values': 'linked_list',
+  'linked_list': 'values',
 }
 
 
-async def get_response(data: Data) -> models.Response:
+async def get_response(data: Data) -> dict:
   action = ACTION_MAPPER[data.cases]
   result = getattr(data, action)
 
@@ -103,19 +93,13 @@ async def get_response(data: Data) -> models.Response:
 
   if action == 'linked_list':
     result = asdict(result)
-  data = {
-    'input': asdict(data.body),
-    'output': {
-      action: result,
-    },
-  }
-  data = models.Response(data=data)
+  data = {action: result}
   return data
 
 
 ACTION_SWITCHER = {
-  'values.': convert_list_to_linked_list,
-  '.linked_list': convert_linked_list_to_list,
+  'values': convert_list_to_linked_list,
+  'linked_list': convert_linked_list_to_list,
 }
 
 
@@ -158,16 +142,12 @@ async def process_main_args(_locals: dict) -> Data:
 
 # pylint: disable=unused-argument
 async def main(
-  request: Request | None = None,
+  request: api_models.Request | None = None,
   values: List[Any] | None = None,
   linked_list: LinkedList | None = None,
-) -> models.Response | LinkedList | List[Any]:
+) -> dict | LinkedList | List[Any]:
   data = await process_main_args(_locals=locals())
-  data.cases = [
-    int(data.body.values is not None) * 'values',
-    int(data.body.linked_list is not None) * 'linked_list',
-  ]
-  data.cases = '.'.join(data.cases)
+  data.cases = 'values' if data.body.values else 'linked_list'
   switcher = ACTION_SWITCHER[data.cases]
   data = await switcher(data=data)
   data = await get_response(data=data)

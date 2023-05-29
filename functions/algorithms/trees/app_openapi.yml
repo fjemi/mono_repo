@@ -1,0 +1,106 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - TODO
+      - Algorithms
+      summary: Tree Conversions
+      description: |
+        Functions for conversions between a 
+        [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) and a 
+        list of of items
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              tree: object
+              array: array
+            examples:
+              'Array to tree - Example 1':
+                value: |
+                  array: []
+              'Array to tree - Example 2':
+                value: |
+                  array: [1]
+              'Array to tree - Example 3':
+                value: |
+                  array: [1, 2, 3]
+              'Array to tree - Example 4':
+                 value: |
+                  array: [1, 2, 3, 4, 5]
+              'Tree to array - Example 1': 
+                value: |
+                    tree: {root: null}
+              'Tree to array - Example 2':
+                value: |
+                  tree:
+                    root: 
+                      left: null
+                      right: null
+                      value: 1
+              'Tree to array - Example 3':
+                value: |
+                  tree:
+                    root:
+                      left: {left: null, right: null, value: 2}
+                      right: {left: null, right: null, value: 3}
+                      value: 1
+              'Tree to array - Example 4':
+                value: |
+                  tree:
+                    root:
+                      left:
+                        left: {left: null, right: null, value: 4}
+                        right: {left: null, right: null, value: 5}
+                        value: 2
+                      right: {left: null, right: null, value: 3}
+                      value: 1
+      responses:
+        200:
+          description: Success
+          content: 
+            text/plain:
+              schema:
+                type: string
+              examples:
+                'Array to tree - Example 1': 
+                  value: |
+                    tree: {root: null}
+                'Array to tree - Example 2':
+                  value: |
+                    tree:
+                      root: 
+                        left: null
+                        right: null
+                        value: 1
+                'Array to tree - Example 3':
+                  value: |
+                    tree:
+                      root:
+                        left: {left: null, right: null, value: 2}
+                        right: {left: null, right: null, value: 3}
+                        value: 1
+                'Array to tree - Example 4':
+                  value: |
+                    tree:
+                      root:
+                        left:
+                          left: {left: null, right: null, value: 4}
+                          right: {left: null, right: null, value: 5}
+                          value: 2
+                        right: {left: null, right: null, value: 3}
+                        value: 1
+                'Array to tree - Example 1':
+                  value: |
+                    array: []
+                'Array to tree - Example 2':
+                  value: |
+                    array: [1]
+                'Array to tree - Example 3':
+                  value: |
+                    array: [1, 2, 3]
+                'Array to tree - Example 4':
+                  value: |
+                    array: [1, 2, 3, 4, 5]
+                      

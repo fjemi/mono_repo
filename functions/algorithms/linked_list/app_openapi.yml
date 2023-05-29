@@ -63,7 +63,7 @@ paths:
                       value: head
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
@@ -71,144 +71,56 @@ paths:
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        input:
-                          linked_list: null
-                          values:
-                          - 1
-                          - 2
-                          - 3
-                          - 4
-                          - 5
-                        output:
-                          linked_list:
-                            head:
+                    linked_list:
+                      head:
+                        next_node:
+                          next_node:
+                            next_node:
                               next_node:
-                                next_node:
-                                  next_node:
-                                    next_node:
-                                      next_node: null
-                                      value: 5
-                                    value: 4
-                                  value: 3
-                                value: 2
-                              value: 1
+                                next_node: null
+                                value: 5
+                              value: 4
+                            value: 3
+                          value: 2
+                        value: 1
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data:
-                      input:
-                        linked_list: null
-                        values: []
-                      output:
-                        linked_list:
-                          head: None
+                    linked_list:
+                      head: None
                 'Example 3':
                   value: |
-                    code: 200
-                    status: OK
-                    data:
-                      input:
-                        linked_list: null
-                        values:
-                        - value
-                      output:
-                        linked_list:
-                          head:
-                            next_node: null
-                            value: value
+                    linked_list:
+                      head:
+                        next_node: null
+                        value: value
                 'Example 4':
                   value: |
-                    code: 200
-                    status: OK
-                    data:
-                      input:
-                        linked_list: null
-                        values:
-                        - head
-                        - node_1
-                        - node_2
-                      output:
-                        linked_list:
-                          head:
-                            next_node:
-                              next_node:
-                                next_node: null
-                                value: node_2
-                              value: node_1
-                            value: head
+                    linked_list:
+                      head:
+                        next_node:
+                          next_node:
+                            next_node: null
+                            value: node_2
+                          value: node_1
+                        value: head
                 'Example 5':
                   value: |
-                    code: 200
-                    status: OK
-                    data:
-                      input:
-                        linked_list:
-                          head:
-                            next_node:
-                              next_node:
-                                next_node:
-                                  next_node:
-                                    next_node: null
-                                    value: 5
-                                  value: 4
-                                value: 3
-                              value: 2
-                            value: 1
-                        values: null
-                      output:
-                        values:
-                        - 1
-                        - 2
-                        - 3
-                        - 4
-                        - 5
+                    values:
+                    - 1
+                    - 2
+                    - 3
+                    - 4
+                    - 5
                 'Example 6':
                   value: |
-                    code: 200
-                    status: OK
-                    data:
-                      input:
-                        linked_list:
-                          head: null
-                        values: null
-                      output:
-                        values: []
+                    values: []
                 'Example 7':
                   value: |
-                    code: 200
-                    status: OK
-                    data:
-                      input:
-                        linked_list:
-                          head:
-                            next_node: null
-                            value: value
-                        values: null
-                      output:
-                        values:
-                        - value
+                    values:
+                    - value
                 'Example 8':
                   value: |
-                    code: 200
-                    status: OK
-                    data:
-                      input:
-                        linked_list:
-                          head:
-                            next_node:
-                              next_node:
-                                next_node: null
-                                value: node_2
-                              value: node_1
-                            value: head
-                        values: null
-                      output:
-                        values:
-                        - head
-                        - node_1
-                        - node_2
+                    values:
+                    - head
+                    - node_1
+                    - node_2

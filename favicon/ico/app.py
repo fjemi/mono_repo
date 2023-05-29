@@ -15,7 +15,7 @@ ENV = get_environment.main({'module_path': THIS_MODULE_PATH})
 class Data:
   filename: str = 'favicon.ico'
   directory: str = 'api.static'
-  workdir: str = ENV.WORKDIR
+  working_directory: str = ENV.WORKDIR
   response: FileResponse | None = None
 
 
@@ -37,7 +37,7 @@ async def process_kwargs(
 
 async def get_favicon(data: Data) -> FileResponse:
   # Set favicon path
-  path = Path(data.workdir)
+  path = Path(data.working_directory)
   directories = data.directory.split('.')
   path = path.joinpath(*directories, data.filename)
   # Set response
@@ -48,6 +48,7 @@ async def get_favicon(data: Data) -> FileResponse:
 
 
 async def main(*args, **kwargs) -> FileResponse:
+  _ = args
   data = Data
   data = await process_kwargs(data=data, kwargs=kwargs)
   data.response = await get_favicon(data=data)

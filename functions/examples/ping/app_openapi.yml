@@ -10,15 +10,15 @@ paths:
           content: 
             application/json:
               schema:
-                $ref: '#/components/schemas/OK/application_json'
+                type: object
+                properties:
+                  ping:
+                    type: string
+                    example: pong
               examples:
                 'Ping API':
                   value:
-                    code: 200
-                    status: OK
-                    data:
-                      ping: pong
-
+                    ping: pong
     post:
       tags:
       - Examples
@@ -27,41 +27,29 @@ paths:
         content:
           application/json:
             schema: 
-              type: object
+              type: string
+              ping: string
             examples: 
               'Ping API':
                 value: {}
           text/plain:
             schema:
               type: string
+              ping: string
             examples:
               'Ping API':
                 value: |
                   {}
       responses:
         200:
-          description: Successful Response
-          content: 
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OK/application_json'
-              examples:
-                'Ping API':
-                  value:
-                    code: 200
-                    status: OK
-                    data:
-                      ping: pong
-            text/plain:
-              schema:
-                $ref: '#/components/schemas/OK/text_plain'
-              examples:
-                'Ping API': 
-                  value: |
-                    code: 200
-                    status: OK
-                    data:
-                      ping: pong
+          text/plain:
+            schema:
+              type: string
+              ping: string
+            examples:
+              'Ping API': 
+                value: |
+                  ping: pong
 tags:
 - name: Examples
   description: Example functions

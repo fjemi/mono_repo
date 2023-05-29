@@ -2,32 +2,21 @@
 
 from dataclasses import dataclass, asdict
 from typing import List
-import yaml
 
-from api import models
+from api import models as api_models
 
 
 @dataclass
-class Body(models.Body):
+class Body:
   item_1: List | str | None = None
   item_2: List | str | None = None
   preserve_order: bool = False
 
 
 @dataclass
-class RequestData(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
 class Difference:
   modifications: int = 0
-  percentage: float = 0
+  percent: float = 0
 
 
 @dataclass
@@ -75,26 +64,20 @@ async def get_difference_between_items(
       continue
     modifications += 1
 
-  percentage = round(modifications / max_n, 2)
+  percent = round(modifications / max_n, 2)
   difference = Difference(
     modifications=modifications,
-    percentage=percentage,
+    percent=percent,
   )
   return difference
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output: 
-      difference: {asdict(data.difference)}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
+async def get_response(data: Data) -> dict:
+  data = {'difference': asdict(data.difference)}
   return data
 
 
-async def main(request: Request) -> models.Response:
+async def main(request: api_models.Request) -> dict:
   body = Body(**asdict(request.data.body))
   data = Data(body=body)
   request = None

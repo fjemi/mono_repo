@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 
-from typing import List, Any, ByteString, Callable
+from typing import List, Any, Callable
 from dataclasses import make_dataclass, field, asdict, is_dataclass
 import pathlib
-from copy import deepcopy
-import json
 import time
-import asyncio
 import yaml
 from fastapi import (
   FastAPI,
@@ -32,14 +29,6 @@ app = FastAPI()
 openapi_schema = openapi.main(app_module_path=THIS_MODULE_PATH)
 app.openapi_schema = openapi_schema.schema
 ROUTES = openapi_schema.routes
-
-# Set security for the app
-# from fastapi import Depends
-# from typing import Annotated
-# from fastapi.security import OAuth2PasswordBearer
-# oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-# print(dir(oauth2_scheme), oauth2_scheme.scheme_name)
-
 
 
 async def create_dataclass(dictionary: dict, name: str):
@@ -254,49 +243,11 @@ RESPONSE_HANDLER = {
 async def add_response_time_to_header(
   request: Request,
   call_next: Callable,
-) -> models.Response:
+) -> Any:
   start_time = time.time()
   response = await call_next(request)
   process_time = (time.time() - start_time) * 1000
   response.headers["Response-Time-MS"] = str(process_time)
-  return response
-
-
-# TODO: Consider formatting request attributes at the function level
-# @app.middleware("http")
-# async def format_headers(
-#   request: Request,
-#   call_next: Callable,
-# ) -> Request:
-#   setattr(request, 'data', models.Data())
-#   store = []
-#   for key, value in request.headers.items():
-#     key = key.replace('-', '_').lower()
-#     store.append([
-#       key,
-#       str,
-#       value,
-#     ])
-#   headers = make_dataclass(
-#     'Headers', 
-#     store,
-#     slots=True,
-#   )
-#   setattr(request.data, 'headers', headers()
-#   # request._headers = None
-#   # del request._headers
-#   print(request.headers)
-#   response = await call_next(request)
-#   return response
-
-
-@app.middleware("http")
-async def authenticate(
-  request: Request,
-  call_next: Callable,
-) -> models.Response:
-  # print(request._headers)
-  response = await call_next(request)
   return response
 
 
@@ -347,7 +298,7 @@ async def start_server(env: 'Env') -> None:
     host=env.API_HOST,
     port=int(env.API_PORT),
     reload=env.API_RELOAD,
-    # workers=int(env.API_WORKERS), 
+    # workers=int(env.API_WORKERS),
   )
 
 

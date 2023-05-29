@@ -120,12 +120,36 @@ async def convert_grid_str_to_dict(data: Data) -> Data:
   return data
 
 
+async def convert_grid_str_to_list(data: Data) -> Data:
+  store = []
+  row = []
+  n = '0'
+
+  grid = data.body.grid.split('|')
+  for cell in grid:
+    position, value = cell.split(',')
+    index = position.split('.')[0]
+
+    if n != index:
+      store.append(row)
+      row = []
+      n = index
+
+    row.append(value)
+  # Get last row
+  store.append(row)
+
+  data.result = store
+  return data
+
+
 MAKE_CONVERSION = {
   'dict.list': convert_grid_dict_to_list,
   'list.dict': convert_grid_list_to_dict,
   'list.str': convert_grid_list_to_str,
   'dict.str': convert_grid_dict_to_str,
-  'str.grid': convert_grid_str_to_dict,
+  'str.dict': convert_grid_str_to_dict,
+  'str.list': convert_grid_str_to_list, 
 }
 
 
@@ -137,14 +161,10 @@ async def make_conversion(data: Data) -> Data:
   return data
 
 
-async def get_response(data: Data) -> Data:
+async def get_response(data: Data) -> dict | list | str:
   if not data.request:
     return data.result
-  data = {
-    'input': asdict(data.body),
-    'output': data.result
-  }
-  data = api_models.Response(data=data)
+  data = {'grid': data.result}
   return data
 
 
@@ -153,7 +173,7 @@ async def main(
   request: api_models.Request | None = None,
   grid: List[List[int]] |  Dict[str, int] | str | None = None,
   convert_to: str | None = None
-) -> Dict[str, int] | List[List[int]]:
+) -> dict | list | str:
   data = await process_main_args(_locals=locals())
   data = await make_conversion(data=data)
   data = await get_response(data=data)

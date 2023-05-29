@@ -1,0 +1,115 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Security
+      summary: Authenticate and Authorize
+      description: |
+        Authenticates and authorizes a user within the API or application layer. 
+        - Returns the user's data and token if authentication and authorization
+          are successful.
+        - Raises an `401` or `403` HTTP Exception if authentication or 
+          authorization fails      
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              required_roles: array[string]
+              authenticate: bool
+              authentication_type: str
+              token_type: str
+            examples: 
+              'No token':
+                value: |
+                  required_roles: []
+                  authenticate: false
+                  authentication_type: Bearer
+                  token_type: jwt
+              'Token w/ authentication not required':
+                value: |
+                  required_roles: []
+                  authenticate: false
+                  authentication_type: Bearer
+                  token_type: jwt
+              'Token w/ authentication and authorization required':
+                value: |
+                  required_roles: []
+                  authenticate: true
+                  authentication_type: Bearer
+                  token_type: jwt
+              'Token w/ only authentication required':
+                value: |
+                  required_roles: []
+                  authenticate: true
+                  authentication_type: Bearer
+                  token_type: jwt
+      responses:
+        401:
+          description: Unauthorized
+          content: 
+            text/plain:
+              schema:
+                type: string
+                detail: string
+              examples: 
+                'No token':
+                  value: |
+                    detail: 'no authorization header'
+        200:
+          description: Success
+          content: 
+            text/plain:
+              schema:
+                type: string
+                token: string
+                user:
+                  email: string
+                  name: string
+                  id: string
+              'Token w/ no authentication required':
+                value: |
+                  token: |
+                    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Imlk
+                    IjoidXNlcl9pZCIsImVtYWlsIjoidXNlckBlbWFpbC5jb20iLCJma
+                    XJzdF9uYW1lIjoiZmlyc3RfbmFtZSIsImxhc3RfbmFtZSI6Imxhc3
+                    RfbmFtZSJ9LCJjbGFpbSI6eyJleHBpcmF0aW9uX3RpbWUiOjE3MTY
+                    1MDY2MTIsImlzc3VlZF9hdCI6MTY4NDk3MDYxMiwiaXNzdWVyIjpu
+                    dWxsLCJzdWJqZWN0IjpudWxsLCJhdWRpZW5jZSI6bnVsbCwibm90X
+                    2JlZm9yZSI6MTY4NDk3MDYxMiwiand0X2lkIjpudWxsfX0.JPocTg
+                    Hn_ZjV8m8tCO-PVHjAAzM4pHjJ4bvrTUTTwUg
+                  user:
+                    email: user@email.com
+                    name: first_name last_name
+                    id: user_id
+              'Token w/ authentication and authorization required':
+                value: |
+                  token: |
+                    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb250ZW50Ijp7Im
+                    NsaWVudCI6eyJ1c2VyX2FnZW50IjpudWxsLCJvcmlnaW4iOm51bGx9L
+                    CJ1c2VyIjp7ImlkIjoidXNlcl8wMCIsImVtYWlsIjoidXNlckBlbWFp
+                    bC5jb21lIiwibmFtZSI6ImZpcnN0X25hbWUsIGxhc3RfbmFtZSJ9fSw
+                    iZXhwaXJhdGlvbl90aW1lIjpudWxsLCJpc3N1ZWRfYXQiOm51bGwsIm
+                    lzc3VlciI6bnVsbCwic3ViamVjdCI6bnVsbCwiYXVkaWVuY2UiOm51b
+                    GwsIm5vdF9iZWZvcmUiOm51bGwsImp3dF9pZCI6bnVsbH0.uPJdepCV
+                    61WPwFEkpXD-eMhTFPnG8mjEQ0e1hKpcHws
+                  user: 
+                    email: user@email.come
+                    id: user_00
+                    name: first_name last_name
+              'Token w/ only authentication required':
+                value: |
+                  token: |
+                    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb250ZW50Ijp7Im
+                    NsaWVudCI6eyJ1c2VyX2FnZW50IjpudWxsLCJvcmlnaW4iOm51bGx9L
+                    CJ1c2VyIjp7ImlkIjoidXNlcl8wMCIsImVtYWlsIjoidXNlckBlbWFp
+                    bC5jb21lIiwibmFtZSI6ImZpcnN0X25hbWUsIGxhc3RfbmFtZSJ9fSw
+                    iZXhwaXJhdGlvbl90aW1lIjpudWxsLCJpc3N1ZWRfYXQiOm51bGwsIm
+                    lzc3VlciI6bnVsbCwic3ViamVjdCI6bnVsbCwiYXVkaWVuY2UiOm51b
+                    GwsIm5vdF9iZWZvcmUiOm51bGwsImp3dF9pZCI6bnVsbH0.uPJdepCV
+                    61WPwFEkpXD-eMhTFPnG8mjEQ0e1hKpcHws
+                  user: 
+                    email: user@email.come
+                    id: user_00
+                    name: first_name last_name
+                  

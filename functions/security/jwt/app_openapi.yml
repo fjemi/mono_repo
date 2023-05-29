@@ -14,7 +14,7 @@ paths:
               algorithm: string
               key: string | null
               payload: object | null
-              jwt: string | null
+              token: string | null
               operation: string
             examples:
               'HS256 Encode':
@@ -28,7 +28,7 @@ paths:
                 value: |
                   algorithm: HS256
                   key: secret
-                  jwt: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-IDcSemACt8x4iTMCda8Yhe3iZaWbvV5XKSTbuAn0M
+                  token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30.t-IDcSemACt8x4iTMCda8Yhe3iZaWbvV5XKSTbuAn0M
                   operation: decode
               'RS256 Encode':
                 value: |
@@ -62,7 +62,7 @@ paths:
                     2glW497rW9u+SjuPXox7wrq/31x06j6GbIUk4VlEB1zfPuIr+TdOoZeoNc09IyKw
                     hflGWuHMfCQDw5WpAgMBAAE=
                     -----END PUBLIC KEY-----
-                  jwt: |
+                  token: |
                     eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.e30.LSf7_KxxKkArn-
                     9Bv8tcMnCSat_O1SYzgfFHPxmb_ZPP88B-RYNZvIL60FA18UzhtVSjT
                     rdnnGDfnVXvifYqpRDHMh6kZ68w-Udy1ZLT43DMnKC9EHMslR8g6az3
@@ -93,41 +93,29 @@ paths:
 
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
-                $ref: '#/components/schemas/OK/text_plain'
+                type: string
               examples:
                 'HS256 Encode':
                   value: |
-                    code: 200
-                    status: OK
-                    data:
-                      jwt: | 
-                        eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleGFtcGxlIj
-                        oicGF5bG9hZCJ9.2eT0rQiCkCQCIyQGtDyuQkLDPRqqS6ncr8Qi
-                        NBbF5yQ
+                    token: | 
+                      eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleGFtcGxlIj
+                      oicGF5bG9hZCJ9.2eT0rQiCkCQCIyQGtDyuQkLDPRqqS6ncr8Qi
+                      NBbF5yQ
                 'HS256 Decode':
                   value: |
-                    code: 200
-                    status: OK
-                    data:
-                      example: payload
+                    example: payload
                 'RS256 Encode':
                   value: |
-                    code: 200
-                    status: OK
-                    data:
-                      jwt: |
-                        eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleGFtcGxlIj
-                        oicGF5bG9hZCJ9.MSWLpt1TWczB3stpWqvtZ3gP5dZg1nYQnUMO
-                        NbDwco0zZrFoLNAwU7pikRuRt9brB0ZkR473VCjtVO28trpaGrv
-                        hrlBJggVVx9HpxUxpsRWMf0_p4qvnBTCBhZoaIhSPL8aJjlBn4S
-                        WD3EPGDdwnkFTZ2_587JLrw_F5m9UNpeE
+                    token: |
+                      eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleGFtcGxlIj
+                      oicGF5bG9hZCJ9.MSWLpt1TWczB3stpWqvtZ3gP5dZg1nYQnUMO
+                      NbDwco0zZrFoLNAwU7pikRuRt9brB0ZkR473VCjtVO28trpaGrv
+                      hrlBJggVVx9HpxUxpsRWMf0_p4qvnBTCBhZoaIhSPL8aJjlBn4S
+                      WD3EPGDdwnkFTZ2_587JLrw_F5m9UNpeE
                 'RS256 Decode':
                   value: |
-                    code: 200
-                    status: OK
-                    data:
-                      example: payload
+                    example: payload

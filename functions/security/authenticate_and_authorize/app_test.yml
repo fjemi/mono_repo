@@ -1,0 +1,23 @@
+todo:
+- add test data
+- have sessions; an identifier or hash in url
+- research authentication/authorization for single page applications
+  # steps = '''
+  # resources:
+  # - url: https://stackoverflow.blog/2021/10/06/best-practices-for-authentication-and-authorization-for-rest-apis/
+  # - url: https://security.stackexchange.com/questions/119371/is-refreshing-an-expired-jwt-token-a-good-strategy
+  # - Query authenticated users table
+  # - If user is not in authenticated table they 
+  #   are anonymous and should be asked to register
+  # - If user in authenticated table 
+  # - user signs in and is issued a refresh token
+  # - check if JWT is expired, if so sign in again
+  #   and issue new jwt
+  #   - check that client user agent and origin have been used, if not sign in again. 
+  #     hash these two and store in authentication db
+  #   - refresh token every 15 minutes
+  # Check if role contains anonymous
+  # '''
+  resources:
+  - https://stackoverflow.com/questions/3297048/403-forbidden-vs-401-unauthorized-http-responses
+  - https://swagger.io/docs/specification/authentication/

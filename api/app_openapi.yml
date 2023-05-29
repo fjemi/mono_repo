@@ -155,11 +155,20 @@ paths:
                       text: Hello World!
 components:
   securitySchemes:
-  # https://swagger.io/docs/specification/authentication/
-    bearer_auth:
+    bearer_authorization:
       type: http
       scheme: bearer
       bearerFormat: JWT
+      description: |
+        example_jwt: 
+        eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb250ZW50Ijp7ImNsaWVudCI6ey
+        J1c2VyX2FnZW50IjpudWxsLCJvcmlnaW4iOm51bGx9LCJ1c2VyIjp7ImlkIjoidXNlc
+        l8wMCIsImVtYWlsIjoidXNlckBlbWFpbC5jb21lIiwibmFtZSI6ImZpcnN0X25hbWUs
+        IGxhc3RfbmFtZSJ9fSwiZXhwaXJhdGlvbl90aW1lIjpudWxsLCJpc3N1ZWRfYXQiOm5
+        1bGwsImlzc3VlciI6bnVsbCwic3ViamVjdCI6bnVsbCwiYXVkaWVuY2UiOm51bGwsIm
+        5vdF9iZWZvcmUiOm51bGwsImp3dF9pZCI6bnVsbH0.uPJdepCV61WPwFEkpXD-eMhTF
+        PnG8mjEQ0e1hKpcHws
+
   # responses:
   #   200:
   #     description: Successful Response
@@ -232,6 +241,4 @@ components:
           code: 500
           message: Internal Server Error
 security:
-- bearer_auth: []
-# - bearer_auth:
-#   - test: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiYW5vbnltb3VzXzAwIiwicm9sZSI6ImFub255bW91cyJ9fQ.I7cXyS8dN9QMjeWWaRPMZuMEdFHWk4A5yEBXNhSyKPE
+- bearer_authorization: []

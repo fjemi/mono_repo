@@ -1,4 +1,7 @@
+todo: 
+- add test data
 resources:
-- url: https://pyjwt.readthedocs.io/en/stable/usage.html
-- url: https://stackoverflow.com/questions/55459528/using-private-key-in-a-env-file
-- url: https://cryptotools.net/rsagen
+- https://pyjwt.readthedocs.io/en/stable/usage.html
+- https://stackoverflow.com/questions/55459528/using-private-key-in-a-env-file
+- https://cryptotools.net/rsagen
+- https://datatracker.ietf.org/doc/html/rfc7519#section-4.1

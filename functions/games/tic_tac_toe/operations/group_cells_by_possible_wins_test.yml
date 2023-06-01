@@ -1,0 +1,9 @@
+tests:
+- function: group_cells_by_possible_wins
+    description:
+    inputs:
+    n: 0
+    coordinates_ij: '00'
+    output:
+    n: 0
+    coordinates_ij: '00'

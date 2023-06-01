@@ -1,0 +1,33 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - TODO
+      - Games
+      summary: Tic Tac Toe
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+            examples:
+              '2*2 Grid':
+                value: |
+                 ''
+      responses:
+        200:
+          description: Success
+          content: 
+            text/plain:
+              schema:
+                type: string
+              examples:
+                '2*2 grid':
+                  value: |
+                    ''
+components:
+  examples:
+    '{path}.description': |
+      Operations for playing the game Tic Tac Toe

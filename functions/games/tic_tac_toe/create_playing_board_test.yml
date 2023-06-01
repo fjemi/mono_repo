@@ -1,0 +1,22 @@
+tests:
+  - function: create_playing_board
+    description: Should return an empty dictionary when n is 0
+    inputs:
+      n: 0
+    output: 
+      n: 0
+      board: {}
+  - function: create_playing_board
+    description: Should return a dictionary with one cell when n is 1
+    inputs:
+      n: 1
+    output: 
+      n: 1
+      board: {'00': ''}
+  - function: create_playing_board
+    description: Should return a dictionary with four cells when n is 2
+    inputs:
+      n: 2
+    output: 
+      n: 2
+      board: {'00': '', '01': '', '10': '', '11': ''}

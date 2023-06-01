@@ -37,60 +37,32 @@ paths:
                     score: 150
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
-                $ref: '#/components/schemas/OK/text_plain'
+                players: array
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        players:
-                        - name: Smith
-                          score: 15
-                        - name: Jones
-                          score: 20
-                        - name: Jones
-                          score:  15
-                      output:
-                        players:
-                        - name: Jones
-                          score: 35
-                        - name: Smith
-                          score: 15
+                    players:
+                    - name: Jones
+                      score: 35
+                    - name: Smith
+                      score: 15
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        players:
-                        - name: amy 
-                          score: 100
-                        - name: david
-                          score: 100
-                        - name: heraldo
-                          score: 50
-                        - name: aakansha
-                          score: 75
-                        - name: aleksa
-                          score: 150
-                      output:
-                        players:
-                        - name: aleksa 
-                          score: 150
-                        - name: amy 
-                          score: 100
-                        - name: david 
-                          score: 100
-                        - name: aakansha 
-                          score: 75
-                        - name: heraldo 
-                          score: 50
+                    players:
+                    - name: aleksa 
+                      score: 150
+                    - name: amy 
+                      score: 100
+                    - name: david 
+                      score: 100
+                    - name: aakansha 
+                      score: 75
+                    - name: heraldo 
+                      score: 50
 components:
   examples:
     '{path}.description': |

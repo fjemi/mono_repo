@@ -1,0 +1,77 @@
+resources:
+- https://techdevguide.withgoogle.com/resources/former-interview-question-find-longest-word/#!
+functions:
+  - name: get_sequences
+    description: Returns a list containing lists of sequences in a string
+    inputs: 
+    - string: ''
+    - string: a
+    - string: aa
+    - string: aab
+    - string: aaabb
+    - string: aaabbc
+    outputs:
+    - []
+    - - [a]
+    - - [a, a]
+    - - [a, a]
+      - [b]
+    - - [a, a, a]
+      - [b, b]
+    - - [a, a, a]
+      - [b, b]
+      - [c]
+  - name:  subsequence_check
+    description: Checks if a the chars in sequene represent a subsequence of 
+      another string. Sequence chars should be in the order, and length of 
+      sequence chars to check should be less of its associated sequence chars 
+      from the string
+    inputs:
+    - string_sequences: [[a, a], [b, b], [c, c]]
+      word_sequences:  [[a], [b], [c]]
+    - string_sequences: [[a, a], [b, b], [c, c]]
+      word_sequences:  [[a, a], [b, b], [c, c]]
+    - string_sequences: [[a], [b]]
+      word_sequences:  [[a], [b], [c]]
+    - string_sequences: [[a], [c]]
+      word_sequences:  [[a], [b], [c]]
+    - string_sequences: [[a], [b], [p, p, p], [l], [e, e]]
+      word_sequences:  [[a], [p, p], [l]]
+    - string_sequences: [[b]]
+      word_sequences:  [[a]]
+    - string_sequences: [[a, a], [b, b], [c, c], [d, d]]
+      word_sequences:  [[a], [b], [c]]
+    outputs: [true, true, false, false, true, false, true]
+  - name:  main
+    description: Returns the longest strings that make up subsequences of 
+      another string.
+    cast_inputs_as: Data
+    inputs:
+    - string: aabbcc
+      words: [able, ale, apple, bale, kangaroo, abple]
+    - string: abppplee
+      words: [able, ale, apple, bale, kangaroo, abple]
+    outputs:
+    - n: 0
+      string: aabbcc
+      string_sequences:
+      - [a, a]
+      - [b, b]
+      - [c, c]
+      subsequences: {}
+      words: [able, ale, apple, bale, kangaroo, abple]
+    - n: 0
+      string: abppplee
+      string_sequences:
+      - [a]
+      - [b]
+      - [p, p, p]
+      - [l]
+      - [e, e]
+      subsequences:
+        3: [ale]
+        4: [able]
+        5: [apple, abple]
+      words: [able, ale, apple, bale, kangaroo, abple]
+    cast_outputs_as: dict
+      

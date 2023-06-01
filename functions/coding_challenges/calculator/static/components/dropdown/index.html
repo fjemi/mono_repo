@@ -1,0 +1,12 @@
+<html>
+  <div 
+    id="dropdown_menu"
+    props='{"physics": [{"name": "newtons_second_law_of_motion", "route": "functions.coding_challenges.calculator.operations.physics.newtons_second_law_of_motion.app.py"}], "math": [{"name": "divide", "route": "functions.coding_challenges.calculator.operations.math.divide.app.py"}, {"name": "add", "route": "functions.coding_challenges.calculator.operations.math.add.app.py"}, {"name": "subtract", "route": "functions.coding_challenges.calculator.operations.math.subtract.app.py"}, {"name": "absolute_value", "route": "functions.coding_challenges.calculator.operations.math.absolute_value.app.py"}, {"name": "multiply", "route": "functions.coding_challenges.calculator.operations.math.multiply.app.py"}], "finance": [{"name": "simple_interest", "route": "functions.coding_challenges.calculator.operations.finance.simple_interest.app.py"}]}'
+  ></div>
+</html>
+
+{% block javascript %}
+<script type='text/javascript'>
+  {% include 'script.js' %}
+</script>
+{% endblock %}

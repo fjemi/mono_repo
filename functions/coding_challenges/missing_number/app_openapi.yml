@@ -27,48 +27,25 @@ paths:
                   nums: [9,6,4,2,3,5,7,0,1]
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
-                $ref: '#/components/schemas/OK/text_plain'
+                type: string
+                missing_number: number
               examples:
                 'Example 0':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      inputs: 
-                        nums: [0, 1, 3, 4]
-                      outputs: 
-                        missing_number: 2
+                    missing_number: 2
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      inputs: 
-                        nums: [3,0,1]
-                      outputs: 
-                        missing_number: 2
+                    missing_number: 2
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input: 
-                        nums: [0,1]
-                      output: 
-                        missing_number: 2
+                    missing_number: 2
                 'Example 3':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input: 
-                        nums: [9,6,4,2,3,5,7,0,1]
-                      output: 
-                        missing_number: 8
+                    missing_number: 8
 components:
   examples:
     '{path}.description': |

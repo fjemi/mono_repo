@@ -90,7 +90,7 @@ functions:
     - 0
     - 0
   - name:  main
-    desciption: Returns the odd numbers between two numbers
+    description: Returns the odd numbers between two numbers
     inputs: 
     - interval: [0, 0]
     - interval: [0, 1]

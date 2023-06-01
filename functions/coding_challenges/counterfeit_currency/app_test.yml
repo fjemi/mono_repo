@@ -1,0 +1,109 @@
+functions:
+  - name:  main
+    description: Determines if the serial number for currency is valid and 
+      returns the sum of all valid currency
+    inputs:
+    - serial_numbers: [AVG190420T, RTF20001000Z, QWER201850G, AFA199620E, ERT1947200T,
+        RTY20202004, DRV1984500Y, ETB2010400G]
+    - serial_numbers: [AVG190420T, RTF20001000Z, QWER201850G]
+    outputs:
+    - currency: [20, 1000, 0, 20, 200, 0, 500, 0]
+      currency_total: 1740
+      len_lower_bound: 10
+      len_upper_bound: 12
+      serial_numbers: [AVG190420T, RTF20001000Z, QWER201850G, AFA199620E, ERT1947200T,
+        RTY20202004, DRV1984500Y, ETB2010400G]
+      valid_denominations: [10, 20, 50, 100, 200, 500, 1000]
+      year_lower_bound: 1900
+      year_upper_bound: 2019
+    - currency: [20, 1000, 0]
+      currency_total: 1020
+      len_lower_bound: 10
+      len_upper_bound: 12
+      serial_numbers: [AVG190420T, RTF20001000Z, QWER201850G]
+      valid_denominations: [10, 20, 50, 100, 200, 500, 1000]
+      year_lower_bound: 1900
+      year_upper_bound: 2019
+  - name: get_denomination
+    description: Returns the currency value of serial numbers whose 
+      denomination, the seventh to second to last characters in the serial 
+      number, is valid
+    inputs:
+    - serial_numbers: SN0000010
+      valid_denominations: [1, 10]
+    - serial_numbers: SN00000100
+      valid_denominations: [1, 10]
+    - serial_numbers: SN00000200
+      valid_denominations: [1, 10]
+    - serial_numbers: SN00005000
+      valid_denominations: [500, 400]
+    outputs:
+      - [1]
+      - [10]
+      - [0]
+      - [500]
+  - name: validate_print_year
+    description: Returns True if chars at indices 3 through 7 of a serial
+      number are within the valid print years
+    inputs:
+    - serial_number: SN0202200
+      year_lower_bound: 2022
+      year_upper_bound: 2000
+    - serial_number: SN0202100
+      year_lower_bound: 2022
+      year_upper_bound: 2000
+    - serial_number: SN0202000
+      year_lower_bound: 2022
+      year_upper_bound: 2000
+    - serial_number: SN0200000
+      year_lower_bound: 2022
+      year_upper_bound: 2000
+    - serial_number: 000191000
+      year_lower_bound: 2022
+      year_upper_bound: 2000
+    outputs:
+    - True
+    - True
+    - True
+    - False
+    - False
+  - name: validate_first_three_and_last_chars_uppercase_letters
+    description: Return true if the first three and last chars of a string
+      are uppercase letters
+    inputs:
+      - serial_number: ABCD
+      - serial_number: AB1D
+      - serial_number: ABC100D
+      - serial_number: ABC1000
+      - serial_number: A1CB
+    outputs:
+      - True
+      - False
+      - True
+      - False
+      - False
+  - name: validate_chars_len
+    description: Returns true if the length of a strings falls within an
+      lower and upper bound, inclusive
+    inputs:
+    - serial_number: A
+      len_upper_bound: 0
+      len_lower_bound: 4
+    - serial_number: AB
+      len_upper_bound: 0
+      len_lower_bound: 4
+    - serial_number: ABC
+      len_upper_bound: 0
+      len_lower_bound: 4
+    - serial_number: ABCD
+      len_upper_bound: 0
+      len_lower_bound: 4
+    - serial_number: ABCDE
+      len_upper_bound: 0
+      len_lower_bound: 4
+    outputs:
+    - True
+    - True
+    - True
+    - True
+    - False

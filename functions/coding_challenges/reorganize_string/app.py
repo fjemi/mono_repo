@@ -2,31 +2,21 @@
 
 from typing import Dict, List
 from math import ceil
-from dataclasses import dataclass, field, asdict
-import yaml
+import dataclasses as dc
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   string: str = ''
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
-  char_counts: Dict[str, int] = field(default_factory=lambda: {})
+  char_counts: Dict[str, int] = dc.field(default_factory=lambda: {})
   count_upper_bound: int = -1
   char_counts_check: bool = True
   reorganized_string: str | None = None
@@ -60,7 +50,7 @@ async def check_char_counts_values(
   char_count_values: List[int],
 ) -> bool:
   n = sum(char_count_values)
-  # Check if any char occurances exceed the upper bound
+  # Check if any char occurrences exceed the upper bound
   for value in char_count_values:
     if value >= count_upper_bound:
       return False
@@ -98,26 +88,27 @@ async def get_reorganized_string(
         reorganized_string = reorganized_string + char
 
   # Handle cases where reorganized string and string are the same.abs
-  # Reverse the reogranized string
+  # Reverse the reorganized string
   if string == reorganized_string:
     reorganized_string = reorganized_string[::-1]
 
   return reorganized_string
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output: 
-      reorganized_string: {data.reorganized_string}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'reorganized_string': data.reorganized_string}
 
 
-async def main(request: Request) -> models.Response:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  string: str | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data.char_counts = await get_char_counts(string=data.body.string)
   data.count_upper_bound = await get_upper_bound(string=data.body.string)

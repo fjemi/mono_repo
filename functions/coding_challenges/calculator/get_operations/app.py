@@ -1,6 +1,6 @@
 #!usr/bin/env python3
 
-from dataclasses import dataclass
+import dataclasses as dc
 import glob
 import os
 from typing import Dict, List
@@ -10,10 +10,10 @@ from shared.get_environment import app as get_environment
 
 
 THIS_MODULE_PATH = __file__
-ENV = get_environment.main(({'module_path': THIS_MODULE_PATH}))
+ENV = get_environment.main(module_path=THIS_MODULE_PATH)
 
 
-@dataclass
+@dc.dataclass
 class Data:
   app_module_path: str | None = None
   operations_directory: str = 'operations'

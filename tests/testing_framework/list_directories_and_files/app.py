@@ -1,9 +1,9 @@
 import os
-from dataclasses import dataclass, field
+import dataclasses as dc
 from typing import List, Union
 
 
-@dataclass 
+@dc.dataclass 
 class Data:
   '''
   Description
@@ -14,9 +14,9 @@ class Data:
     wildcards: Filter file names/paths using wildcards
   '''
   directory: str = None
-  extensions: List[str] = field(default_factory=lambda: [])
-  wildcards: List[str] = field(default_factory=lambda: [])
-  files: List[str] = field(default_factory=lambda: [])
+  extensions: List[str] = dc.field(default_factory=lambda: [])
+  wildcards: List[str] = dc.field(default_factory=lambda: [])
+  files: List[str] = dc.field(default_factory=lambda: [])
 
 
 def get_files_in_directory(data: Union[Data, dict]) -> dict:

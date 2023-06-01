@@ -1,7 +1,7 @@
-from dataclasses import dataclass
+import dataclasses as dc
 import math
 
-@dataclass
+@dc.dataclass
 class Data:
   a: int = 0
   b: int = 0

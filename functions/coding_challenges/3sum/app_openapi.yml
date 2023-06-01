@@ -24,36 +24,25 @@ paths:
                   nums: [0, 0, 0]
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
-                $ref: '#/components/schemas/OK/text_plain'
+                type: string
+                triplets: array
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      nums: [-1, 0, 1, 2, -1, -4]
-                      triplets:
-                      - [-1, -1, 2]
-                      - [-1, 0, 1]
+                    triplets:
+                    - [-1, -1, 2]
+                    - [-1, 0, 1]
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      nums: [0, 1, 1]
-                      triplets: []
+                    triplets: []
                 'Example 3':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      nums: [0, 0, 0]
-                      triplets: 
-                      - [0, 0, 0]
+                    triplets: 
+                    - [0, 0, 0]
 components:
   examples:
     '{path}.description': |

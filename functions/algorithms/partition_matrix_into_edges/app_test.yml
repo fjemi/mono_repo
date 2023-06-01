@@ -1,0 +1,3 @@
+todo:
+- Move to algorithms
+- simplify logic and refactor. See `STEPS` global variable in `app.py`

@@ -1,12 +1,12 @@
 from importlib.machinery import SourceFileLoader
 from types import ModuleType
 from typing import Dict, Any, List
-from dataclasses import dataclass
+import dataclasses as dc
 from os.path import exists, dirname, basename, splitext
 import types
 
 
-@dataclass
+@dc.dataclass
 class Module:
   name: str | None = None
   path: str | None = None

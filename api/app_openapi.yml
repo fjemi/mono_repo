@@ -1,7 +1,20 @@
 openapi: 3.0.2
 info:
-  title: Minimal Functional API
-  description: API that uses functions to process data
+  title: Functional API Framework
+  description: |
+    API that uses functions to process data
+    - Component based framework where each route serves a self contained 
+      application or function that is an independent, reuseable piece of code 
+      (functions support API and SDK requests).
+    - Makes uses of the file system to automatically build and define API; 
+      can drag and drop business logic within the application layer and have
+      it automatically picked up by the API.
+    - Uses a single route to dynamically serve GET and POST requests; 
+    - Support lazy loading (lazy evaluation) for functions/routes to improve
+      efficiency, performance, and memory management
+    - OpenAPI documentation can be defined independently for each application,
+      and consolidated into main documentation for the API.
+    - Supports functional programming and is highly extendable.
   version: 2.0.5
   contact:
     name: Olufemi Jemilohun
@@ -11,14 +24,8 @@ info:
     name: Apache 2.2
     url: url
 tags:
-# - name: API
-#   description: Single API for handling GET and POST routes.
-- name: TODO
-  description: Functions with tasks to complete
 - name: Examples
   description: Example functions
-- name: Functions
-  description: Functions to call to process requests
 - name: Algorithms
   description: Algorithms algorithms
 - name: Security
@@ -28,15 +35,15 @@ tags:
 - name: Coding Challenges
   description: Challenges from websites such as LeetCode, HackerRank, 
     GoogleTechDev, reddit, and other sources
-- name: Development
-  description: Functions to use for development purposes
+- name: TODO
+  description: Functions with tasks to complete
 # - name: Pages
 #   description: Pages or templates served from GET routes
 paths:
   '/{function_path}/':
     get:
       tags: 
-      - Development
+      - Examples
       summary: Call function and process request
       operationId: call_function.get
       parameters:
@@ -55,7 +62,7 @@ paths:
         description: Data for the function to process
       responses:
         200: 
-          description: Successful Response
+          description: Success
           content: 
             application/json:
               schema:
@@ -63,19 +70,13 @@ paths:
               examples:
                 'Ping API':
                   value:
-                    code: 200
-                    status: OK
-                    data:
-                      ping: pong
+                    ping: pong
                 'Hello World':
                   value:
-                    code: 200
-                    status: OK
-                    data:
-                      text: Hello World!
+                    text: Hello World!
     post:
       tags:
-      - Development
+      - Examples
       summary: Call function and process request
       operationId: call_function.post
       parameters:
@@ -119,40 +120,28 @@ paths:
                   - externalValue: http://wwww.someimage.com
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             application/json:
               schema:
-                $ref: '#/components/schemas/OK/application_json'
+                type: object
               examples:
                 'Ping API':
                   value:
-                    code: 200
-                    status: OK
-                    data:
-                      ping: pong
+                    ping: pong
                 'Hello World':
                   value:
-                    code: 200
-                    status: OK
-                    data:
-                      text: Hello World!
+                    text: Hello World!
             text/plain:
               schema:
-                $ref: '#/components/schemas/OK/text_plain'
+                type: string
               examples:
                 'Ping API': 
-                  value: |
-                    code: 200
-                    status: OK
-                    data:
-                      ping: pong
+                  value:
+                    ping: pong
                 'Hello World':
-                  value: |
-                    code: 200
-                    status: OK
-                    data:
-                      text: Hello World!
+                  value:
+                    text: Hello World!
 components:
   securitySchemes:
     bearer_authorization:
@@ -160,28 +149,9 @@ components:
       scheme: bearer
       bearerFormat: JWT
       description: |
-        example_jwt: 
-        eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb250ZW50Ijp7ImNsaWVudCI6ey
-        J1c2VyX2FnZW50IjpudWxsLCJvcmlnaW4iOm51bGx9LCJ1c2VyIjp7ImlkIjoidXNlc
-        l8wMCIsImVtYWlsIjoidXNlckBlbWFpbC5jb21lIiwibmFtZSI6ImZpcnN0X25hbWUs
-        IGxhc3RfbmFtZSJ9fSwiZXhwaXJhdGlvbl90aW1lIjpudWxsLCJpc3N1ZWRfYXQiOm5
-        1bGwsImlzc3VlciI6bnVsbCwic3ViamVjdCI6bnVsbCwiYXVkaWVuY2UiOm51bGwsIm
-        5vdF9iZWZvcmUiOm51bGwsImp3dF9pZCI6bnVsbH0.uPJdepCV61WPwFEkpXD-eMhTF
-        PnG8mjEQ0e1hKpcHws
+        example_jwt:
 
-  # responses:
-  #   200:
-  #     description: Successful Response
-  #     content: 
-  #       application/json:
-      # code: 200
-      # data: 
-      #   schema:
-      #     anyOf:
-      #     - type: string
-      #     - type: object
-      # status: OK
-      
+        eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb250ZW50Ijp7ImNsaWVudCI6eyJ1c2VyX2FnZW50IjpudWxsLCJvcmlnaW4iOm51bGx9LCJ1c2VyIjp7ImlkIjoidXNlcl9pZCIsImVtYWlsIjoidXNlckBlbWFpbC5jb20iLCJmaXJzdF9uYW1lIjoiZmlyc3RfbmFtZSIsImxhc3RfbmFtZSI6Imxhc3RfbmFtZSJ9fSwiZXhwaXJhdGlvbl90aW1lIjpudWxsLCJpc3N1ZWRfYXQiOm51bGwsImlzc3VlciI6bnVsbCwic3ViamVjdCI6bnVsbCwiYXVkaWVuY2UiOm51bGwsIm5vdF9iZWZvcmUiOm51bGwsImp3dF9pZCI6bnVsbH0.qen50ectsS6wLYbld8NGlCxrOMxfaPWnamC5FEQJXd8      
   parameters:
     Path:
       in: path
@@ -191,10 +161,10 @@ components:
       required: True
       examples:
         'Ping API':
-          value: functions.ping
+          value: functions.examples.ping
           summary: Ping API
         'Hello World':
-          value: functions.hello_world
+          value: functions.examples.hello_world
           summary: Hello World
       description: |
         Dot delimited path to a function to call to process the request. The path starts from a folder in the working directory of the app, which is set to the environment variable `WORKDIR`, and the **main** function in the module **app.py** is returned.
@@ -218,13 +188,10 @@ components:
           status: 
             type: string
         example:
-          code: 200
-          status: OK
-          data:
-            text: Successful Response
+          text: Success
       anyOf:
-      - $ref: '#/components/schemas/OK/text_plain'
-      - $ref: '#/components/schemas/OK/application_json'
+      - type: object
+      - type: string
     Error:
       anyOf:
       - type: string

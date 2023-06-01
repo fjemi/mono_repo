@@ -1,35 +1,25 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, asdict
+import dataclasses as dc
 from typing import List
 import itertools
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
+@dc.dataclass
 class Body:
   sequence: List[str] | None = None
 
 
-@dataclass
-class RequestData:
-  body: Body | None = None
-
-
-@dataclass
-class Request:
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class WordSquares:
   values: List[List[str]] | None = None
   n: int = 0
 
 
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
   permutations: List[List[str]] | None = None
@@ -67,19 +57,23 @@ async def check_permutations_for_squares(data: Data) -> Data:
   return data
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output: 
-      word_squares: {asdict(data.word_squares)}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
+async def get_response(data: Data) -> dict:
+  data = {
+    'word_squares': data.word_squares.values,
+    'count': data.word_squares.n,
+  }
   return data
 
 
-async def main(request: Request) -> models.Response:
-  data = Data(body=request.data.body)
+async def main(
+  request: Request | None = None,
+  sequence: List[str] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data.permutations = await get_permutations(sequence=data.body.sequence)
   data = await check_permutations_for_squares(data=data)

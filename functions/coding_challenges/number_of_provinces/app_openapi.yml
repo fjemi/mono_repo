@@ -43,80 +43,38 @@ paths:
                   exclude_diagonals: true
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                provinces: array
+                count: number
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        cities:
-                        - [1, 0, 0]
-                        - [0, 1, 0]
-                        - [0, 0, 1]
-                        exclude_diagonals: true
-                      output: 
-                        provinces:
-                          n: 3
-                          values:
-                          - []
-                          - ['0.0']
-                          - ['1.1']
-                          - ['2.2']
+                    count: 3
+                    provinces:
+                    - []
+                    - ['0.0']
+                    - ['1.1']
+                    - ['2.2']
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        cities:
-                        - [1, 0, 0]
-                        - [0, 1, 0]
-                        - [0, 0, 1]
-                        exclude_diagonals: false
-                      output: 
-                        provinces:
-                          n: 1
-                          values:
-                          - []
-                          - ['0.0', '1.1', '2.2']
+                    count: 1
+                    provinces:
+                    - []
+                    - ['0.0', '1.1', '2.2']
                 'Example 3':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        cities:
-                        - [1, 1, 0]
-                        - [1, 1, 0]
-                        - [0, 0, 1]
-                      output: 
-                        provinces:
-                          n: 1
-                          values:
-                          - []
-                          - ['0.0', '0.1', '1.0', '1.1', '2.2']
+                    count: 1
+                    provinces:
+                    - []
+                    - ['0.0', '0.1', '1.0', '1.1', '2.2']
                 'Example 4':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        cities:
-                        - [1, 1, 0]
-                        - [1, 1, 0]
-                        - [0, 0, 1]
-                        exclude_diagonals: true
-                      output: 
-                        provinces:
-                          n: 2
-                          values:
-                          - []
-                          - ['0.0', '0.1', '1.0', '1.1']
-                          - ['2.2']
+                    count: 2
+                    provinces:
+                    - []
+                    - ['0.0', '0.1', '1.0', '1.1']
+                    - ['2.2']

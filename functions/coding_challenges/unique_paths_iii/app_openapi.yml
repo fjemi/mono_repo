@@ -26,34 +26,19 @@ paths:
                   - [0,0,0,2]
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                output: number
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        grid:
-                        - [0, 1]
-                        - [2, 0]
-                      output: 0
+                    output: 0
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        grid:
-                        - [1,0,0,0]
-                        - [0,0,0,0]
-                        - [0,0,0,2]
-                      output: 4
+                    output: 4
 components:
   examples:
     '{path}.description': |

@@ -1,31 +1,22 @@
 #!usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List
-import yaml
-
-from api import models
+from fastapi import Request
 
 
-@dataclass
+from shared.format_main_arguments import app as format_main_arguments
+
+
+@dc.dataclass
 class Body:
   string: str = ''
 
 
-@dataclass
+@dc.dataclass
 class Data:
-  body: Body = field(default_factory=lambda: Body())
-
-
-@dataclass
-class Request(models.Request):
-  data: Data = field(default_factory=lambda: Data())
-
-
-@dataclass
-class Props:
   body: Body | None = None
-  alternating_char_positions: List[int] = field(default_factory=lambda: [])
+  alternating_char_positions: List[int] = dc.field(default_factory=lambda: [])
   deletions_count: int = 0
 
 
@@ -34,7 +25,7 @@ async def get_alternating_char_positions(string) -> List[int]:
   # Handle empty string
   if len(string) == 0:
     return store
-  
+
   # Handle non-empty strings
   store.append(0)
   # Add non repeating chars to store
@@ -49,27 +40,29 @@ async def get_alternating_char_positions(string) -> List[int]:
   return store
 
 
-async def get_deletions_count(props: Props) -> int:
-  m = len(props.body.string)
-  n = len(props.alternating_char_positions)
+async def get_deletions_count(data: Data) -> int:
+  m = len(data.body.string)
+  n = len(data.alternating_char_positions)
   return m - n
 
 
-async def get_response(props: Props) -> models.Response:
-  props = f'''
-    input: {asdict(props.body)} 
-    output:
-      deletions: {props.deletions_count}
-  '''
-  props = yaml.safe_load(props)
-  props = models.Response(data=props)
-  return props
+async def get_response(data: Data) -> dict:
+  return {'deletions': data.deletions_count}
 
 
-async def main(request: Request) -> models.Response:
-  props = Props(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  string: str | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
-  props.alternating_char_positions = await get_alternating_char_positions(string=props.body.string)
-  props.deletions_count = await get_deletions_count(props=props)
-  props = await get_response(props=props)
-  return props
+  data.alternating_char_positions = await get_alternating_char_positions(
+    string=data.body.string)
+  data.deletions_count = await get_deletions_count(data=data)
+  data = await get_response(data=data)
+  return data

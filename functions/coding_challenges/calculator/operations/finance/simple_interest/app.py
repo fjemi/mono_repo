@@ -1,10 +1,10 @@
 #!usr/bin/env python3
 
-from dataclasses import dataclass, field, fields
+import dataclasses as dc
 from typing import List, Dict, Callable
 
 
-@dataclass
+@dc.dataclass
 class Inputs:
   principal: float | None = None
   rate: float | None = None
@@ -14,7 +14,7 @@ class Inputs:
   total_accrued: float = None
 
 
-@dataclass
+@dc.dataclass
 class Data:
   inputs: Dict | Inputs = None
   operation: str | None = None

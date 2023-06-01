@@ -24,40 +24,22 @@ paths:
                   root: [5, 1, 4, null, null, 3, 6]
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                is_bst: bool
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        root: [1, 2, 3, 4, 5]
-                      output:
-                        is_bst: false
+                    is_bst: false
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        root: [2, 1, 3]
-                      output:
-                        is_bst: true
+                    is_bst: true
                 'Example 3':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        root: [5, 1, 4, null, null, 3, 6]
-                      output:
-                        is_bst: false
+                    is_bst: false
 components:
   examples:
     '{path}.description': |

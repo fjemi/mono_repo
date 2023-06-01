@@ -1,26 +1,16 @@
 #!/usr/bin/env python3
 
 
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List, Dict
-import yaml
+from fastapi import Request
 
-from api import models
-
-
-@dataclass 
-class Body(models.Body):
-  meeting_times: List[List[int]] = field(default_factory=lambda: [])
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
-class Data(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: Data | None = None
+@dc.dataclass
+class Body:
+  meeting_times: List[List[int]] = dc.field(default_factory=lambda: [])
 
 
 CASE_MAP = {
@@ -31,11 +21,11 @@ CASE_MAP = {
 }
 
 
-@dataclass
-class ModuleData:
+@dc.dataclass
+class Data:
   body: Body | None = None
   room_count: int = 0
-  case_map: Dict[str, int] = field(default_factory=lambda: CASE_MAP)
+  case_map: Dict[str, int] = dc.field(default_factory=lambda: CASE_MAP)
 
 
 CHECK_INTERVALS = {
@@ -106,19 +96,20 @@ async def get_room_count(meeting_times: List[List[int]]) -> int:
   return room_count
 
 
-async def get_response(data: ModuleData) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output: 
-      rooms: {data.room_count} 
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'rooms': data.room_count}
 
 
-async def main(request: Request) -> models.Response:
-  data = ModuleData(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  meeting_times: List[List[int]] | None = None
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data.room_count = await get_room_count(meeting_times=data.body.meeting_times)
   data = await get_response(data=data)

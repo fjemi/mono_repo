@@ -2,7 +2,7 @@ functions:
 - name:  main
   
   tests: 
-  - desciption: Example 1
+  - description: Example 1
     arguments:
       numbers: [6,3,4,5]
     assertions:
@@ -11,7 +11,7 @@ functions:
           moves:
             n: 1
         result_as: dict
-  - desciption: Example 2
+  - description: Example 2
     arguments:
       numbers: [13,10,21,20]
     assertions:
@@ -20,7 +20,7 @@ functions:
           moves:
             n: 3
         result_as: dict
-  - desciption: Example 3
+  - description: Example 3
     arguments:
       numbers: [8,5,11,4,6]
     assertions:

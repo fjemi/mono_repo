@@ -80,7 +80,7 @@ functions:
         triplets: [-1.0.1, -1.-1.2]
   assertions: equals
 - name: process_triplets
-  desciption: 
+  description: 
   tests:
   - arguments:
       data:

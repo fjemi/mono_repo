@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, asdict
+import dataclasses as dc
 from typing import Any, List, Dict
 import time
 import traceback
@@ -12,24 +12,24 @@ from shared.get_environment import app as get_environment
 from shared.logger import app as logger
 
 
-ENV = get_environment.main(f'module_path: {__file__}')
+ENV = get_environment.main(module_path=__file__)
 
 
-@dataclass
+@dc.dataclass
 class RunTime:
   start: int = 0
   end: int = 0
   total_ms: float = 0.0
 
 
-@dataclass
+@dc.dataclass
 class Error:
   _type: str | None = None
   description: str | None = None
   _traceback: str | None = None
 
 
-@dataclass
+@dc.dataclass
 class Data:
   function_name: str | None = None
   module_path: str | None = None
@@ -106,8 +106,8 @@ def log_data(
   if data.error is not None:
     level = 'ERROR'
 
-  if hasattr(data, '__dataclass_fields__') is True:
-    data = asdict(data)
+  if hasattr(data, '__dataclassfields__') is True:
+    data = dc.asdict(data)
     
 
   try:
@@ -115,10 +115,10 @@ def log_data(
   except:
     
     # Convert fields to strings
-    convert_fields = ['result', 'args', 'kwargs']
-    for _field in convert_fields:
-      value = data[_field]
-      data[_field] = str(value)
+    convertfields = ['result', 'args', 'kwargs']
+    for field in convertfields:
+      value = data[field]
+      data[field] = str(value)
 
   if str(debug) == 'True':
     data = {'log': data}
@@ -169,7 +169,7 @@ def main(
 
 
 def example() -> None:
-  @dataclass
+  @dc.dataclass
   class Nums:
     a: int = 0
     b: int = 0

@@ -6,7 +6,7 @@ from random import randint
 from inspect import cleandoc
 from yaml import safe_load
 import dacite
-from dataclasses import dataclass
+import dataclasses as dc
 from pydantic import BaseModel
 from typing import Any, List, Dict
 
@@ -32,13 +32,13 @@ STRING_TO_TYPE = {
 }
 
 
-@dataclass
+@dc.dataclass
 class Tests:
   test_description: str | None = None
   case_descriptions: List[Dict[str, str]] | Dict[str, str] | None = None
   cases: List[Any] | Any | None = None
   expected_results: List[Any] | Any | None = None
-  expected_fields: List[bool] | bool | None = None
+  expectedfields: List[bool] | bool | None = None
 
 
 def test_setup_data_from_dict() -> None:
@@ -259,7 +259,7 @@ def test_convert_single_item_to_list() -> None:
     assert result.__dict__ == tests.expected_results[i]
 
 
-def test_get_field_lengths() -> None:
+def test_getfield_lengths() -> None:
   '''
   Should return the dataclass `N` with the
   correct lengths for the values and constructors lists
@@ -294,7 +294,7 @@ def test_get_field_lengths() -> None:
   for i in range(len(data.cases)):
     _case = data.cases[i]
     _case = dacite.from_dict(app.Data, _case)
-    result = app.get_field_lengths(data=_case)
+    result = app.getfield_lengths(data=_case)
     # Verify expected values for certain fields of 
     # the resulting dataclass
     for field, expected_value in data.expected_results[i].items():

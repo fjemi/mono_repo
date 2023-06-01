@@ -1,38 +1,28 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List, Dict
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   words: List[str] | None = None
   k: int = 0
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class TopKWords:
   values: List[str] | None = None
   n: int = 0
 
 
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
-  counts: Dict[str, int] = field(default_factory=lambda: {})
+  counts: Dict[str, int] = dc.field(default_factory=lambda: {})
   top_k_words: TopKWords | None = None
 
 
@@ -75,19 +65,24 @@ async def get_top_k_words(counts: List[str], k: int) -> List[str]:
   return top_k_words
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output:
-      top_k_words: {asdict(data.top_k_words)}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {
+    'top_k_words': data.top_k_words.values,
+    'count': data.top_k_words.n,
+  }
 
 
-async def main(request: Request) -> Data:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  words: List[str] | None = None,
+  k: int | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data.counts = await get_counts(words=data.body.words)
   data.counts = await process_counts(counts=data.counts)

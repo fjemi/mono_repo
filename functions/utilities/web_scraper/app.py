@@ -1,32 +1,23 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List, Dict
 import requests
 import bs4
 import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 from shared.load_function_from_path import app as load_function_from_path
 from shared.get_environment import app as get_environment
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   sites: List[str] | None = None
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
   html: str | None = None
@@ -49,23 +40,24 @@ async def process_html():
   ...
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output: 
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return
 
 
-async def main(request: Request) -> models.Response:
-  body = Body(**asdict(request.data.body))
-  data = Data(body=body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  sites: str | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
 
   data = await get_html(data=data)
-  
+
 
   print(data)
   data = await get_response(data=data)

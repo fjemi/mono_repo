@@ -5,21 +5,21 @@ https://techdevguide.withgoogle.com/resources/find-longest-word-in-dictionary-th
 import operator
 
 # Data modeling
-from dataclasses import dataclass, asdict, field
+import dataclasses as dc
 import json
 # Type hints
 from typing import List, Dict, Any
 # Arrays
 import numpy as np
 
-@dataclass
+@dc.dataclass
 class Model:
   '''Finds the longest word in a last that is subsequence of a string
   '''
   string: str
   words: List[str]
-  subsequences: List = field(default_factory=lambda: [])
-  longest_subsequence: List = field(default_factory=lambda: None)
+  subsequences: List = dc.field(default_factory=lambda: [])
+  longest_subsequence: List = dc.field(default_factory=lambda: None)
   
   def __post_init__(self):
     '''Execute after the class initializes
@@ -69,5 +69,5 @@ if __name__ == '__main__':
   STRING = "abppplee"
   WORDS = ["able", "ale", "apple", "bale", "kangaroo", "abple"]
   M = Model(string, words)
-  print(json.dumps(asdict(M), indent=2))
+  print(json.dumps(dc.asdict(M), indent=2))
   

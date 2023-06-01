@@ -1,0 +1,70 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - TODO
+      - Coding Challenges
+      summary: Birthdays
+      description:
+        $ref: '#/components/examples/{path}.description'
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              players: array[object]
+            examples:
+              'Example 1':
+                value: |
+                  players:
+                  - name: Smith
+                    score: 15
+                  - name: Jones
+                    score: 20
+                  - name: Jones
+                    score:  15
+              'Example 2':
+                value: |
+                  players:
+                  - name: amy 
+                    score: 100
+                  - name: david
+                    score: 100
+                  - name: heraldo
+                    score: 50
+                  - name: aakansha
+                    score: 75
+                  - name: aleksa
+                    score: 150
+      responses:
+        200:
+          description: Success
+          content: 
+            text/plain:
+              schema:
+                players: array
+              examples:
+                'Example 1':
+                  value: |
+                    players:
+                    - name: Jones
+                      score: 35
+                    - name: Smith
+                      score: 15
+                'Example 2':
+                  value: |
+                    players:
+                    - name: aleksa 
+                      score: 150
+                    - name: amy 
+                      score: 100
+                    - name: david 
+                      score: 100
+                    - name: aakansha 
+                      score: 75
+                    - name: heraldo 
+                      score: 50
+components:
+  examples:
+    '{path}.description': |
+      [Challenge](https://www.hackerrank.com/challenges/ctci-comparator-sorting/problem)

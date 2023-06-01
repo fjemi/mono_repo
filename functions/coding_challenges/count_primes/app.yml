@@ -5,7 +5,7 @@ links:
   - 
 functions:
   - name:  main
-    desciption: Returns prime numbers between 0 and a number, `n`
+    description: Returns prime numbers between 0 and a number, `n`
     inputs:
     - {n: 0}
     - {n: 1}

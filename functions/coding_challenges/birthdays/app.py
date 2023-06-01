@@ -2,7 +2,7 @@
 
 from typing import List
 from datetime import datetime
-from dataclasses import dataclass, field
+import dataclasses as dc
 
 from shared.type_handler import app as type_handler
 
@@ -10,13 +10,13 @@ from shared.type_handler import app as type_handler
 DATE_FORMAT: str = '%Y%m%d'
 
 
-@dataclass
+@dc.dataclass
 class BirthDate:
   weekday: str = None
   date: str = None
 
 
-@dataclass
+@dc.dataclass
 class Data:
   '''
   attributes:
@@ -25,11 +25,11 @@ class Data:
     weekday_counts: Counts birthdays by weekday
   '''
   birth_date: str = None
-  birthdays: List[BirthDate] = field(default_factory=lambda: [])
-  ending_year: int = field(
+  birthdays: List[BirthDate] = dc.field(default_factory=lambda: [])
+  ending_year: int = dc.field(
     default_factory=lambda: int(datetime.utcnow().strftime('%Y')))
-  weekday_counts: dict = field(default_factory=lambda: {})
-  date_format: str = field(default_factory=lambda: DATE_FORMAT)
+  weekday_counts: dict = dc.field(default_factory=lambda: {})
+  date_format: str = dc.field(default_factory=lambda: DATE_FORMAT)
 
 
 def get_birthdays(data: Data) -> Data:

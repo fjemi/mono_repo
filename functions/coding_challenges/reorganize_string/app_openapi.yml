@@ -24,40 +24,22 @@ paths:
                   string: abc
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                reorganizes_string: string
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        string: aab
-                      output: 
-                        reorganizes_string: aba
+                    reorganizes_string: aba
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        string: aaab
-                      output: 
-                        reorganized_string: ''
+                    reorganized_string: ''
                 'Example 3':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        string: abc
-                      output:
-                        reorganized_string: cba
+                    reorganized_string: cba
 components:
   examples:
     '{path}.description': |

@@ -1,43 +1,33 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from copy import deepcopy
 from typing import List, Any
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 from functions.algorithms.linked_list import app as linked_list_algorithms
 from functions.algorithms.linked_list.app import Node, LinkedList
 
 
-@dataclass 
-class Body(models.Body):
+@dc.dataclass
+class Body:
   k: int = 0
   head: List[int] | None = None
 
 
-@dataclass
-class Data(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: Data | None = None
-
-
-@dataclass
-class ModuleData:
+@dc.dataclass
+class Data:
   body: Body | None = None
   linked_list: LinkedList | None = None
   current_node: Node | None = None
-  node_groups: List[List[Node]] = field(
+  node_groups: List[List[Node]] = dc.field(
     default_factory=lambda: [])
   modified_linked_list: LinkedList | None = None
   output: List[Any] | None = None
 
 
-@dataclass
+@dc.dataclass
 class Store:
   node_group: List[Node] | None = None
   current_node: Node | None = None
@@ -69,7 +59,7 @@ async def get_node_group_and_current_node(
   return store
 
 
-async def get_node_groups(data: ModuleData) -> ModuleData:
+async def get_node_groups(data: Data) -> Data:
   while [] not in data.node_groups:
     store = await get_node_group_and_current_node(
       current_node=data.current_node,
@@ -138,19 +128,21 @@ async def get_modified_linked_list(
   return store
 
 
-async def get_response(data: ModuleData) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output:
-      reversed_nodes: {data.output}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'reversed_nodes': data.output}
 
 
-async def main(request: Request) -> models.Response:
-  data = ModuleData(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  k: int | None = None,
+  head: List[int] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data.linked_list = await linked_list_algorithms.main(
     values=data.body.head)

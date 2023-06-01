@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
 from typing import Dict, List
-from dataclasses import dataclass
+import dataclasses as dc
 
 from models import Base
 
 
-@dataclass
+@dc.dataclass
 class Positions(Base):
   pass
 

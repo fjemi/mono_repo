@@ -46,7 +46,7 @@ paths:
                   token_type: jwt
       responses:
         401:
-          description: Unauthorized
+          description: 'Error: Unauthorized'
           content: 
             text/plain:
               schema:

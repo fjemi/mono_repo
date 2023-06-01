@@ -1,0 +1,50 @@
+tests:
+  - name:  main
+    tests:
+      - description: Should return the fizz buzz results for a list of 
+          numbers
+        inputs: 
+          data:
+            - numbers: [1, 3, 5, 6, 8, 10, 15]
+        outputs: 
+          - [
+              number: 1, value: 1,
+              number: 3, value: 'fizz',
+              number: 5, value: 'buzz',
+              number: 6, value: 'fizz',
+              number: 8, value: 8,
+              number: 10, value: 'buzz',
+              number: 15, value: 'fizz_buzz',
+            ]
+  - name:  get_fizz_buzz
+    tests:
+      - description:
+        input_dataclass: Data
+        inputs: 
+          - number: 0
+          - number: 1
+          - number: 3
+          - number: 6
+          - number: 5
+          - number: 10
+          - number: 15
+          - number: 30
+        output_dataclass: Result
+        outputs: 
+          - number: 0
+            value: 0
+          - number: 1
+            value: 1
+          - number: 3
+            value: fizz
+          - number: 6
+            value:  fizz
+          - number: 5
+            value:  buzz
+          - number: 10
+            value:  buzz
+          - number: 15
+            value:  fizz_buzz
+          - number: 30
+            value: fizz_buzz
+            

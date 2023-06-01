@@ -1,32 +1,22 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List, Dict
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   clouds: List[int] | None = None
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
-  safe_cloud_positions: List[int] = field(default_factory=lambda: [])
-  jumps: Dict[int, List[int]] = field(default_factory=lambda: {})
+  safe_cloud_positions: List[int] = dc.field(default_factory=lambda: [])
+  jumps: Dict[int, List[int]] = dc.field(default_factory=lambda: {})
   jump_count: int = 0
 
 
@@ -74,21 +64,23 @@ def get_jumps(data: Data) -> Dict[int, List[int]]:
   return jumps
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output: 
-      jumps:
-        values: {data.jumps}
-        n: {data.jump_count}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return dict(
+    jumps=data.jumps,
+    n=data.jump_count,
+  )
 
 
-async def main(request: Request) -> models.Response:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  clouds: List[int] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data.safe_cloud_positions = get_safe_cloud_positions(data=data)
   data.jumps = get_jumps(data=data)

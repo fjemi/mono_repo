@@ -1,78 +1,64 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from os import path
 import json
+from fastapi import Request
 from fastapi.templating import Jinja2Templates
 
-from api import models as api_models
 from shared.get_environment import app as get_environment
+from shared.format_main_arguments import (
+  app as format_main_arguments)
 
 
-THIS_FILE_PATH = __file__
-ENV = get_environment.main({'module_path': THIS_FILE_PATH})
+THIS_MODULE_PATH = __file__
+ENV = get_environment.main(module_path=THIS_MODULE_PATH)
 
 
-@dataclass
-class QueryParams:
+@dc.dataclass
+class Query_Params:
   name: str = 'World'
 
 
-@dataclass
+@dc.dataclass
 class Body:
-  data: str = 'Hello World!'
+  name: str = 'World'
 
 
-@dataclass
+@dc.dataclass
+class Method:
+  value: str = 'GET'
+
+
+@dc.dataclass
 class Data:
-  query_params: QueryParams = field(
-    default_factory=lambda: QueryParams())
-  body: Body = field(default_factory=lambda: Body())
+  query_params: Query_Params | None = None
+  body: Body | None = None
+  method: Method | None = None
 
 
-@dataclass
-class Request:
-  data: Data | None = None
-  method: str = 'GET'
-
-
-POST_DATA_SWITCH = {
-  1: lambda request: request.data.body,
-  0: lambda request: Body(),
-}
-
-
-async def post_handler(request: api_models.Request) -> dict:
-  _case = int(hasattr(request.data.body, 'name'))
-  switch = POST_DATA_SWITCH[_case]
-  data = switch(request=request)
-  text = 'Hello World!'.replace('World', data.name)
-  data = {'data': text}
-  return data
-
-
-GET_DATA_SWITCH = {
-  0: lambda query_params: QueryParams(),
-  1: lambda query_params: query_params,
+GET_SWITCHER = {
+  False: lambda query_params: Query_Params(),
+  True: lambda query_params: query_params,
 }
 
 
 async def get_handler(
+  data: Data,
   request: Request,
 ) -> Jinja2Templates:
-  _case = hasattr(request.data.query_params, 'name')
-  switch = GET_DATA_SWITCH[_case]
-  request.data.query_params = switch(
-    query_params=request.data.query_params)
+  cases = hasattr(data.query_params, 'name')
+  switch = GET_SWITCHER[cases]
+  data.query_params = switch(query_params=data.query_params)
 
-  directory = path.dirname(THIS_FILE_PATH)
+  directory = path.dirname(THIS_MODULE_PATH)
   directory = path.join(directory, 'static')
   template = Jinja2Templates(
     directory=directory,
     auto_reload=ENV.API_RELOAD,
   )
 
-  data = json.dumps(asdict(request.data))
+  data = json.dumps(dc.asdict(data))
   template = template.TemplateResponse(
     'index.html', 
     context={
@@ -83,10 +69,42 @@ async def get_handler(
   return template
 
 
-REQUEST_METHOD_SWITCH = {
-  'POST': post_handler,
-  'GET': get_handler,
+POST_SWITCHER = {
+  True: lambda body: body.name,
+  False: lambda body: 'World',
 }
+
+
+async def post_handler(
+  data: Data,
+  request: Request,
+) -> dict:
+  _ = request
+  cases = hasattr(data.body, 'name')
+  switcher = POST_SWITCHER[cases]
+  name = switcher(body=data.body)
+  text = 'Hello World!'.replace('World', name.title())
+  data = {'data': text}
+  return data
+
+
+REQUEST_HANDLER = {
+  'GET': get_handler,
+  'POST': post_handler,
+}
+
+
+async def process_request(
+  data: Data,
+  request: Request,
+) -> Data:
+  _ = request
+  handler = REQUEST_HANDLER[data.method.value]
+  data = await handler(
+    data=data,
+    request=request,
+  )
+  return data
 
 
 async def main(
@@ -95,22 +113,17 @@ async def main(
   **kwargs,
 ) -> dict | Jinja2Templates:
   _ = args, kwargs
-  _case = request.method
-  switch = REQUEST_METHOD_SWITCH[_case]
-  response = await switch(request=request)
-  return response
-
-
-async def example() -> None:
-  response = {
-    'GET': await main(request=Request(method='GET')),
-    'POST': await main(request=Request(method='POST')),
-  }
-  print(response)
-
-
-if __name__ == '__main__':
-  import asyncio
-
-
-  asyncio.run(example())
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={
+      'body': Body,
+      'query_params': Query_Params,
+      'method': Method,
+    },
+    main_data_class=Data,
+  )
+  data = await process_request(
+    data=data,
+    request=request,
+  )
+  return data

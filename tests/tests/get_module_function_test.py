@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import dataclasses as dc
 from typing import List, Any, Dict
 import sys
 import pytest
@@ -11,13 +11,13 @@ from tests.thread_function_executions_resources import app as test_resources
 TEST_RESOURCES_DIR = __file__.replace('app.py', 'test_resources')
 
 
-@dataclass
+@dc.dataclass
 class Tests:
   test_description: str = None
   case_descriptions: List[str] | str = None
   cases: List[Any] | Any = None
   expected_results: List[Any] | Any = None
-  expected_fields: List[bool] | bool = None
+  expectedfields: List[bool] | bool = None
 
 
 def test_get_test_function_name() -> None:

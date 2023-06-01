@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 
-from __future__ import annotations
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List, Dict
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-NEIGHBOOR_STEPS = [
+NEIGHBOR_STEPS = [
   [-1, 0],
   [0, -1],
   [1, 0],
@@ -16,44 +15,33 @@ NEIGHBOOR_STEPS = [
 ]
 
 
-@dataclass 
-class Body(models.Body):
-  string: str = ''
-  word_dict: List[str] = field(default_factory=lambda: [])
+@dc.dataclass
+class Body:
+  grid: List[List[int]] | None = None
 
 
-@dataclass
-class Data(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: Data | None = None
-
-
-@dataclass
+@dc.dataclass
 class Shape:
   n: int = 0
   m: int = 0
 
 
-@dataclass
+@dc.dataclass
 class Positions:
-  neighboors: Dict[str, List[List[int]]] | None = None
+  neighbors: Dict[str, List[List[int]]] | None = None
   obstacles: List[List[int]] | None = None
   start: List[int] | None = None
   end: List[int] | None = None
 
 
-@dataclass
-class ModuleData:
+@dc.dataclass
+class Data:
   body: Body | None = None
-  paths: List[List[int]] = field(default_factory=lambda: [])
+  paths: List[List[int]] = dc.field(default_factory=lambda: [])
   shape: Shape | None = None
   positions: Positions | None = None
-  neighboor_steps: List[List[int]] = field(
-    default_factory=lambda: NEIGHBOOR_STEPS)
+  neighbor_steps: List[List[int]] = dc.field(
+    default_factory=lambda: NEIGHBOR_STEPS)
   output: int = 0
 
 
@@ -65,15 +53,15 @@ async def get_shape(grid: List[List[int]]) -> Shape:
   return shape
 
 
-async def get_neighboors(
+async def get_neighbors(
   grid: List[List[int]],
   position: List[int],
   shape: Shape,
-  neighboor_steps: List[List[int]],
-  neighboors: Dict[str, List[str]],
-) -> ModuleData:
+  neighbor_steps: List[List[int]],
+  neighbors: Dict[str, List[str]],
+) -> Data:
   store = []
-  for step in neighboor_steps:
+  for step in neighbor_steps:
     i = position[0] + step[0]
     j = position[1] + step[1]
 
@@ -89,20 +77,20 @@ async def get_neighboors(
     value = grid[i][j]
     if value == -1:
       continue
-    neighboor = f'{i}.{j}'
-    store.append(neighboor)
+    neighbor = f'{i}.{j}'
+    store.append(neighbor)
   position = f'{position[0]}.{position[1]}'
-  neighboors[position] = store
-  return neighboors
+  neighbors[position] = store
+  return neighbors
 
 
 async def get_positions(
   grid: List[List[int]],
   shape: Shape,
-  neighboor_steps: List[List[int]],
+  neighbor_steps: List[List[int]],
 ) -> Positions:
   obstacles = []
-  neighboors = {}
+  neighbors = {}
   start = None
   end = None
 
@@ -117,18 +105,18 @@ async def get_positions(
         start = position
       if value == 2:
         end = position
-        # neighboors[position] = []
+        # neighbors[position] = []
         continue
-      neighboors = await get_neighboors(
+      neighbors = await get_neighbors(
         grid=grid,
         position=[i, j],
         shape=shape,
-        neighboor_steps=neighboor_steps,
-        neighboors=neighboors,
+        neighbor_steps=neighbor_steps,
+        neighbors=neighbors,
       )
 
   positions = Positions(
-    neighboors=neighboors,
+    neighbors=neighbors,
     obstacles=obstacles,
     start=start,
     end=end,
@@ -145,16 +133,16 @@ async def get_paths(positions: Positions) -> List[List[str]]:
       leaf = branch[-1]
       if leaf == positions.end:
         continue
-      neighboors = positions.neighboors[leaf]
-      for neighboor in neighboors:
+      neighbors = positions.neighbors[leaf]
+      for neighbor in neighbors:
         conditions = [
-          neighboor in branch,
-          neighboor in positions.obstacles,
+          neighbor in branch,
+          neighbor in positions.obstacles,
         ]
         if True in conditions:
           continue
 
-        next_branch = branch + [neighboor]
+        next_branch = branch + [neighbor]
         next_branch = '|'.join(next_branch)
         store.append(next_branch)
     paths.append(store)
@@ -190,26 +178,29 @@ async def process_paths(
   return store
 
 
-async def get_response(data: ModuleData) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output:
-      paths:
-        n: {data.output}
-        values: {data.paths}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
+async def get_response(data: Data) -> dict:
+  data = {
+    'count': data.output,
+    'paths': data.paths,
+  }
   return data
 
 
-async def main(request: Request) -> models.Response:
-  data = ModuleData(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  grid: List[List[int]] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   data.shape = await get_shape(grid=data.body.grid)
   data.positions = await get_positions(
     grid=data.body.grid,
     shape=data.shape,
-    neighboor_steps=data.neighboor_steps,
+    neighbor_steps=data.neighbor_steps,
   )
   data.paths = await get_paths(positions=data.positions)
   data.paths = await process_paths(

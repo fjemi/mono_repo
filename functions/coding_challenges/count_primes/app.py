@@ -1,31 +1,21 @@
 #!usr/bin/env python3
 
-from typing import List, Union
-from dataclasses import dataclass, field, asdict
-import yaml
+from typing import List
+import dataclasses as dc
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   n: int | None = None
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body = field(default_factory=lambda: Body())
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData = field(default_factory=lambda: Data())
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
-  primes: List[int] = field(default_factory=lambda: [])
+  primes: List[int] = dc.field(default_factory=lambda: [])
 
 
 async def get_primes_between_two_and_n(data: Data) -> Data:
@@ -66,19 +56,27 @@ async def get_primes(data: Data) -> Data:
   return data
 
 
-async def get_response(data: Data) -> models.Response:
+async def get_response(data: Data) -> dict:
   data = f'''
-    input: {asdict(data.body)} 
+    input: {dc.asdict(data.body)} 
     output: 
       primes: {data.primes}
   '''
   data = yaml.safe_load(data)
-  data = models.Response(data=data)
+  data = dict(data=data)
   return data
 
 
-async def main(request: Request) -> models.Response:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  n: int | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data = await get_primes(data=data)
   data = await get_response(data=data)

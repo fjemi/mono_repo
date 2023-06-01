@@ -12,7 +12,7 @@ paths:
           text/plain:
             schema:
               type: string
-              required_chars: array[string]
+              required_chars: array
               length: number
             examples:
               'Example 1':
@@ -38,49 +38,19 @@ paths:
                   length: 8
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                password: string
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        required_chars: 
-                        - number
-                        - uppercase
-                        - lowercase
-                        - special
-                        length: 4
-                      output:
-                        password: password
+                    password: ...
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        required_chars: 
-                        - number
-                        - uppercase
-                        - lowercase
-                        length: 10
-                      output:
-                        password: password
+                    password: ...
                 'Example 3':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        required_chars: 
-                        - number
-                        - lowercase
-                        length: 8
-                      output:
-                        password: password
+                    password: ...

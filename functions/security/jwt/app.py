@@ -1,29 +1,24 @@
 #!/usr/bin/env python3
 
-from dataclasses import (
-  dataclass,
-  asdict,
-  field,
-  fields,
-  make_dataclass,
-  is_dataclass,
-)
+import dataclasses as dc
 import time
 from typing import Any, List
 import base64
 # import time
 import json
 import jwt
+from fastapi import Request
 
-from api import models as api_models
+from shared.format_main_arguments import app as format_main_arguments
 from shared.get_environment import app as get_environment
+from shared.format_main_arguments import app as format_main_arguments
 
 
 THIS_MODULE_PATH = __file__
-ENV = get_environment.main({'module_path': THIS_MODULE_PATH})
+ENV = get_environment.main(module_path=THIS_MODULE_PATH)
 
 
-@dataclass
+@dc.dataclass
 class Body:
   algorithm: str | List[str] = 'HS256'
   key: str | bytes | None = None
@@ -32,28 +27,28 @@ class Body:
   token: str | None = None
 
 
-@dataclass
+@dc.dataclass
 class Header:
   algorithm: str = 'HS256'
   type: str = 'JWT'
 
 
-@dataclass
+@dc.dataclass
 class Payload:
   issuer: str | None = None
   subject: str | None = None
   audience: str | None = None
   expiration_time: int | None = None
-  not_before: int = field(default_factory=lambda: int(time.time()))
-  issued_at: int = field(default_factory=lambda: int(time.time()))
+  not_before: int = dc.field(default_factory=lambda: int(time.time()))
+  issued_at: int = dc.field(default_factory=lambda: int(time.time()))
   jwt_id: str | None = None
   content: Any | None = None
 
 
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
-  api_request: bool = False
+  call_method: str = 'module'
   result: str | dict | None = None
 
 
@@ -81,8 +76,8 @@ async def format_key(key: str | bytes) -> str:
 
 
 async def encode_payload(data: Data) -> Data:
-  if is_dataclass(data.body.payload):
-    data.body.payload = asdict(data.body.payload)
+  if dc.is_dataclass(data.body.payload):
+    data.body.payload = dc.asdict(data.body.payload)
 
   data.result = jwt.encode(
     payload=data.body.payload,
@@ -129,45 +124,6 @@ async def preform_operation(data: Data) -> Data:
   return data
 
 
-async def process_request_args(_locals: dict) -> Data:
-  request = _locals['request']
-
-  body = Body()
-  for _field in fields(request.data.body):
-    value = getattr(request.data.body, _field.name)
-    if value is None:
-      continue
-    setattr(body, _field.name, value)
-
-  data = Data(body=body, api_request=True)
-  return data
-
-
-async def process_non_request_args(_locals: dict) -> Data:
-  del _locals['request']
-
-  body = Body()
-  for key, value in _locals.items():
-    if value is None:
-      continue
-    setattr(body, key, value)
-  data = Data(body=body)
-  return data
-
-
-PROCESS_MAIN_ARGS = {
-  'request': process_request_args,
-  'non_request': process_non_request_args,
-}
-
-
-async def process_main_args(_locals: dict) -> Data:
-  cases = 'request' if _locals['request'] else 'non_request'
-  switcher = PROCESS_MAIN_ARGS[cases]
-  data = await switcher(_locals=_locals)
-  return data
-
-
 async def get_jwt_as_response(data: Data) -> dict:
   data = {'token': data.result}
   return data
@@ -179,21 +135,21 @@ async def get_payload_as_response(data: Data) -> dict:
 
 
 async def get_jwt_as_string(data: Data) -> str:
-  return data.result
+  return {'token': data.result}
 
 
 async def get_payload_as_data_class(data: Data) -> Payload:
   store = []
   for key, value in data.result.items():
     value = json.dumps(value)
-    field_value = field(default=value)
-    data_class_field = [
+    field_value = dc.field(default=value)
+    data_classfield = [
       key,
       str,
       field_value,
     ]
-    store.append(data_class_field)
-  data_class = make_dataclass(
+    store.append(data_classfield)
+  data_class = dc.make_dataclass(
     cls_name='Payload',
     fields=store,
   )
@@ -202,19 +158,15 @@ async def get_payload_as_data_class(data: Data) -> Payload:
 
 
 GET_RESPONSE = {
-  'request.encode': get_jwt_as_response,
-  'request.decode': get_payload_as_response,
-  '.encode': get_jwt_as_string,
-  '.decode': get_payload_as_data_class,
+  'api.encode': get_jwt_as_response,
+  'api.decode': get_payload_as_response,
+  'module.encode': get_jwt_as_string,
+  'module.decode': get_payload_as_data_class,
 }
 
 
 async def get_response(data: Data) -> dict | str | Payload:
-  cases = [
-    int(data.api_request) * 'request',
-    data.body.operation,
-  ]
-  cases = '.'.join(cases)
+  cases = f'{data.call_method}.{data.body.operation}'
   switcher = GET_RESPONSE[cases]
   data = await switcher(data=data)
   return data
@@ -222,7 +174,7 @@ async def get_response(data: Data) -> dict | str | Payload:
 
 # pylint: disable=unused-argument
 async def main(
-  request: api_models.Request | None = None,
+  request: Request | None = None,
   algorithm: str | None = None,
   key: str | bytes | None = None,
   payload: dict | Payload | None = None,
@@ -230,7 +182,12 @@ async def main(
   token: Any | None = None,
   operation: Any | None = None,
 ) -> Payload | dict | str:
-  data = await process_main_args(_locals=locals())
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
+  request = None
   data = await preform_operation(data=data)
   data = await get_response(data=data)
   return data

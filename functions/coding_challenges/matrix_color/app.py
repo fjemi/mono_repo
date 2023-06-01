@@ -1,49 +1,38 @@
 #!/usr/bin/env python3
 
 from typing import List, Dict, Any
-from dataclasses import dataclass, field, fields, asdict
+import dataclasses as dc
 from copy import deepcopy
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   matrix: List[List[Any]] | None = None
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Shape:
   m: int = 0
   n: int = 0
 
 
-@dataclass
+@dc.dataclass
 class Neighbors:
   matching: Dict[str, List[str]] | None = None
   expanded: Dict[str, List[str]] | None = None
 
 
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
   shape: Shape | None = None
   neighbors: Neighbors | None = None
-
-  matching_adjacent_positions: Dict[str, List[str]] = field(
+  matching_adjacent_positions: Dict[str, List[str]] = dc.field(
     default_factory=lambda: {})
-  expanded_adjacent_positions: Dict[str, List[str]] = field(
+  expanded_adjacent_positions: Dict[str, List[str]] = dc.field(
     default_factory=lambda: {})
   adjacent_positions_count: int = 0
 
@@ -145,22 +134,24 @@ async def remove_duplicate_adjacent_positions(
   return store
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output: 
-      connections:
-        values: {data.expanded_adjacent_positions}
-        n: {data.adjacent_positions_count}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
+async def get_response(data: Data) -> dict:
+  data = {
+    'connections': data.expanded_adjacent_positions,
+    'count': data.adjacent_positions_count,
+  }
   return data
 
 
-async def main(request: Request) -> models.Response:
-  body = Body(**asdict(request.data.body))
-  data = Data(body=body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  matrix: List[List[Any]] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data.shape = await get_shape(matrix=data.body.matrix)
   # data.neighbors = await get_neighbors(data=data)

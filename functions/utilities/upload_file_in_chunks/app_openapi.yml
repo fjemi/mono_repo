@@ -60,7 +60,7 @@ paths:
             value: 'text'
       responses:
         200:
-          description: Successful Response
+          description: Success
           content:
             'text/html':
               schema:
@@ -105,35 +105,35 @@ paths:
 
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             application/json:
               schema:
-                $ref: '#/components/schemas/OK/application_json'
+                type: object
+                properties:
+                  chunk:
+                    type: number
+                  file_name:
+                    type: string
+                  message:
+                    type: string
               examples:
-                'Chunk saved in persistant storage':
+                'Chunk saved in presistant storage':
                   value:
-                    code: 200
-                    status: OK
-                    data: 
-                      chunk: 0
-                      file_name: example.txt
-                      message: Chunk saved in persistant storage
+                    chunk: 0
+                    file_name: example.txt
+                    message: Chunk saved in presistant storage
                 'File saved to S3':
                   value:
-                    code: 200
-                    status: OK
-                    data:
-                      file_name: example.txt
-                      message: File saved to S3
+                    file_name: example.txt
+                    message: File saved to S3
             text/plain:
               schema:
-                $ref: '#/components/schemas/OK/text_plain'
+                type: string
+                data: string
               examples:
                 'Mars': 
                   value: |
-                    code: 200
-                    status: OK
                     data: Hello Mars!
 
 components:
@@ -142,7 +142,7 @@ components:
       Bypasses server upload limits by 
       1. Compressing deflating (compressing) a file
       2. Splitting the deflated file into chunks of a certain size in kilobytes (KB) less than the server upload limit
-      3. Individually uploading each chunk to the server as a part of a multipart upload, and saving the chunks to the servers persistant storage
+      3. Individually uploading each chunk to the server as a part of a multipart upload, and saving the chunks to the servers presistant storage
       4. Combining the chunks into the original deflated file onces all of the chunks have been recieved by the server
       5. Inflating (decompressing) the deflated file and saving it to a specified location
       

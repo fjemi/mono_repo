@@ -30,43 +30,24 @@ paths:
                   words: [abcd]
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                words: array
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                      output: [eat, oath]
-                        board:
-                        - [o, a, a, n]
-                        - [e, t, a, e]
-                        - [i, h, k, r]
-                        - [i, f, l, v]
-                        words: 
-                          oath: ['0.0', '0.1', '1.1', '2.1']
-                          pea: []
-                          eat: ['1.3', '1.2', '1.1']
-                          rain: []
+                    words: 
+                      oath: ['0.0', '0.1', '1.1', '2.1']
+                      pea: []
+                      eat: ['1.3', '1.2', '1.1']
+                      rain: []
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        board:
-                        - [a, b]
-                        - [c, d]
-                        words: [abcd]
-                      output: 
-                        words:
-                          abcd: []
+                    words:
+                      abcd: []
 components:
   examples:
     '{path}.description': |

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 from typing import Dict, List
-from dataclasses import dataclass, fields
+import dataclasses as dc
 from copy import deepcopy
 
 from models import Base
 
 
-@dataclass
+@dc.dataclass
 class Values(Base):
   pass
 
@@ -17,10 +17,10 @@ def initialize_values(
   grid: Dict[str, int],
 ) -> Values:
   values = Values()
-  for _field in fields(positions):
-    value = getattr(positions, _field.name)
+  for field in dc.fields(positions):
+    value = getattr(positions, field.name)
     value = deepcopy(value)
-    setattr(values, _field.name, value)
+    setattr(values, field.name, value)
   if grid is not None:
     values.grid = grid
   return values
@@ -50,13 +50,13 @@ def set_intersections(
   values: Values,
   grid: Dict[str, int],
 ) -> Values:
-  for position, neighboors in values.intersections.items():
+  for position, neighbors in values.intersections.items():
     if grid[position] != 0:
       continue
 
     store = []
-    for neighboor in neighboors:
-      value = grid[neighboor]
+    for neighbor in neighbors:
+      value = grid[neighbor]
       store.append(value)
     values.intersections[position] = store
   return values

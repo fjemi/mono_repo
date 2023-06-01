@@ -1,0 +1,56 @@
+paths: 
+  '/{path}/':
+    get:
+      tags:
+      - TODO
+      - Utilities
+      summary: Format Request Attributes
+      responses:
+        200:
+          description: Success
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ping:
+                    type: string
+                    example: pong
+              examples:
+                'Ping API':
+                  value:
+                    ping: pong
+    post:
+      tags:
+      - Examples
+      summary: Ping the API
+      requestBody:
+        content:
+          application/json:
+            schema: 
+              type: string
+              ping: string
+            examples: 
+              'Ping API':
+                value: {}
+          text/plain:
+            schema:
+              type: string
+              ping: string
+            examples:
+              'Ping API':
+                value: |
+                  {}
+      responses:
+        200:
+          text/plain:
+            schema:
+              type: string
+              ping: string
+            examples:
+              'Ping API': 
+                value: |
+                  ping: pong
+tags:
+- name: Examples
+  description: Example functions

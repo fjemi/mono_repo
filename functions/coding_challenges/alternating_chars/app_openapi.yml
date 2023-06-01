@@ -34,66 +34,31 @@ paths:
                   
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
-                $ref: '#/components/schemas/OK/text_plain'
+                type: string
+                deletions: number
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        string: AABAAB
-                      output:
-                        deletions: 2 
+                    deletions: 2 
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        string: AAAA
-                      output:
-                        deletions: 3
+                    deletions: 3
                 'Example 3':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        string: BBBBB
-                      output:
-                        deletions: 4
+                    deletions: 4
                 'Example 4':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        string: ABABABAB
-                      output:
-                        deletions: 0
+                    deletions: 0
                 'Example 5':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        string: BABABA
-                      output:
-                        deletions: 0
+                    deletions: 0
                 'Example 6':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        string: AAABBB
-                      output:
-                        deletions: 4
+                    deletions: 4
 components:
   examples:
     '{path}.description': |

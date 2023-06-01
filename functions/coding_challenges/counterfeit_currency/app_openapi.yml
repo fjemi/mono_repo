@@ -35,45 +35,24 @@ paths:
                   - QWER201850G
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
-                $ref: '#/components/schemas/OK/text_plain'
+                currency:
+                  valid: array
+                  total: number
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        serial_numbers: 
-                        - AVG190420T
-                        - RTF20001000Z
-                        - QWER201850G
-                        - AFA199620E
-                        - ERT1947200T
-                        - RTY20202004
-                        - DRV1984500Y
-                        - ETB2010400G
-                      output:
-                        currency: 
-                          valid: [20, 1000, 0, 20, 200, 0, 500, 0]
-                          total: 1740
+                    currency: 
+                      valid: [20, 1000, 0, 20, 200, 0, 500, 0]
+                      total: 1740
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        serial_numbers:
-                        - AVG190420T
-                        - RTF20001000Z
-                        - QWER201850G
-                      output:
-                        currency:
-                          valid: [20, 1000, 0]
-                          total: 1020
+                    currency:
+                      valid: [20, 1000, 0]
+                      total: 1020
 
 components:
   examples:

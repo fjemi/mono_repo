@@ -1,10 +1,10 @@
 #!usr/bin/env python3
 
 from typing import List
-from dataclasses import dataclass
+import dataclasses as dc
 
 
-@dataclass
+@dc.dataclass
 class Data:
   inputs: List[int | float | List] | None = None
   operation: str | None = None

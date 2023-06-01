@@ -1,31 +1,20 @@
 #!/usr/bin/env python3
 
-
-from dataclasses import dataclass, asdict
+import dataclasses as dc
 from typing import List
 from copy import deepcopy
-import yaml
+from fastapi import Request
 
-from api import models
-
-
-@dataclass 
-class Body(models.Body):
-  k: int = 0
-  head: List[int] | None = None
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body | None = None
+@dc.dataclass
+class Body:
+  cells: List[int] | None = None
+  n: int | None = None
 
 
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
   states: List[List[int]] | None = None
@@ -61,18 +50,21 @@ async def get_states(states: List[List[int]], n: int) -> List[List[int]]:
   return states
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output: {data.states[-1]}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'output': data.states[-1]}
 
 
-async def main(request: Request) -> models.Response:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  cells: List[int] | None = None,
+  n: int | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data = await pre_processing(data=data)
   data.states = await get_states(states=data.states, n=data.body.n)

@@ -1,5 +1,6 @@
 const data = document.querySelector('#data').value
 const greeting = document.getElementById('greeting')
+const url = window.location
 
 let props = {
   data: JSON.parse(data),
@@ -10,7 +11,7 @@ let props = {
 const post_request = async (props) => {
   const body = JSON.stringify(props.data.query_params)
   props.response = await fetch(
-    `/${props.data.path_params.function_path}`, {
+    url, {
       method: 'post',
       body: body,
     }

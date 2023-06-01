@@ -29,50 +29,24 @@ paths:
                 value: |
                   grid:
                   - [0, 2]
-                
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                minutes: number
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        grid:
-                        - [2, 1, 1]
-                        - [1, 1, 0]
-                        - [0, 1, 1]
-                      output: 
-                        minutes: 4
+                    minutes: 4
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        grid:
-                        - [2,1,1]
-                        - [0,1,1]
-                        - [1,0,1]
-                      output: 
-                        minutes: -1
+                    minutes: -1
                 'Example 3':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        grid:
-                        - [0, 2]
-                      output:
-                        minutes: 0
+                    minutes: 0
 components:
   examples:
     '{path}.description': |

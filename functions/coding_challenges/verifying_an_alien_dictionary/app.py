@@ -1,30 +1,20 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass 
-class Body(models.Body):
-  words: List[str] = field(default_factory=lambda: [])
+@dc.dataclass
+class Body:
+  words: List[str] = dc.field(default_factory=lambda: [])
   order: str =  ''
 
 
-@dataclass
-class Data(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: Data | None = None
-
-
-@dataclass
-class ModuleData:
+@dc.dataclass
+class Data:
   body: Body | None = None
   output: bool = True
 
@@ -80,18 +70,20 @@ async def check_char_orders(char_orders: List[List[int]]) -> bool:
   return in_order
 
 
-async def get_response(data: ModuleData) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output: {data.output}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'output': data.output}
 
 
-async def main(request: Request) -> models.Response:
-  data = ModuleData(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(request: Request | None = None,
+  words: List[str] | None = None,
+  order: str | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   word_combinations = await get_word_combinations(
     words=data.body.words)
   checks = []

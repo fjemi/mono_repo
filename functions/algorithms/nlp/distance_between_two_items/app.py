@@ -1,28 +1,29 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, asdict
+import dataclasses as dc
 from typing import List
+from fastapi import Request
 
-from api import models as api_models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
+@dc.dataclass
 class Body:
   item_1: List | str | None = None
   item_2: List | str | None = None
   preserve_order: bool = False
 
 
-@dataclass
+@dc.dataclass
 class Difference:
   modifications: int = 0
   percent: float = 0
 
 
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
-  ordered: bool = True
+  call_method: str = 'module'
   difference: Difference | None = None
 
 
@@ -73,13 +74,22 @@ async def get_difference_between_items(
 
 
 async def get_response(data: Data) -> dict:
-  data = {'difference': asdict(data.difference)}
+  data = {'difference': dc.asdict(data.difference)}
   return data
 
 
-async def main(request: api_models.Request) -> dict:
-  body = Body(**asdict(request.data.body))
-  data = Data(body=body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  item_1: List | str | None = None,
+  item_2: List | str | None = None,
+  preserve_order: bool | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   items = await format_items(
     item_1=data.body.item_1,

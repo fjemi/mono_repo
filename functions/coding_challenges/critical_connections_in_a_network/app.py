@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
 
-from __future__ import annotations
-from dataclasses import dataclass, asdict
+import dataclasses as dc
 from copy import deepcopy
 from typing import List, Dict
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
+@dc.dataclass
 class Edge:
   values: List[List[int]] | None = None
   excludes: List[int] | None = None
@@ -17,23 +16,13 @@ class Edge:
   connections: List[List[int]] | None = None
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   n: int = 0
   connections: List[int] | None = None
 
 
-@dataclass
-class Data:
-  body: Body | None
-
-
-@dataclass
-class Request:
-  data: Data | None = None
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
   edges: List[List[int]] | List[Edge] | None = None
@@ -147,18 +136,22 @@ async def get_critical_edges(edges: List[Edge]) -> List[List[int]]:
   return critical_edges
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output: {data.output}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  critical_connections = [f'{x[0]}.{x[1]}' for x in data.output]
+  return {'critical_connections': critical_connections}
 
 
-async def main(request: Request) -> models.Response:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  n: int = 0,
+  connections: List[int] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data = await create_edge_objects(data=data)
   edges = await get_connections_and_nodes(edges=data.edges)

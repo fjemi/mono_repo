@@ -1,32 +1,22 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List, Dict
-import yaml
+from fastapi import Request
 
-from api import models
-
-
-@dataclass
-class Body(models.Body):
-  grid: List[List[int]] = field(default_factory=lambda: [])
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body | None = None
+@dc.dataclass
+class Body:
+  grid: List[List[int]] = dc.field(default_factory=lambda: [])
 
 
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
-  states: Dict[str, List[int]] = field(default_factory=lambda: {})
-  adjacent_positions: Dict[str, List[str]] = field(default_factory=lambda: {})
+  states: Dict[str, List[int]] = dc.field(default_factory=lambda: {})
+  adjacent_positions: Dict[str, List[str]] = dc.field(default_factory=lambda: {})
   minutes: int = 0
   fresh_oranges: List[str] | None = None
 
@@ -37,7 +27,7 @@ async def get_adjacent_positions(
   grid_m: int,
   grid_n: int,
 ) -> List[str]:
-  # Increments to step to adjacent positios
+  # Increments to step to adjacent positions
   steps = [
     [1, 0],
     [-1, 0],
@@ -50,7 +40,7 @@ async def get_adjacent_positions(
     # Step to adjacent position
     position_i = i + step[0]
     position_j = j + step[1]
-    # Conditions for ignoring the adajacent position
+    # Conditions for ignoring the adjacent position
     conditions = [
       position_i < 0,
       position_j < 0,
@@ -146,7 +136,7 @@ async def process_data(data: Data) -> Data:
       )
 
       states = data.states[position]
-      # An orange rottened if previous and current states are different
+      # An orange rotted if previous and current states are different
       if states[-2] != states[-1]:
         changed.append(position)
       # Store position of fresh oranges
@@ -174,19 +164,19 @@ async def post_processing(data: Data) -> Data:
   return data
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output:
-      minutes: {data.minutes}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'minutes': data.minutes}
 
-
-async def main(request: Request) -> models.Response:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  grid: List[List[int]] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   data = await get_position_states_and_adjacent_positions(data=data)
   data = await process_data(data=data)
   data = await post_processing(data=data)

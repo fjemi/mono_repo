@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field
+import dataclasses as dc
 from typing import List, Dict
 from math import floor, sqrt
 
@@ -7,7 +7,7 @@ class Store:
   ...
 
 
-@dataclass
+@dc.dataclass
 class SubGrids:
   n: int = 0
   values_total: int = 0
@@ -189,20 +189,20 @@ for i in range(n):
     position = f'{i}.{j}'
     store = []
     for k in range(n):
-      neighboor = f'{i}.{k}'
-      if neighboor != position:
-        store.append(neighboor)
-      neighboor = f'{k}.{j}'
-      if neighboor != position:
-        store.append(neighboor)
+      neighbor = f'{i}.{k}'
+      if neighbor != position:
+        store.append(neighbor)
+      neighbor = f'{k}.{j}'
+      if neighbor != position:
+        store.append(neighbor)
       store.sort()
     intersections.positions[position] = store
 
 intersections.values = {}
-for position, neighboors in intersections.positions.items():
+for position, neighbors in intersections.positions.items():
   values = []
-  for neighboor in neighboors:
-    i, j = neighboor.split('.')
+  for neighbor in neighbors:
+    i, j = neighbor.split('.')
     i = int(i)
     j = int(j)
     value = grid[i][j]

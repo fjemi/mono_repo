@@ -27,41 +27,24 @@ paths:
                   word_list: [hot, dot, dog, lot, log]
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                shortest_transformations: array
+                count: number
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        begin_word: hit
-                        end_word: cog
-                        word_list: [hot, dot, dog, lot, log, cog]
-                      output:  
-                        shortest_transformation:
-                          n: 5
-                          values:
-                          - [hit, hot, dot, dog, log, cog]
+                    shortest_transformations:
+                    - [hit, hot, dot, dog, log, cog]
+                    count: 5
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        begin_word: hit
-                        end_word: cog
-                        word_list: [hot, dot, dog, lot, log]
-                      output: 
-                        shortest_transformation:
-                          n: 0
-                          values: 
-                          - []
+                    shortest_transformations:
+                    - []
+                    count: 0
 components:
   examples:
     '{path}.description': |

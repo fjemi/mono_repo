@@ -22,25 +22,19 @@ paths:
                   - [R, R, B]
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                connections: array
+                count: number
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        digits: 23
-                      output: 
-                        connections:
-                          values:
-                          - ['0.0', '1.0', '1.1', '2.1', '3.2']
-                          - ['0.1', '1.2', '2.2']
-                          - ['0.2']
-                          - ['2.0', '3.0', '3.1']
-                          n: 4
+                    connections:
+                    - ['0.0', '1.0', '1.1', '2.1', '3.2']
+                    - ['0.1', '1.2', '2.2']
+                    - ['0.2']
+                    - ['2.0', '3.0', '3.1']
+                    count: 4

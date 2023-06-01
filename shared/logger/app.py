@@ -2,7 +2,7 @@
 
 # from __future__ import annotations
 import logging
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 import json
 import yaml
 
@@ -10,10 +10,10 @@ from shared.get_environment import app as get_environment
 
 
 THIS_MODULE_PATH = __file__
-ENV = get_environment.main({'module_path': THIS_MODULE_PATH})
+ENV = get_environment.main(module_path=THIS_MODULE_PATH)
 
 
-@dataclass
+@dc.dataclass
 class Data:
   log_name: str
   log_path: str

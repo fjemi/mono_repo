@@ -1,12 +1,12 @@
 
 
-from dataclasses import dataclass
+import dataclasses as dc
 from typing import List, Dict
 
 from models import Base
 
 
-@dataclass
+@dc.dataclass
 class Percents(Base):
   pass
 

@@ -24,37 +24,22 @@ paths:
                   digits: 2
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                output: array
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        digits: 23
-                      output: [AD, AE, AF, BD, BE, BF, CD, CE, CF]
+                    output: [AD, AE, AF, BD, BE, BF, CD, CE, CF]
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        digits: ''
-                      output: []
+                    output: []
                 'Example 3':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        digits: 2
-                      output: [A, B, C]
+                    output: [A, B, C]
 components:
   examples:
     '{path}.description': |

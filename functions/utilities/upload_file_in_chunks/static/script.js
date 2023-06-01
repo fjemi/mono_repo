@@ -112,29 +112,26 @@ const send_chunks_as_form_data = async (props) => {
 
   for (let i = 0; i < chunks.length; i++) {
     var chunk = chunks[i]
-    var json_data = {
+    var json = {
       file_name: props.file_name,
       chunks_n: chunks.length,
       chunk_i: i,
       location: props.data.query_params.location,
       read_as: props.data.query_params.read_as,
     }
-    json_data = JSON.stringify(json_data)
-    let binary_data = new Blob([chunk.buffer])
+    json = JSON.stringify(json)
+    let binary = new Blob([chunk.buffer])
     const form_data = new FormData()
     
-    form_data.append('binary', binary_data)
-    form_data.append('json', json_data)
+    form_data.append('binary', binary)
+    console.log(chunk.buffer, chunk)
+    form_data.append('json', json)
     
     const function_path = props.data.path_params.function_path
     let response = await fetch(`/${function_path}`, {
       method: 'post',
       body: form_data,
     })
-    // let response2 = await fetch('functions.debug', {
-    //   method: 'post',
-    //   body: form_data,
-    // })
     responses.push(response.ok)
   }
   props.store[props.file_name] = responses

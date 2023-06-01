@@ -17,7 +17,7 @@ paths:
             value: Mars
       responses:
         200:
-          description: Successful Response
+          description: Success
           content:
             'text/html':
               schema:
@@ -47,26 +47,26 @@ paths:
                   name: Mars
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OK/application_json'
-              examples:
-                'Earth':
-                  value:
-                    code: 200
-                    status: OK
-                    data: 'Hello Earth!'
             text/plain:
               schema:
-                $ref: '#/components/schemas/OK/text_plain'
+                type: string
+                data: string
               examples:
                 'Mars': 
                   value: |
-                    code: 200
-                    status: OK
                     data: Hello Mars!
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: 
+                    type: string
+              examples:
+                'Earth':
+                  data: 'Hello Earth!'
+
 components:
   examples:
     '{path}.description': |

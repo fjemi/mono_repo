@@ -1,8 +1,9 @@
 # Local files and folders
-*ignore*/
-*logs*/
-*data*/
+*ignore/
 *_ignore*
+logs/
+*data/
+
 
 
 # Created by https://www.toptal.com/developers/gitignore/api/python

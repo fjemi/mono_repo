@@ -24,39 +24,23 @@ paths:
                   numbers: [8,5,11,4,6]
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
-                $ref: '#/components/schemas/OK/text_plain'
+                type: string
+                moves: array
+                count: number
               examples:
                 'Example 0':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      inputs: 
-                        numbers: [6,3,4,5]
-                      outputs: 
-                        moves:
-                          n: 1
+                    moves:
+                    count: 1
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      inputs: 
-                        numbers: [13,10,21,20]
-                      outputs: 
-                        moves:
-                          n: 3
+                    moves:
+                    count: 3
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input: 
-                        numbers: [8,5,11,4,6]
-                      output: 
-                        moves:
-                        n: 3
+                    moves:
+                    count: 3

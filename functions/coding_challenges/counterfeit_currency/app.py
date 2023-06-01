@@ -1,10 +1,10 @@
 #!usr/bin/env python3
 
 from typing import List
-from dataclasses import dataclass, field, asdict
-import yaml
+import dataclasses as dc
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
 VALID_DENOMINATIONS = [10, 20, 50, 100, 200, 500, 1000]
@@ -12,33 +12,23 @@ CHAR_N_BOUNDS = [10, 12]
 YEAR_BOUNDS = [1900, 2019]
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   serial_numbers: List[str] | None = None
-  valid_denominations: List[int] = field(
+  valid_denominations: List[int] = dc.field(
     default_factory=lambda: VALID_DENOMINATIONS)
-  char_n_bounds: List[int] = field(default_factory=lambda: CHAR_N_BOUNDS)
-  year_bounds: List[int] = field(default_factory=lambda: YEAR_BOUNDS)
+  char_n_bounds: List[int] = dc.field(default_factory=lambda: CHAR_N_BOUNDS)
+  year_bounds: List[int] = dc.field(default_factory=lambda: YEAR_BOUNDS)
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Currency:
   serial_numbers: List[str] | None = None
   denominations: List[int] | None = None
   total: int = 0
 
 
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
   currency: Currency | None = None
@@ -131,21 +121,22 @@ async def get_denominations(data: Data) -> Data:
   return data
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)} 
-    output: 
-      currency: {asdict(data.currency)}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'currency': data.currency}
 
 
-async def main(request: Request) -> models.Response:
-  body = asdict(request.data.body)
-  body = Body(**body)
-  data = Data(body=body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  serial_numbers: List[str] | None = None,
+  valid_denominations: List[int] | None = None,
+  char_n_bounds: List[int] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data = await validate_serial_numbers(data=data)
   data = await get_denominations(data=data)

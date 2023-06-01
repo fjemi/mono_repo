@@ -1,85 +1,75 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field
+import dataclasses as dc
 from typing import List
 from copy import deepcopy
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass 
-class Body(models.Body):
+@dc.dataclass
+class Body:
   string: str = ''
-  word_dict: List[str] = field(default_factory=lambda: [])
+  word_dict: List[str] = dc.field(default_factory=lambda: [])
 
 
-@dataclass
-class Data(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: Data | None = None
-
-
-@dataclass
+@dc.dataclass
 class Copies:
   string: str = ''
-  word_dict: List[str] = field(default_factory=lambda: [])
+  word_dict: List[str] = dc.field(default_factory=lambda: [])
 
 
-@dataclass
-class ModuleData:
+@dc.dataclass
+class Data:
   body: Body | None = None
   copies: Copies | None = None
   current_word: str = ''
-  segments: List[str] = field(default_factory=lambda: [])
+  segments: List[str] = dc.field(default_factory=lambda: [])
 
 
-async def pre_processing(data: ModuleData) -> ModuleData:
+async def pre_processing(data: Data) -> Data:
   data.copies = Copies(
-    string = deepcopy(data.string),
-    word_dict = deepcopy(data.word_dict),
+    string = deepcopy(data.body.string),
+    word_dict = deepcopy(data.body.word_dict),
   )
   return data
 
 
 async def case_word_not_at_zero(
-  data: ModuleData,
-) -> ModuleData:
+  data: Data,
+) -> Data:
   # Do nothing
   return data
 
 
 async def case_word_not_in_string(
-  data: ModuleData,
-) -> ModuleData:
+  data: Data,
+) -> Data:
   # Delete the word from word dict
-  i = data.word_dict.index(data.current_word)
-  del data.word_dict[i]
+  i = data.body.word_dict.index(data.current_word)
+  del data.body.word_dict[i]
   return data
 
 
 async def case_word_at_zero(
-  data: ModuleData,
-) -> ModuleData:
+  data: Data,
+) -> Data:
   # Add the word as a segment and remove it from
   # the string
   data.segments.append(data.current_word)
   word_n = len(data.current_word)
-  data.string = data.string[word_n:]
+  data.body.string = data.body.string[word_n:]
   return data
 
 
-async def get_string_segments(data: ModuleData) -> ModuleData:
+async def get_string_segments(data: Data) -> Data:
   _continue = True
   while _continue:
     # Conditions to exit loop
     conditions = [
-      data.string == '',
-      data.word_dict == [],
+      data.body.string == '',
+      data.body.word_dict == [],
     ]
     if sum(conditions) != 0:
       _continue = False
@@ -87,9 +77,9 @@ async def get_string_segments(data: ModuleData) -> ModuleData:
 
     # Store segments of words at position zero of
     # the string and remove word from string
-    for word in data.word_dict:
+    for word in data.body.word_dict:
       data.current_word = word
-      position = data.string.find(
+      position = data.body.string.find(
         data.current_word)
       cases = {
         position == 0: case_word_at_zero,
@@ -101,25 +91,27 @@ async def get_string_segments(data: ModuleData) -> ModuleData:
 
   # String cannot be fully segmented
   # with words from the dictionary
-  if data.string != '':
+  if data.body.string != '':
     data.segments = []
 
   return data
 
 
-async def get_response(data: ModuleData) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output:
-      sentences: {data.sentences}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'segments': data.segments}
 
 
-async def main(data: ModuleData | dict | str) -> models.Response:
-  data = ModuleData(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  string: str | None = None,
+  word_dict: List[str] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   data = await pre_processing(data=data)
   data = await get_string_segments(data=data)
   data = await get_response(data=data)

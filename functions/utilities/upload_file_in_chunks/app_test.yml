@@ -1,2 +1,4 @@
 todo:
 - reformat to work with changes to how api handles multipart/form data
+resources:
+- https://stackoverflow.com/questions/33369306/parse-multipart-form-data-received-from-requests-post/33370069#33370069

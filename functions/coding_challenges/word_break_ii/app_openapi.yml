@@ -24,33 +24,19 @@ paths:
                   word_dict: [cat, cats, and, sand, dog]
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                sentences: array
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        string: catsandog
-                        word_dict: [cats, dog, sand, and, cat]
-                      output:  
-                        sentences: []
+                    sentences: []
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        string: catsanddog
-                        word_dict: [cat, cats, and, sand, dog]
-                      output:  
-                        sentences: ['cats and dog', 'cat sand dog']
+                    sentences: ['cats and dog', 'cat sand dog']
 components:
   examples:
     '{path}.description': |

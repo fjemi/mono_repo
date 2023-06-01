@@ -1,33 +1,22 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, asdict
-import yaml
+import dataclasses as dc
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   magazine: str = ''
   note: str = ''
   case_sensitive: bool = True
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
   magazine_contains_note: bool = False
-
 
 async def check_magazine_contains_note(data: Data) -> bool:
   if data.body.case_sensitive is False:
@@ -42,21 +31,22 @@ async def check_magazine_contains_note(data: Data) -> bool:
   return True
 
 
-async def get_response(data: Data) -> models.Response:
-  props = f'''
-    input: {asdict(data.body)} 
-    output:
-      magazine_contains_note: {data.magazine_contains_note}
-  '''
-  props = yaml.safe_load(props)
-  props = models.Response(data=props)
-  return props
+async def get_response(data: Data) -> dict:
+  return {'magazine_contains_note': data.magazine_contains_note}
 
 
-async def main(request: Request) -> models.Response:
-  body = asdict(request.data.body)
-  body = Body(**body)
-  data = Data(body=body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  magazine: str | None = None,
+  note: str | None = None,
+  case_sensitive: bool | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data.magazine_contains_note = await check_magazine_contains_note(data=data)
   data = await get_response(data=data)

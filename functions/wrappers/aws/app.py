@@ -1,91 +1,50 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, fields, field
+import dataclasses as dc
 from typing import Any, List, Dict, Callable
 from copy import deepcopy
 from datetime import datetime
 import json
 import boto3
 import yaml
-from fastapi import HTTPException
+from fastapi import HTTPException, Request
 
-from api import models as api_models
 from shared.get_environment import app as get_environment
+from shared.format_main_arguments import app as format_main_arguments
 
 
 THIS_MODULE_PATH = __file__
-ENV = get_environment.main({'module_path': THIS_MODULE_PATH})
+ENV = get_environment.main(module_path=THIS_MODULE_PATH)
 
 # Caches session and clients to reduce instantiations
 SESSION = None
 CLIENTS = {}
 
 
-@dataclass
-class Body(api_models.Body):
+@dc.dataclass
+class Body:
   client: str | None = None
   method: str | None = None
   parameters: Any | None = None
   response: Any | None = None
   parse_response: List[str] | None = None
+  service: str | None = None
 
 
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
-  session: boto3.Session | None = field(default_factory=lambda: SESSION)
-  clients: Dict[str, boto3.client] = field(default_factory=lambda: CLIENTS)
+  session: boto3.Session | None = dc.field(default_factory=lambda: SESSION)
+  clients: Dict[str, boto3.client] = dc.field(default_factory=lambda: CLIENTS)
   call_method: str = 'module'
 
 
-async def process_call_from_api(
-  request: api_models.Request,
-  service: None = None,
-) -> Data:
-  _ = service
-  body = Body()
-
-  for _field in fields(body):
-    if not hasattr(request.data.body, _field.name):
-      continue
-    value = getattr(request.data.body, _field.name)
-    if not value:
-      continue
-    setattr(body, _field.name, value)
-
-  data = Data(body=body, call_method='api')
-  return data
-
-
-async def process_call_from_module(
-  service: str | dict,
-  request: None = None,
-) -> Data:
-  _ = request
-  if isinstance(service, str):
-    service = yaml.safe_load(service)
-
-  body = Body(**service)
-  data = Data(body=body)
-  return data
-
-
-PROCESS_MAIN_ARGUMENTS = {
-  'api_call': process_call_from_api,
-  'module_call': process_call_from_module,
-}
-
-
-async def process_main_arguments(
-  request: api_models.Request,
-  service: str | dict,
-) -> Data:
-  cases = 'api_call' if request else 'module_call'
-  switcher = PROCESS_MAIN_ARGUMENTS[cases]
-  data = await switcher(
-    request=request,
-    service=service,
-  )
+async def format_service_arguments(data: Data) -> Data:
+  if not data.body.service:
+    return data
+  service = yaml.safe_load(data.body.service)
+  data.body = Body(**service)
+  data.body.service = None
   return data
 
 
@@ -191,16 +150,16 @@ async def parse_response_list(
   if not response:
     return response
 
-  store = None
-
-  if '-' in key:
-    a, b = key.split('-')
-    a, b = int(a), int(b)
-    store = response[a:b]
-
-  if '-' not in key:
+  try:
     key = int(key)
-    store = response[key]
+    return response[key]
+  except Exception:
+    pass
+
+  store = []
+  for item in response:
+    result = item[key]
+    store.append(result)
   return store
 
 
@@ -282,22 +241,27 @@ async def process_service_request(data: Data) -> Data:
   return data
 
 
-async def get_response(data: Data) -> api_models.Response:
-  if data.call_method == 'module':
-    data = data.body.response
-  elif data.call_method == 'api':
-    data = api_models.Response(data=data.body.response)
-  return data
+async def get_response(data: Data) -> dict | list:
+  return data.body.response
 
 
+# pylint: disable=unused-argument
 async def main(
-  request: api_models.Request | None = None,
+  request: Request | None = None,
+  client: str | None = None,
+  method: str | None = None,
+  parameters: Any | None = None,
+  response: Any | None = None,
+  parse_response: List[str] | None = None,
   service: str | None = None,
-) -> api_models.Response | dict:
-  data = await process_main_arguments(
-    request=request,
-    service=service,
+) -> list | dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
   )
+  data = await format_service_arguments(data=data)
+  request, service = None, None
   data = await get_session(data=data)
   data = await process_service_request(data=data)
   data = await get_response(data=data)

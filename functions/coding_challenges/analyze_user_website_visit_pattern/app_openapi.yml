@@ -50,120 +50,33 @@ paths:
                   - home     
                   - about     
                   - career
-          application/json:
-            schema:
-              type: object
-              properties:
-                usernames:
-                  type: array
-                  items:
-                    type: string
-                timestamps:
-                  type: array
-                  items:
-                    type: number
-                websites:
-                  type: array
-                  items:
-                    type: string
-            examples:
-              'Example 1':
-                value:
-                  usernames: 
-                  - joe     
-                  - joe     
-                  - joe     
-                  - james     
-                  - james     
-                  - james     
-                  - james     
-                  - mary     
-                  - mary     
-                  - mary
-                  timestamps: 
-                  - 1
-                  - 2     
-                  - 3     
-                  - 4     
-                  - 5     
-                  - 6     
-                  - 7     
-                  - 8     
-                  - 9     
-                  - 10
-                  websites:
-                  - home
-                  - about     
-                  - career     
-                  - home     
-                  - cart    
-                  - maps     
-                  - home     
-                  - home     
-                  - about     
-                  - career
-
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
-                $ref: '#/components/schemas/OK/text_plain'
+                type: string
+                3_sequence: string
+                visits: number
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        usernames: 
-                        - joe     
-                        - joe     
-                        - joe     
-                        - james     
-                        - james     
-                        - james     
-                        - james     
-                        - mary     
-                        - mary     
-                        - mary
-                        timestamps: 
-                        - 1
-                        - 2     
-                        - 3     
-                        - 4     
-                        - 5     
-                        - 6     
-                        - 7     
-                        - 8     
-                        - 9     
-                        - 10
-                        websites:
-                        - home
-                        - about     
-                        - career     
-                        - home     
-                        - cart    
-                        - maps     
-                        - home     
-                        - home     
-                        - about     
-                        - career
-                      output:
-                        3_sequence: home.home.home
-                        visits: 4
+                    3_sequence: home.home.home
+                    visits: 4
             application/json:
               schema:
-                $ref: '#/components/schemas/OK/application_json'
+                type: object
+                properties:
+                  3_sequence:
+                    type: string
+                  visits:
+                    type: number
               examples:
                 'Example 1':
                   value:
-                    code: 200
-                    status: OK
-                    data: 
-                      3_sequence: home.home.home
-                      visits: 4
+                    3_sequence: home.home.home
+                    visits: 4
 components:
   examples:
     '{path}.description': |

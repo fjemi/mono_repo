@@ -24,33 +24,19 @@ paths:
                   nums2: [3, 4]
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                median: number
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        nums1: [1, 2]
-                        nums2: [3]
-                      output: 
-                        median: 2
+                    median: 2
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        nums1: [1,2]
-                        nums2: [3,4]
-                      output: 
-                        median: 2.5
+                    median: 2.5
 components:
   examples:
     '{path}.description': |

@@ -1,22 +1,20 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List
-import yaml
+from fastapi import Request
 
-from api import models as api_models
-from functions.security.authentication import app as authentication
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
-class Body(api_models.Body):
+@dc.dataclass
+class Body:
   nums: List[int] | None = None
 
 
-@dataclass
+@dc.dataclass
 class Data:
-  body: Body = field(default_factory=lambda: Body())
-  nums: List[int] | None = None
+  body: Body | None = None
   triplet_indices: List[List[int]] | None = None
   triplets: List[List[int]]  | None = None
 
@@ -24,7 +22,7 @@ class Data:
 async def get_triplet_indices(data: Data) -> Data:
   store = []
 
-  nums_n = len(data.nums)
+  nums_n = len(data.body.nums)
   leaves = [str(i) for i in range(nums_n)]
   tree = [leaves]
 
@@ -58,7 +56,7 @@ async def get_triplet_values(data: Data) -> Data:
     triplet = []
     for index in indices_ints:
       index = int(index)
-      number = data.nums[index]
+      number = data.body.nums[index]
       triplet.append(number)
     if sum(triplet) != 0:
       continue
@@ -83,25 +81,25 @@ async def process_triplet_values(data: Data) -> Data:
   return data
 
 
-async def get_response(
-  data: Data,
-  response: api_models.Response = api_models.Response,
-) -> api_models.Response:
-  data = f'''
-    nums: {data.nums}
-    triplets: {data.triplets}
-  '''
-  data = yaml.safe_load(data)
-  data = response(data=data)
+async def get_response(data: Data) -> dict:
+  data = {
+    'nums': data.body.nums,
+    'triplets': data.triplets,
+  }
   return data
 
 
+# pylint: disable=unused-argument
 async def main(
-  request: api_models.Request,
-  data: Data = Data,
+  request: Request | None = None,
+  nums: List[int] | None = None,
   # body: dict | Body | None = None,
-) -> api_models.Response:
-  data = data(nums=request.data.body.nums)
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data = await get_triplet_indices(data=data)
   data = await get_triplet_values(data=data)

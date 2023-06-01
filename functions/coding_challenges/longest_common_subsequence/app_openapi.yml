@@ -2,8 +2,9 @@ paths:
   '/{path}/':
     post:
       tags:
+      - TODO
       - Coding Challenges
-      summary: 3 Sum
+      summary: Longest Sub Sequence
       description:
         $ref: '#/components/examples/{path}.description'
       requestBody:
@@ -24,42 +25,25 @@ paths:
                   nums: [0, 0, 0]
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
-                $ref: '#/components/schemas/OK/text_plain'
+                type: string
+                triplets: array
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        nums: [-1, 0, 1, 2, -1, -4]
-                      output:
-                        triplets:
-                        - [-1, -1, 2]
-                        - [-1, 0, 1]
+                    triplets:
+                    - [-1, -1, 2]
+                    - [-1, 0, 1]
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        nums: [0, 1, 1]
-                      output:
-                        triplets: []
+                    triplets: []
                 'Example 3':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        nums: [0, 0, 0]
-                      ouptut:
-                        triplets: 
-                        - [0, 0, 0]
+                    triplets: 
+                    - [0, 0, 0]
 components:
   examples:
     '{path}.description': |

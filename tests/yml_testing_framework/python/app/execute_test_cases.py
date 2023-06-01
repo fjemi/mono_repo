@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from dataclasses import dataclass, asdict, fields, field
+import dataclasses as dc
 from typing import List, Dict, Any, Callable
 from types import ModuleType
 import yaml
@@ -17,51 +17,52 @@ from app import get_module_at_path
 from app import thread_function_executions
 from app import error_handler
 from app import get_function_definitions
-from app import get_environment
+from shared.get_environment import app as get_environment
 
 
 STORE_RESULTS = []
 EXCLUDE_FUNCTIONS = ['example']
-ENV = get_environment.main(data=__file__)
+THIS_MODULE_PATH = __file__
+ENV = get_environment.main(module_path=THIS_MODULE_PATH)
 
 
-@dataclass
+@dc.dataclass
 class Data:
-  values: List[Any] = field(default_factory=lambda: [])
-  cast_as: List[str] = field(default_factory=lambda: [])
+  values: List[Any] = dc.field(default_factory=lambda: [])
+  cast_as: List[str] = dc.field(default_factory=lambda: [])
   file_path: str | None = None
 
 
-@dataclass
+@dc.dataclass
 class Coverage:
   tests_count: int = 0
   tests_passed_count: int = 0
   tests_passed_percent: float = 0
 
 
-@dataclass
+@dc.dataclass
 class Case:
-  module_paths: List[str] = field(default_factory=lambda: [])
+  module_paths: List[str] = dc.field(default_factory=lambda: [])
   function_name: str | None = None
   description: List[str] | str = ''
   patches: List[Patch] | Patch | None = None
   inputs: Data | None = None
-  expected_outputs: List[Any] = field(default_factory=lambda: [])
-  outputs: Data = field(default_factory=lambda: Data())
-  assertions: List[str] = field(default_factory=lambda: [])
-  results: List[List[bool]] = field(default_factory=lambda: [])
-  coverage: Coverage = field(default_factory=lambda: Coverage())
+  expected_outputs: List[Any] = dc.field(default_factory=lambda: [])
+  outputs: Data = dc.field(default_factory=lambda: Data())
+  assertions: List[str] = dc.field(default_factory=lambda: [])
+  results: List[List[bool]] = dc.field(default_factory=lambda: [])
+  coverage: Coverage = dc.field(default_factory=lambda: Coverage())
 
 
-@dataclass
+@dc.dataclass
 class Test:
   yml_path: str | None = None
   module_path: str | None = None
-  exclusions: List[str] | str = field(default_factory=lambda: EXCLUDE_FUNCTIONS)
+  exclusions: List[str] | str = dc.field(default_factory=lambda: EXCLUDE_FUNCTIONS)
   test_resources_dir_path: str | None = None
   test_resources_modules_paths: List[str] | None = None
-  cases: List[Case] = field(default_factory=lambda: [])
-  coverage: Dict[str, Coverage] = field(default_factory=lambda: {})
+  cases: List[Case] = dc.field(default_factory=lambda: [])
+  coverage: Dict[str, Coverage] = dc.field(default_factory=lambda: {})
 
 
 # @error_handler.main
@@ -270,7 +271,7 @@ def assert_has_values(
       result = value == expected_value
       store.append(result)
 
-  if hasattr(output, '__dataclass_fields__'):
+  if hasattr(output, '__dataclassfields__'):
     for key, expected_value in expected_output.items():
       value = getattr()
       result = value == expected_value
@@ -542,13 +543,13 @@ def format_test(test: Test) -> Test:
     #     test.cases[i].inputs.values[k])
 
     # Convert dataclass to dictionary
-    test.cases[i] = asdict(test.cases[i])
+    test.cases[i] = dc.asdict(test.cases[i])
 
     # Remove the modules paths as this is 
     # stored in the Test (main) dataclass
     del test.cases[i]['module_paths']
   
-  test = asdict(test)
+  test = dc.asdict(test)
   # Remove resources directory path
   del test['test_resources_dir_path']
   return test

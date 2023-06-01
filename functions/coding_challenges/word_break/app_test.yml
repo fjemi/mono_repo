@@ -1,0 +1,97 @@
+resources:
+- title: Word Break II
+  url: https://leetcode.com/problems/word-break-ii/
+tests:
+- function_name: set_segments
+  description: |
+    Returns a list of Sentence objects, which contain
+    the first word in the sentence and the string with
+    sentence removed
+  inputs_values:
+  - string: catsandog
+    word_dict: [cats, dog, sand, and, cat]
+  - string: catsanddog
+    word_dict: [cat, cats, and, sand, dog]
+  inputs_cast_as: Data
+  expected_outputs:
+  - segments: 
+    - string: andog
+      values: [cats]
+    - string: sandog
+      values: [cat]
+  - segments:
+    - string: sanddog
+      values: [cat]
+      word_dict: [cat, cats, and, sand, dog]
+    - string: anddog
+      values: [cats]
+      word_dict: [cat, cats, and, sand, dog]
+  outputs_cast_as: dict
+  assertions: has_values
+- function_name: process_sentence
+  description: |
+    Processes a list of sentence objects. Finds all of 
+    the segments that can be created from a string
+    using words from a dictionary. Returns the segments
+    as lists of words or empty lists if no segments
+    can be formed.
+  inputs_values: 
+  - sentence:
+      string: andog
+      values: [cats]
+    word_dict: [cats, dog, sand, and, cat]
+  - sentence:
+      string: sandog
+      values: [cat]
+    word_dict: [cats, dog, sand, and, cat]
+  - sentence:
+      string: sanddog
+      values: [cat]
+    word_dict: [cat, cats, and, sand, dog]
+  - sentence:
+      string: anddog
+      values: [cats]
+    word_dict: [cat, cats, and, sand, dog]
+  inputs_cast_as:
+    # TODO: If str cast to dict -> {Data: Data}
+    # Or if dictionary just cast the key
+    sentence: Sentence
+  expected_outputs:
+  - []
+  - []
+  - [cat, sand, dog]
+  - [cats, and, dogs]
+  assertions: equals
+- function_name: get_segments
+  description: |
+    Returns a list of words that make up a sentence form
+    a string and word dictionary
+  inputs:
+  inputs_values:
+  - string: catsandog
+    word_dict: [cats, dog, sand, and, cat]
+  - string: catsanddog
+    word_dict: [cat, cats, and, sand, dog]
+  inputs_cast_as: Data
+  expected_outputs:
+  - [[], []]
+  - [[cat, sand, dog], [cats, and, dog]]
+  assertions:
+- function_name: main
+  description: |
+    Orechestration function that executes the other
+    functions within the module
+  inputs_values:
+  - string: catsandog
+    word_dict: [cats, dog, sand, and, cat]
+  - string: catsanddog
+    word_dict: [cat, cats, and, sand, dog]
+  inputs_cast_as: Data
+  expected_outputs:
+  - segments:
+    - []
+    - []
+  - segments: 
+    - [cat, sand, dog]
+    - [cats, and, dog]
+  assertions: has_values

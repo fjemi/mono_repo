@@ -4,10 +4,10 @@ import json
 import yaml
 from typing import Any, List, Dict
 from pydantic import BaseModel
-from dataclasses import dataclass, asdict
+import dataclasses as dc
 
 
-@dataclass
+@dc.dataclass
 class DataClass:
   pass
 
@@ -44,7 +44,7 @@ def case_basemodel_as_yml(data: BaseModel) -> str:
 
 
 def case_dataclass_as_yml(data: BaseModel) -> str:
-  data = asdict(data)
+  data = dc.asdict(data)
   return yaml.dump(
     data=data, 
     indent=2, 
@@ -92,8 +92,8 @@ def main(data: Data | dict) -> Any:
   conditions = [
     _type.__name__ == 'dict',
     _type.__name__ == 'str',
-    hasattr(data.data, '__fields__'),
-    hasattr(data.data, '__dataclass_fields__'),
+    hasattr(data.data, '_fields__'),
+    hasattr(data.data, '__dataclassfields__'),
   ]
   condition_index = conditions.index(1)
   case = f'{condition_index}_{data.cast_as}'

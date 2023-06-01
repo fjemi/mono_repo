@@ -27,55 +27,34 @@ paths:
                   str2: yzabcdezx
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                common_substrings: object
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        str1: GeeksforGeeks
-                        str2: GeeksQuiz
-                      output: 
-                        common_substrings:
-                          0: ['']
-                          1: [G, e]
-                          2: [Ge, ee]
-                          3: [Gee, eek]
-                          4: [Geek, eeks, eeks]
-                          5: [Geeks, Geeks]
+                    common_substrings:
+                      0: ['']
+                      1: [G, e]
+                      2: [Ge, ee]
+                      3: [Gee, eek]
+                      4: [Geek, eeks, eeks]
+                      5: [Geeks, Geeks]
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        str1: abcdxyz
-                        str2: xyzabcd
-                      output: 
-                        common_substrings:
-                          0: ['']
-                          2: [yz]
-                          3: [bcd, xyz]
-                          4: [abcd]
+                    common_substrings:
+                      0: ['']
+                      2: [yz]
+                      3: [bcd, xyz]
+                      4: [abcd]
                 'Example 3':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        str1: zxabcdezy
-                        str2: yzabcdezx
-                      output: 
-                        common_substrings:
-                          0: ['']
-                          1: [z, x, y]
-                          2: [zx]
-                          5: [abcde]
-                          6: [abcdez]
+                    common_substrings:
+                      0: ['']
+                      1: [z, x, y]
+                      2: [zx]
+                      5: [abcde]
+                      6: [abcdez]

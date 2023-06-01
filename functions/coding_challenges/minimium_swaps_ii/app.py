@@ -1,51 +1,41 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List, Any, Dict
 from copy import deepcopy
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   array: List[int] | None = None
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Element:
   value: Any | None = None
   position: int | None = None
 
 
-@dataclass
+@dc.dataclass
 class Swap:
   a: Element | None = None
   b: Element | None = None
 
 
-@dataclass
+@dc.dataclass
 class Elements:
-  values: List[int] = field(default_factory=lambda: [])
-  positions: List[int] = field(default_factory=lambda: [])
+  values: List[int] = dc.field(default_factory=lambda: [])
+  positions: List[int] = dc.field(default_factory=lambda: [])
 
 
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
-  swaps: List[Swap] = field(default_factory=lambda: [])
-  arrays_with_swaps: List[List[int]] = field(default_factory=lambda: [])
+  swaps: List[Swap] = dc.field(default_factory=lambda: [])
+  arrays_with_swaps: List[List[int]] = dc.field(default_factory=lambda: [])
   ordered_array: List[int] | None = None
   swap_count: int = 0
 
@@ -128,19 +118,20 @@ async def get_ordered_array(data: Data) -> Data:
   return data
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)} 
-    output: 
-      swap_count: {data.swap_count}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'swap_count': data.swap_count}
 
 
-async def main(request: Request) -> models.Response:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  array: List[int] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data.arrays_with_swaps.append(data.body.array)
   data = await get_ordered_array(data=data)

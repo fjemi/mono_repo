@@ -1,11 +1,11 @@
 from types import ModuleType
 from typing import Callable
 import inspect
-from dataclasses import dataclass
+import dataclasses as dc
 
 from app import get_module_and_yml_paths
 
-@dataclass
+@dc.dataclass
 class Data:
   test_function_name: str = None
   _module: ModuleType = None
@@ -58,7 +58,7 @@ SETUP_MAIN_DATA = {
 def setup_main_data(data: Data | dict) -> Data:
   cases = {
     isinstance(data, dict): 'dict',
-    hasattr(data, '__dataclass_fields__'): 'Data',
+    hasattr(data, '__dataclassfields__'): 'Data',
   }
   _case = cases[1]
   function = SETUP_MAIN_DATA[_case]

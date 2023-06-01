@@ -1,33 +1,23 @@
 # #!/usr/bin/env python3
 
-from dataclasses import dataclass, field
+import dataclasses as dc
 from typing import List, Dict
 from copy import deepcopy
 from math import sqrt, floor
-import yaml
 import os
 import sys
+from fastapi import Request
 
-from functions.algorithms.grids import app as grids
-from api import models as api_models
+from functions.algorithms.grids import app as grid_algorithms
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
-class Body(api_models.Body):
+@dc.dataclass
+class Body:
   grid: List[List[int | str]] | None = None
 
 
-@dataclass
-class RequestData(api_models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(api_models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Group:
   positions: Dict[str, int] | List[List[int]] | None = None
   values: Dict[str, List[int]] | List[List[int]] | None = None
@@ -35,32 +25,33 @@ class Group:
   scores: Dict[str, float] | None = None
 
 
-@dataclass
+@dc.dataclass
 class Groups:
   n: int = 0
   grid: Dict[str, int] | None = None
-  sub_grids: Group = field(default_factory=lambda: Group())
-  rows: Group = field(default_factory=lambda: Group())
-  columns: Group = field(default_factory=lambda: Group())
-  intersections: Group = field(default_factory=lambda: Group())
+  sub_grids: Group = dc.field(default_factory=lambda: Group())
+  rows: Group = dc.field(default_factory=lambda: Group())
+  columns: Group = dc.field(default_factory=lambda: Group())
+  intersections: Group = dc.field(default_factory=lambda: Group())
   values: Dict[str, float] | None = None
 
 
-@dataclass
+@dc.dataclass
 class Iterations:
   count: int = 0
   maximum: int = 1400
 
 
-@dataclass
+@dc.dataclass
 class Data:
-  grid: List[List[int | str]] | None = None
+  body: Body | None = None
+  call_method: str = 'api'
   n: int = 0
   groups: Groups | None = None
   tree: List[List[Dict[str, int]]] | None = None
   values_total: int = 0
-  completed: Dict | List | None = None
-  iterations: Iterations = field(default_factory=lambda: Iterations())
+  solution: Dict | List | None = None
+  iterations: Iterations = dc.field(default_factory=lambda: Iterations())
 
 
 async def get_values_total(n: int) -> int:
@@ -266,13 +257,8 @@ async def get_row_column_scores(groups: Groups) -> Groups:
   return groups
 
 
-async def get_response(data: Data) -> api_models.Response:
-  data = {
-    'grid': data.grid,
-    'solution': data.completed,
-  }
-  data = api_models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'solution': data.solution}
 
 
 async def update_groups(groups: Groups) -> Groups:
@@ -300,28 +286,27 @@ async def update_groups(groups: Groups) -> Groups:
   return groups
 
 
-async def process_data(data: Data) -> Data:
-
-  return data
-
-
 # TODO: Cleanup main. Only functions should be called in main.
 # @error_handler.main(debug=False)
+# pylint: disable=unused-argument
 async def main(
   request: Request | None = None,
   grid: Dict | List | None = None,
 ) -> Data:
-  if request is not None:
-    data = Data(grid=request.data.body.grid)
-  if grid is not None:
-    data = Data(grid=grid)
-  
-  grid = data.grid
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
+  request = None
+
+  grid = data.body.grid
   n = len(grid)
   if isinstance(grid, dict) is True:
-    n = int(sqrt(len(data.grid)))
+    n = int(sqrt(len(data.body.grid)))
   if isinstance(grid, list) is True:
-    grid = await grids.main(grid=data.grid, convert_to='dict')
+    grid = await grid_algorithms.main(grid=data.body.grid, convert_to='dict')
+    print(grid)
 
   grid_values_total = list(grid.values())
   grid_values_total = sum(grid_values_total)
@@ -343,7 +328,7 @@ async def main(
       groups = deepcopy(data.groups)
       groups.grid = deepcopy(grids[i])
       groups = await update_groups(groups=groups)
-      
+
       # print(groups.intersections.scores)
       # print('\n')
       # for key, value in groups.intersections.available_values.items():
@@ -401,8 +386,8 @@ async def main(
 
   if data.values_total in data.tree:
     grid = data.tree[data.values_total][0]
-    grid = await grids.main(grid=grid, convert_to='list')
-    data.completed = grid
+    grid = await grid_algorithms.main(grid=grid, convert_to='list')
+    data.solution = grid
   data.tree = None
   data.groups = None
 

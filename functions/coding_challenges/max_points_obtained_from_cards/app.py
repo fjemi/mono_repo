@@ -1,36 +1,26 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, asdict
+import dataclasses as dc
 from typing import List, Dict
 from copy import deepcopy
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   card_points: List[int] | None = None
   k: int = 0
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
   k_cards: List[int] | Dict[int, List[List[int]]] | None = None
 
 
-@dataclass
+@dc.dataclass
 class Branches:
   previous: List[Dict] | None = None
   current: List[Dict] | None = None
@@ -123,21 +113,25 @@ async def get_max_points(data: Data) -> Data:
   return data
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output:
-      max_points:
-        n: {list(data.k_cards.keys())}
-        cards: {list(data.k_cards.values())[0]}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
+async def get_response(data: Data) -> dict:
+  data = {
+    'max_points': list(data.k_cards.keys()),
+    'cards': list(data.k_cards.values())[0]
+  }
   return data
 
 
-async def main(request: Request) -> models.Response:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  card_points: List[int] | None = None,
+  k: int | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data = await get_max_points(data=data)
   data = await get_response(data=data)

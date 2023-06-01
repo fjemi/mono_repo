@@ -1,0 +1,257 @@
+functions:
+- function_name: pre_processing
+  description: |
+    Sets up data for processing downstream. 
+    - Set '_continue' to false if no transformation sequence can be found: the 
+      'end_word' is not in the list of available words of available words
+    - Set the root for all of the transformation sequences. The root is a 
+      dictionary with key/values for the beggining word and available words.
+  input_values:
+  - _continue: true
+    begin_word: hit
+    end_word: cog
+    words:
+    - hot
+    - dot
+    - dog
+    - lot
+    - log
+    - cog
+  - _continue: true
+    begin_word: hit
+    end_word: cog
+    words:
+    - hot
+    - dot
+    - dog
+    - lot
+    - log
+  expected_outputs:
+  - _continue: true
+    transformations:
+    - - path: hit
+        words:
+        - hot
+        - dot
+        - dog
+        - lot
+        - log
+        - cog
+  - _continue: false
+    transformations: []
+  assertions: has_values
+- function_name: calculate_distance_between_two_strings
+  description: Returns the distance, percent similar, between two strings as an 
+    integer
+  input_values:
+  - string_one: log
+    string_two: dog
+  - string_one: cat
+    string_two: dog
+  expected_outputs: 
+  - 66
+  - 0
+  assertions: equals
+- function_name: get_next_words_in_sequence
+  input_values:
+  - sequence_end: log
+    words:
+    - dog
+    - cog
+  - sequence_end: cat
+    words:
+    - bat
+    - cab
+    - rag
+  expected_outputs:
+  - - dog
+    - cog
+  - - bat
+    - cab
+  description: Returns words from a list of available words that one character
+    different from another specified word
+  assertions: equals
+- function_name: build_out_transformations
+  description: Builds out sequences needed to transfrom from begin to end word
+  input_values:
+  - _continue: false
+    end_word: cog
+    transformations:
+    - - sequence: hit
+        words:
+        - hot
+        - dot
+        - dog
+        - lot
+        - log
+        - cog
+  inputs_cast_as: 
+    transformations: List[Transformation]
+  expected_outputs:
+  - transformations:
+    - - sequence: hit
+        words:
+        - hot
+        - dot
+        - dog
+        - lot
+        - log
+        - cog
+    - - sequence: hit.hot
+        words:
+        - dot
+        - dog
+        - lot
+        - log
+        - cog
+    - - sequence: hit.hot.dot
+        words:
+        - dog
+        - lot
+        - log
+        - cog
+      - sequence: hit.hot.dot.lot
+        words:
+        - dog
+        - log
+        - cog
+    - - sequence: hit.hot.dot.dog
+        words:
+        - lot
+        - log
+        - cog
+      - sequence: hit.hot.dot.dog.lot
+        words:
+        - log
+        - cog
+      - sequence: hit.hot.dot.lot.log
+        words:
+        - dog
+        - cog
+    - - sequence: hit.hot.dot.dog.log
+        words:
+        - lot
+        - cog
+      - sequence: hit.hot.dot.dog.log.cog
+        words:
+        - lot
+      - sequence: hit.hot.dot.dog.lot.log
+        words:
+        - cog
+      - sequence: hit.hot.dot.lot.log.dog
+        words:
+        - cog
+      - sequence: hit.hot.dot.lot.log.dog.cog
+        words: []
+  outputs_cast_as: dict
+  assertions: equals
+- function_name: process_transformations
+  description: Converts a list of transformations to a dictionary with keys
+    being the lengths of the transformation sequences and values being associated
+    sequences
+  inputs_values:
+  - end_word: cog
+    transformations:
+    - - sequence: hit
+        words:
+        - hot
+        - dot
+        - dog
+        - lot
+        - log
+        - cog
+    - - sequence: hit.hot
+        words:
+        - dot
+        - dog
+        - lot
+        - log
+        - cog
+    - - sequence: hit.hot.dot
+        words:
+        - dog
+        - lot
+        - log
+        - cog
+      - sequence: hit.hot.dot.lot
+        words:
+        - dog
+        - log
+        - cog
+    - - sequence: hit.hot.dot.dog
+        words:
+        - lot
+        - log
+        - cog
+      - sequence: hit.hot.dot.dog.lot
+        words:
+        - log
+        - cog
+      - sequence: hit.hot.dot.lot.log
+        words:
+        - dog
+        - cog
+    - - sequence: hit.hot.dot.dog.log
+        words:
+        - lot
+        - cog
+      - sequence: hit.hot.dot.dog.log.cog
+        words:
+        - lot
+      - sequence: hit.hot.dot.dog.lot.log
+        words:
+        - cog
+      - sequence: hit.hot.dot.lot.log.dog
+        words:
+        - cog
+      - sequence: hit.hot.dot.lot.log.dog.cog
+        words: []
+  inputs_cast_as:
+    transformations: List[Transformation]
+  expected_outputs:
+  - 5:
+    - - hit
+      - hot
+      - dot
+      - dog
+      - log
+      - cog
+    6:
+    - - hit
+      - hot
+      - dot
+      - lot
+      - log
+      - dog
+      - cog
+  assertions: equals
+- function_name: main
+  description: Orchestrates the execution of the functions in the module
+  input_values:
+  - begin_word: hit
+    end_word: cog
+    words: [hot, dot, dog, lot, log, cog]
+  - begin_word: hit
+    end_word: cog
+    words: ["hot","dot","dog","lot","log"]
+  expected_outputs:
+  - shortest_transformation: 5
+    transformations:
+      5:
+      - - hit
+        - hot
+        - dot
+        - dog
+        - log
+        - cog
+      6:
+      - - hit
+        - hot
+        - dot
+        - lot
+        - log
+        - dog
+        - cog
+  - shortest_transformation: 0
+    transformations: {}
+  assertions: has_values

@@ -1,0 +1,342 @@
+resources:
+- title: Number of Islands
+  url: https://leetcode.com/problems/number-of-islands/
+- function_name: main
+  description: >
+    Orchestrates the execution of the other functions within the
+    module. Returns the number of islands in a grid.
+  inputs_values:
+  - grid:
+    - [1, 1, 1, 1, 0]
+    - [1, 1, 0, 1, 0]
+    - [1, 1, 0, 0, 0]
+    - [0, 0, 0, 0, 0]
+  - grid:
+    - [1, 1, 0, 0, 0]
+    - [1, 1, 0, 0, 0]
+    - [0, 0, 1, 0, 0]
+    - [0, 0, 0, 1, 1]
+  expected_outputs:
+  - output: 1
+  - output: 3
+  assertions: has_values
+- function_name: get_positions
+  description: >
+    Returns a dictionary with keys being positions on a grid as dot
+    dilimited strings, and values being the associated value for
+    the position
+  inputs_values:
+  - - [1, 1]
+    - [2, 2]
+  - - [2, 2, 2]
+    - [1, 1, 1]
+    - [3, 3, 3]
+  expected_outputs:
+  - '0.0': 1
+    '0.1': 1
+    '1.0': 2
+    '1.1': 2
+  - '0.0': 2
+    '0.1': 2
+    '0.2': 2
+    '1.0': 1
+    '1.1': 1
+    '1.3': 1
+    '2.0': 3
+    '2.1': 3
+    '2.2': 3
+  assertions: equals
+- function_name: get_adjacent_positions
+  description: >
+    Returns positions adjacacent (horizontal and vertical) to a 
+    position on a grid
+  inputs_values:
+  - position: '0.0'
+    positions: 
+      '0.0': 1
+      '0.1': 2
+      '1.0': 3
+      '1.1': 4
+    steps: 
+    - [0, 1]
+    - [1, 0]
+    - [0, -1]
+    - [-1, 0]
+  - position: '1.1'
+    positions: 
+      '0.0': 1
+      '0.1': 2
+      '1.0': 3
+      '1.1': 4
+    steps: 
+    - [0, 1]
+    - [1, 0]
+    - [0, -1]
+    - [-1, 0]
+  - position: '1.1'
+    positions: 
+      '0.0': 1
+      '0.1': 2
+      '0.2': 1
+      '1.0': 3
+      '1.1': 4
+      '1.2': 3
+      '2.0': 5
+      '2.1': 6
+      '2.2': 5
+    steps: 
+    - [0, 1]
+    - [1, 0]
+    - [0, -1]
+    - [-1, 0]
+  expected_outputs:
+  - ['0.1', '1.0']
+  - ['0.1', '1.0']
+  - ['0.1', '1.0', '1.2', '2.1']
+  assertions: equals
+- function_name: get_adjacencies
+  description: >
+    Returns the adjacent positions of all of the positions of the
+    grid as a dictionary with keys being positions and values 
+    being lists of adjacencies
+  inputs_values:
+  - positions:
+      '0.0': 1
+      '0.1': 1
+      '1.0': 1
+      '1.1': 1
+    steps: 
+    - [0, 1]
+    - [1, 0]
+    - [0, -1]
+    - [-1, 0]
+  - positions:
+      '0.0': 1
+      '0.1': 1
+      '0.2': 1
+      '1.0': 1
+      '1.1': 1
+      '1.2': 1
+      '2.0': 1
+      '2.1': 1
+      '2.2': 1
+    steps: 
+    - [0, 1]
+    - [1, 0]
+    - [0, -1]
+    - [-1, 0]
+  expected_outputs:
+  - '0.0': ['0.1', '1.0']
+    '0.1': ['0.0', '1.1']
+    '1.0': ['0.0', '1.1']
+    '1.1': ['0.1', '1.0']
+  - '0.0':
+    - '0.0'
+    - '0.1'
+    - '1.0'
+    '0.1':
+    - '0.1'
+    - '0.2'
+    - '1.1'
+    - '0.0'
+    '0.2':
+    - '0.2'
+    - '1.2'
+    - '0.1'
+    '1.0':
+    - '1.0'
+    - '1.1'
+    - '0.0'
+    '1.1':
+    - '1.1'
+    - '1.2'
+    - '1.0'
+    - '0.1'
+    '1.2':
+    - '1.2'
+    - '2.2'
+    - '1.1'
+    - '0.2'
+    '2.2':
+    - '2.2'
+    - '1.2'
+  assertions: equals
+- function_name: store_indirect_adjacencies
+  description: >
+    Returns a list of positions that are directly and indirectly
+    adjacent to a position. 
+  inputs_values:
+  - store: []
+    adjacencies: 
+      '0.0': ['0.0', '1.0', '0.1']
+      '1.0': ['1.0', '0.0', '2.0', '1.1']
+    adjacent_positions: ['0.0', '1.0']
+  - store: [a, b]
+    adjacencies: 
+      a: [b, c, d]
+      b: [a, c, d]
+      c: [a, d, d]
+      d: [a, b, c]
+    adjacent_positions: [a, b, c, d]
+  expected_outputs:
+  - ['0.0', '1.0', '0.1', '2.0', '1.0']
+  - [a, b, c, d]
+  assertions: equals
+- function_name: get_islands_from_direct_and_indirect_adjacencies
+  description: >
+    Returns a dictionary with keys being positions and values
+    being lists of positions' direct and indirect adjacencies 
+    that form an island
+  inputs_values:
+  - adjacencies:
+      '0.0': ['0.0', '0.1', '1.0']
+      '0.1': ['0.1', '0.2', '1.1', '0.0']
+      '0.2': ['0.2', '0.3', '0.1']
+      '0.3': ['0.3', '1.3', '0.2']
+      '1.0': ['1.0', '1.1', '2.0', '0.0']
+      '1.1': ['1.1', '2.1', '1.0', '0.1']
+      '1.3': ['1.3', '0.3']
+      '2.0': ['2.0', '2.1', '1.0']
+      '2.1': ['2.1', '2.0', '1.1']
+  - adjacencies:
+      '0.0': ['0.0', '0.1', '1.0']
+      '0.1': ['0.1', '1.1', '0.0']
+      '1.0': ['1.0', '1.1', '0.0']
+      '1.1': ['1.1', '1.0', '0.1']
+      '2.2': ['2.2']
+      '3.3': ['3.3', '3.4']
+      '3.4': ['3.4', '3.3']
+  expected_outputs:
+  - '0.0':
+    - '0.0'
+    - '0.1'
+    - '1.0'
+    - '0.2'
+    - '1.1'
+    - '0.3'
+    - '1.3'
+    - '2.1'
+    - '2.0'
+    '0.1':
+    - '0.1'
+    - '0.2'
+    - '1.1'
+    - '0.0'
+    - '0.3'
+    - '1.3'
+    - '2.1'
+    - '1.0'
+    - '2.0'
+    '0.2':
+    - '0.2'
+    - '0.3'
+    - '0.1'
+    - '1.3'
+    - '1.1'
+    - '0.0'
+    '0.3':
+    - '0.3'
+    - '1.3'
+    - '0.2'
+    - '0.1'
+    '1.0':
+    - '1.0'
+    - '1.1'
+    - '2.0'
+    - '0.0'
+    - '2.1'
+    - '0.1'
+    - '0.2'
+    '1.1':
+    - '1.1'
+    - '2.1'
+    - '1.0'
+    - '0.1'
+    - '2.0'
+    - '0.0'
+    - '0.2'
+    '1.3':
+    - '1.3'
+    - '0.3'
+    - '0.2'
+    '2.0':
+    - '2.0'
+    - '2.1'
+    - '1.0'
+    - '1.1'
+    - '0.1'
+    - '0.0'
+    '2.1':
+    - '2.1'
+    - '2.0'
+    - '1.1'
+    - '1.0'
+    - '0.1'
+  - '0.0':
+    - '0.0'
+    - '0.1'
+    - '1.0'
+    - '1.1'
+    '0.1':
+    - '0.1'
+    - '1.1'
+    - '0.0'
+    - '1.0'
+    '1.0':
+    - '1.0'
+    - '1.1'
+    - '0.0'
+    - '0.1'
+    '1.1':
+    - '1.1'
+    - '1.0'
+    - '0.1'
+    - '0.0'
+    '2.2':
+    - '2.2'
+    '3.3':
+    - '3.3'
+    - '3.4'
+    '3.4':
+    - '3.4'
+    - '3.3'
+  assertions: equals
+- function_name: get_unique_islands
+  description: >
+    Returns the unique islands within a dictionary that has 
+    positions as keys and values as islands. The first 
+    position key with the unique island is used.
+  inputs_values:
+  - islands: 
+      '0.0': ['0.0', '0.1', '1.0', '0.2', '1.1', '0.3', '1.3', '2.1', '2.0']
+      '0.1': ['0.1', '0.2', '1.1', '0.0', '0.3', '1.3', '2.1', '1.0', '2.0']
+      '0.2': ['0.2', '0.3', '0.1', '1.3', '1.1', '0.0']
+      '0.3': ['0.3', '1.3', '0.2', '0.1']
+      '1.0': ['1.0', '1.1', '2.0', '0.0', '2.1', '0.1', '0.2']
+      '1.1': ['1.1', '2.1', '1.0', '0.1', '2.0', '0.0', '0.2']
+      '1.3': ['1.3', '0.3', '0.2']
+      '2.0': ['2.0', '2.1', '1.0', '1.1', '0.1', '0.0']
+      '2.1': ['2.1', '2.0', '1.1', '1.0', '0.1']
+  - islands: 
+      '0.0': ['0.0', '0.1', '1.0', '1.1']
+      '0.1': ['0.1', '1.1', '0.0', '1.0']
+      '1.0': ['1.0', '1.1', '0.0', '0.1']
+      '1.1': ['1.1', '1.0', '0.1', '0.0']
+      '2.2': ['2.2']
+      '3.3': ['3.3', '3.4']
+      '3.4': ['3.4', '3.3']
+  expected_outputs:
+  - '0.0': 
+    - '0.0'
+    - '0.1'
+    - '1.0'
+    - '0.2'
+    - '1.1'
+    - '0.3'
+    - '1.3'
+    - '2.1'
+    - '2.0'
+  - '0.0': ['0.0', '0.1', '1.0', '1.1']
+    '2.2': ['2.2']
+    '3.3': ['3.3', '3.4']
+  assertions: equals

@@ -1,30 +1,20 @@
 #!usr/bin/env python3
 
 from typing import Any, List
-from dataclasses import dataclass, asdict
-import yaml
+import dataclasses as dc
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 from functions.algorithms.linked_list import app as linked_list_algorithms
 from functions.algorithms.linked_list.app import LinkedList, Node
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   items: List[Any] | None = None
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
   linked_list: LinkedList = None
@@ -53,19 +43,20 @@ async def reverse_linked_list(linked_list: LinkedList) -> LinkedList:
 
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output: 
-      reversed_items: {data.reversed_items}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'reversed_items': data.reversed_items}
 
 
-async def main(request: Request) -> models.Response:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  items: List[Any] | None = None
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data.linked_list = await linked_list_algorithms.main(
     values=data.body.items)

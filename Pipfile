@@ -21,6 +21,7 @@ requests-toolbelt = "*"
 bs4 = "*"
 pyjwt = "*"
 cryptography = "*"
+asgiref = "*"
 
 [dev-packages]
 pytest = "*"

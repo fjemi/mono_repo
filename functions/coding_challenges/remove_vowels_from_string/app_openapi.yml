@@ -24,37 +24,19 @@ paths:
                   string: world
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                modified_string: string
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        string: test
-                      output: 
-                        vowelless_string: tst
+                    modified_string: tst
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        string: hello
-                      output: 
-                        vowelless_string: hll
+                    modified_string: hll
                 'Example 3':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        string: world
-                      output:
-                        vowelless_string: wrld
+                    modified_string: wrld

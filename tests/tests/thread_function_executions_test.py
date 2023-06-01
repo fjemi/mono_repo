@@ -1,5 +1,5 @@
 from time import time
-from dataclasses import dataclass, asdict
+import dataclasses as dc
 from typing import List, Dict, Any, Callable
 import sys
 import pytest
@@ -11,7 +11,7 @@ from app import get_module_function
 from tests.thread_function_executions_resources import app as test_resources
 
 
-@dataclass
+@dc.dataclass
 class Tests:
   test_description: str | None = None
   case_descriptions: List[Dict[str, str]] | Dict[str, str] | None = None
@@ -78,7 +78,7 @@ def test_case_main_args_data_data() -> None:
     # Result should be correct type
     assert type(result).__name__ == 'Data'
     # Result should have correct values
-    result = asdict(result)
+    result = dc.asdict(result)
     assert result == tests.expected_results[i]
 
 
@@ -123,7 +123,7 @@ def test_case_main_args_data_dict() -> None:
     # Result should be the correct type
     assert type(result).__name__ == 'Data'
     # Result should have the correct fields and values
-    result = asdict(result)
+    result = dc.asdict(result)
     assert result == tests.expected_results[i]
 
 
@@ -167,7 +167,7 @@ def test_case_main_args_data_none() -> None:
     # Result should be of the correct type
     assert type(result).__name__ == 'Data'
     # Result should have the correct fields and values
-    result = asdict(result)
+    result = dc.asdict(result)
     assert result == tests.expected_results[i]
 
 
@@ -236,11 +236,11 @@ def test_setup_data() -> None:
     # Result should be of the correct type
     assert type(result).__name__ == 'Data'
     # Result should have the correct fields and values
-    result = asdict(result)
+    result = dc.asdict(result)
     assert result == tests.expected_results[i]
 
 
-def test_convert_data_fields_to_lists() -> None:
+def test_convert_datafields_to_lists() -> None:
   tests = '''
     test_description: Should format the dataclass by converting non-list field
       values to lists
@@ -301,7 +301,7 @@ def test_convert_data_fields_to_lists() -> None:
     # Result should be of the correct type
     assert type(result).__name__ == 'Data'
     # Result should have the correct fields and values
-    result = asdict(result)
+    result = dc.asdict(result)
     assert result == tests.expected_results[i]
 
 

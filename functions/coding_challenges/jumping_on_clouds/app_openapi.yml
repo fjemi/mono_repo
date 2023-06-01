@@ -21,41 +21,28 @@ paths:
                   clouds: [0, 0, 0, 0, 1, 0]
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                jumps: array
+                count: number
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        clouds: [0, 1, 0, 0, 0, 0, 1, 0]
-                      output: 
-                        jumps:
-                          n: 4
-                          values:
-                            0: [2]
-                            2: [3, 4]
-                            4: [5]
-                            5: [7]
-                            7: []
+                    count: 4
+                    jumps:
+                      0: [2]
+                      2: [3, 4]
+                      4: [5]
+                      5: [7]
+                      7: []
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        clouds: [0, 0, 0, 0, 1, 0]
-                      output: 
-                        jumps:
-                          n: 3
-                          values:
-                            0: [1, 2]
-                            2: [3]
-                            3: [5]
-                            5: []
+                    count: 3
+                    jumps:
+                      0: [1, 2]
+                      2: [3]
+                      3: [5]
+                      5: []

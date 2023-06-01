@@ -16,7 +16,8 @@ paths:
               type: string
               services:
               - name: string
-                parameters: anyValue
+                parameters: 
+                  AnyValue: {}
                 parse_response: str
               chain: bool
             examples:
@@ -83,70 +84,49 @@ paths:
                   parameters: null
                   parse_response: 
                   - Functions
-
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                response: object
               examples:
                 'S3 - List Buckets':
                   value: |
-                    code: 200
-                    data:
                     - Buckets.Name: [
                         ${S3_BUCKET},
                         ...
                       ]
-                    status: OK
                 'S3 - List Bucket Objects':
                   value: |
-                    code: 200
-                    data:
                     - Contents.Key: [ ... ]
-                    status: OK
                 'S3 - Put Object':
                   value: |
-                    code: 200
-                    data:
                     - ResponseMetadata.HTTPStatusCode: 200
-                    status: OK
                 'S3 - Create Bucket':
                   value: |
-                    code: 200
-                    data:
                     - ResponseMetadata.HTTPHeaders.location: / ...
-                    status: OK
                 'S3 - Delete Bucket':
                   value: |
-                    code: 200
-                    data:
                     - ResponseMetadata.HTTPStatusCode: 204
-                    status: OK
                 'Lambda - List Functions':
                   value: |
-                    code: 200
-                    data:
                     - Functions: [ ... ]
-                    status: OK
         500:
-          description: Internal Error
+          description: Internal Server Error
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                detail:
+                  Code: string
+                  Message: string
               examples:
                 'ECR - Create Repository That Already Exists':
                   value: |
-                    - code: 500
-                      data:
-                        error: 
-                          Code: RepositoryAlreadyExistsException
-                          Message: ...
-                        service: ecr.create_repository
-                      status: error
+                    detail: 
+                      Code: RepositoryAlreadyExistsException
+                      Message: ...
         

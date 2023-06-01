@@ -30,52 +30,27 @@ paths:
                   root: [1,2,2]
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                output: bool
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        root: [1,2,2,3,4,4,3]
-                      output: false
+                    output: false
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        root: [1,2,2,null,3,null,3]
-                      output: true
+                    output: true
                 'Example 3':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        root: [1]
-                      output: true
+                    output: true
                 'Example 4':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        root: [1,2]
-                      output: false
+                    output: false
                 'Example 5':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        root: [1,2,2]
-                      output: true
+                    output: true
 
                   

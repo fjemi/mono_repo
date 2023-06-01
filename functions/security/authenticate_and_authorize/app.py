@@ -1,24 +1,25 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict, fields, make_dataclass
+import dataclasses as dc
 from typing import List
 # import time
 import json
-from fastapi import HTTPException
+from fastapi import Request, HTTPException
 
-from api import models as api_models
+from shared.format_main_arguments import app as format_main_arguments
 from functions.security.jwt import app as security_jwt
 from functions.utilities.query_db import app as query_db
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
+@dc.dataclass
 class Headers:
   authorization: str | None = None
   user_agent: str | None = None
   origin: str | None = None
 
 
-@dataclass
+@dc.dataclass
 class Body:
   authenticate: bool = True
   required_roles: List[str] | None = None
@@ -26,13 +27,13 @@ class Body:
   token_type: str = 'jwt'
 
 
-@dataclass
+@dc.dataclass
 class Token:
   value: str | None = None
   payload: security_jwt.Payload | None = None
 
 
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
   headers: Headers | None = None
@@ -44,14 +45,14 @@ class Data:
   call_method: str = 'module'
 
 
-@dataclass
+@dc.dataclass
 class DataClass:
   # Generic dataclass type hint
   ...
 
 
 async def process_request_attribute(
-  request: api_models.Request,
+  request: Request,
   attribute: str,
   data_class: DataClass,
 ) -> Data:
@@ -62,50 +63,24 @@ async def process_request_attribute(
 
   attribute = getattr(request.data, attribute)
 
-  for _field in fields(data):
-    if not hasattr(attribute, _field.name):
+  for field in dc.fields(data):
+    if not hasattr(attribute, field.name):
       continue
-    value = getattr(attribute, _field.name)
+    value = getattr(attribute, field.name)
     if value is None:
       continue
-    setattr(data, _field.name, value)
-  return data
-
-
-async def process_request(request: api_models.Request) -> Data:
-  attributes = {
-    'headers': Headers,
-    # 'cookie': Cookie,
-    'body': Body,
-  }
-  store = {}
-  for key, value in attributes.items():
-    store[key] = await process_request_attribute(
-      request=request,
-      attribute=key,
-      data_class=value,
-    )
-  data = Data(**store)
-  data.call_method = 'api'
-  return data
-
-
-async def process_main_arguments(_locals: dict) -> Data:
-  data = _locals['data']
-  ignore_arguments = ['data']
-  for key, value in _locals.items():
-    conditions = [
-      key in ignore_arguments,
-      value is None,
-    ]
-    if sum(conditions) != 0:
-      continue
-    setattr(data, key, value)
+    setattr(data, field.name, value)
   return data
 
 
 async def get_jwt_token_and_payload(data: Data) -> Data:
   token = data.headers.authorization
+  if not token:
+    raise HTTPException(
+      status_code=401,
+      detail='no authorization header',
+    )
+  
   token = token.replace(data.body.authentication_type, '')
   token = token.strip()
   payload = await security_jwt.main(
@@ -122,7 +97,7 @@ TOKEN_TYPE = {
 
 
 async def get_token_and_payload(data: Data) -> Data:
-  if not data.headers.authorization:
+  if not hasattr(data.headers, 'authorization'):
     raise HTTPException(
       status_code=401,
       detail='no authorization header',
@@ -169,7 +144,7 @@ async def authorize_user(data: Data) -> Data:
 
 async def get_response(data: Data) -> Data:
   if data.call_method == 'api':
-    data.user = asdict(data.user)
+    data.user = dc.asdict(data.user)
   data = {
     'user': data.user,
     'token': data.token.value,
@@ -181,17 +156,16 @@ async def format_payload_content(data: Data) -> Data:
   content = json.loads(data.token.payload.content)
 
   for content_key, content_value in content.items():
-    store = []
-
+    fields = []
     for key, value in content_value.items():
-      data_class_field = [
+      field = [
         key,
         str,
-        field(default=value),
+        dc.field(default=value),
       ]
-      store.append(data_class_field)
+      fields.append(field)
     cls_name = content_key.title()
-    data_class = make_dataclass(cls_name=cls_name, fields=store)
+    data_class = dc.make_dataclass(cls_name=cls_name, fields=fields)
     setattr(data, content_key, data_class())
 
   data.token.payload.content = None
@@ -200,14 +174,17 @@ async def format_payload_content(data: Data) -> Data:
 
 # pylint: disable=unused-argument
 async def main(
-  request: api_models.Request | None = None,
+  request: Request | None = None,
   authenticate: bool | None = None,
   required_roles: List[str] | None = None,
   authentication_type: str | None = None,
   token_type: str | None = None,
-) -> api_models.Response:
-  data = await process_request(request=request)
-  data = await process_main_arguments(_locals=locals())
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body, 'headers': Headers},
+    main_data_class=Data,
+  )
   data = await get_token_and_payload(data=data)
   data = await format_payload_content(data=data)
   data = await authenticate_user(data=data)

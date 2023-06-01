@@ -2,7 +2,7 @@ paths:
   '/{path}/':
     get:
       tags:
-      - Development
+      - Examples
       summary: Debugging
       description:
         $ref: '#/components/examples/{path}.description'
@@ -11,11 +11,7 @@ paths:
         name: data
         required: false
         schema:
-          anyOf:
-            type: string
-            type: object
-            type: number
-            type: array
+          AnyValue: {}
         examples:
           'string':
             value: debug this
@@ -28,26 +24,20 @@ paths:
             - this
     post:
       tags:
-      - Development
+      - Examples
       summary: Debugging
       description:
         $ref: '#/components/examples/{path}.description'
       requestBody:
         content:
-          application/json:
-            schema: 
-              type: object
-            examples: 
-              'Debug This':
-                value: 
-                  debug: This
           text/plain:
-            schema:
-              type: string
-            examples:
-              'Debug This':
+            schema: 
+              string:
+              data: object
+            examples: 
+              'Debug this':
                 value: |
-                  debug: This
+                  data: Debug this
 components:
   examples:
     '{path}.description': |
@@ -56,6 +46,3 @@ components:
       debug the frontend if your browser doesn't have dev tools
       or you don't want to to navigate to another page view the
       results from `console.log()`.
-tags:
-- name: Development
-  description: Development endpoint for debugging

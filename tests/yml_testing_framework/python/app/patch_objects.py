@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, fields
+import dataclasses as dc
 from typing import Any, Callable, List, Dict
 from types import ModuleType
 import dacite
@@ -9,13 +9,13 @@ from app import get_module_at_path
 from app import error_handler
 
 
-@dataclass(slots=True)
+@dc.dataclass(slots=True)
 class Tree:
   parent_object: object | Dict = None
   child_object_name: str = None
 
 
-@dataclass(slots=True)
+@dc.dataclass(slots=True)
 class Patch:
   object_name: str | None = None
   return_value: Any | None = None
@@ -23,11 +23,11 @@ class Patch:
   side_effect: List | Dict | None = None
 
 
-@dataclass(slots=True)
+@dc.dataclass(slots=True)
 class Data:
-  modules: Dict[str, ModuleType] = field(default_factory=lambda: {})
-  module_paths: List[str] | str = field(default_factory=lambda: [])
-  patches: List[Patch] | Patch = field(default_factory=lambda: [])
+  modules: Dict[str, ModuleType] = dc.field(default_factory=lambda: {})
+  module_paths: List[str] | str = dc.field(default_factory=lambda: [])
+  patches: List[Patch] | Patch = dc.field(default_factory=lambda: [])
 
 
 SETUP_DATA = {
@@ -42,7 +42,7 @@ def setup_data(data: Data | dict) -> Data:
   '''Returns a dataclass for different inputs into the main function'''
   cases = {
     isinstance(data, dict) is True: 'dict',
-    hasattr(data, '__dataclass_fields__') is True: 'dataclass',
+    hasattr(data, '__dataclassfields__') is True: 'dataclass',
     data is None: 'NoneType',
   }
   _case = cases[1]
@@ -61,14 +61,14 @@ def convert_single_item_to_list(data: Data) -> Data:
   '''Converts fields with single values into a list containing the single item
   to facilitate processing down stream'''
   exclude = ['modules']
-  for dataclass_field in fields(data):
-    if dataclass_field.name in exclude:
+  for dataclassfield in dc.fields(data):
+    if dataclassfield.name in exclude:
       continue
-    value = getattr(data, dataclass_field.name)
+    value = getattr(data, dataclassfield.name)
     _case = isinstance(value, list)
     function = IS_LIST[_case]
     value = function(value=value)
-    setattr(data, dataclass_field.name, value)
+    setattr(data, dataclassfield.name, value)
   return data
 
 

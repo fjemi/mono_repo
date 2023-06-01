@@ -1,34 +1,24 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List, Dict
 from math import sqrt
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   points: List[List[int]] | None = None
   k: int= 0
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body | None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
-  distances_from_origin: Dict[float, List[int]] = field(default_factory=lambda: {})
-  closest_points: List[List[int]] = field(default_factory=lambda: [])
+  distances_from_origin: Dict[float, List[int]] = dc.field(default_factory=lambda: {})
+  closest_points: List[List[int]] = dc.field(default_factory=lambda: [])
 
 
 async def get_distance_between_two_points(
@@ -71,19 +61,21 @@ async def get_closest_points(
   return store
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output:
-      points: {data.closest_points}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'points': data.closest_points}
 
 
-async def main(request: Request) -> models.Response:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  points: List[List[int]] | None = None,
+  k: int | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data.distances_from_origin = await get_distances_from_origin(
     points=data.body.points,

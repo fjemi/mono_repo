@@ -2,19 +2,19 @@ import dotenv
 from os import path
 import os
 import yaml
-from dataclasses import dataclass, field, make_dataclass
+import dataclasses as dc
 from typing import Dict, Any, List
 import inspect
 
 # from app import error_handler
 
 
-@dataclass
+@dc.dataclass
 class Env:
   pass
 
 
-@dataclass
+@dc.dataclass
 class Data:
   file_path: str = None
   yml_path: str = None
@@ -97,9 +97,9 @@ def get_variable_from_environment(environment: dict) -> dict:
 def convert_environment_dict_to_class(environment: dict) -> Env:
   fields = []
   for key, value in environment.items():
-    data_class_field = [key, str, field(default=value)]
-    fields.append(data_class_field)
-  env = make_dataclass(
+    data_classfield = [key, str, dc.field(default=value)]
+    fields.append(data_classfield)
+  env = dc.make_dataclass(
     'Env',
     fields
   )

@@ -1,4 +1,4 @@
-from dataclasses import dataclass, field, fields
+import dataclasses as dc
 from os import path
 from typing import List, Dict
 from time import time
@@ -10,28 +10,28 @@ from shared.get_environment import app as get_environment
 # from shared.error_handler import app as error_handler
 
 
-ENV = get_environment.main(f'module_path: {__file__}')
+ENV = get_environment.main(module_path=__file__)
 URL = 'https://raw.githubusercontent.com/maxbergmark/sudoku-solver/master/data-sets/all_17_clue_sudokus.txt'
 
 
-@dataclass
+@dc.dataclass
 class FilePaths:
   inputs: str | None = None
   grids: str | None = None
   outputs: str | None = None
 
 
-@dataclass
+@dc.dataclass
 class Benchmark:
   total_time_s: float = 0
   count: int = 0
   average_time_s: float = 0
 
 
-@dataclass
+@dc.dataclass
 class Data:
   url: str = URL
-  data_path: str = field(default_factory=lambda: ENV.DATA_PATH)
+  data_path: str = dc.field(default_factory=lambda: ENV.DATA_PATH)
   file_paths: FilePaths | None = None
   n: int = 9
   benchmark: Benchmark | None = None
@@ -43,10 +43,10 @@ class Store:
 
 def set_file_paths(data: Data) -> Data:
   file_paths = FilePaths()
-  for _field in fields(file_paths):
-    file_path = f'sudoku/{_field.name}.txt'
+  for field in dc.fields(file_paths):
+    file_path = f'sudoku/{field.name}.txt'
     file_path = path.join(data.data_path, file_path)
-    setattr(file_paths, _field.name, file_path)
+    setattr(file_paths, field.name, file_path)
   data.file_paths = file_paths
   return data
 

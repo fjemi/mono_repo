@@ -26,31 +26,20 @@ paths:
                   time_s: 10
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                printed_messages: 
+                  n: number
+                  values: object
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        logs:
-                        - [1, 'foo']
-                        - [2, 'bar']
-                        - [3, 'foo']
-                        - [8, 'bar']
-                        - [10, 'foo']
-                        - [11, 'foo']
-                        time_s: 10
-                      output: 
-                        printed_messages:
-                          n: 3
-                          values:
-                            bar: [2]
-                            foo: [1, 11]
+                    printed_messages:
+                      n: 3
+                      values:
+                        bar: [2]
+                        foo: [1, 11]
                             

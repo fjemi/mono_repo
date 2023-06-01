@@ -1,46 +1,36 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List, Dict
 from math import floor
 from copy import deepcopy
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
+@dc.dataclass
 class Transformation:
   sequence: str | List[str] | None = None
-  words: List[str] = field(default_factory=lambda: [])
+  words: List[str] = dc.field(default_factory=lambda: [])
 
 
-@dataclass 
-class Body(models.Body):
+@dc.dataclass
+class Body:
   begin_word: str = ''
   end_word: str = ''
   word_list: List[str] | None = None
 
 
-@dataclass
-class Data(models.Data):
+@dc.dataclass
+class Data:
   body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: Data | None = None
-
-
-@dataclass
-class ModuleData:
-  body: Body | None = None
-  transformations: List[str] | Dict[int, List[List[str]]] = field(default_factory=lambda: [])
+  transformations: List[str] | Dict[int, List[List[str]]] = dc.field(default_factory=lambda: [])
   shortest_transformation: int = 0
   stay_in_loop: bool = True
 
 
-async def pre_processing(data: ModuleData) -> ModuleData:
+async def pre_processing(data: Data) -> Data:
   # No possible transformation sequence possible
   # if end word not in list of available words
   if data.body.end_word not in data.body.word_list:
@@ -171,26 +161,31 @@ async def process_transformations(
   return store
 
 
-async def get_response(data: ModuleData) -> models.Response:
+async def get_response(data: Data) -> dict:
   n = data.shortest_transformation
   values = []
   if n != 0:
     values = data.transformations[n]
 
-  data = f'''
-    input: {asdict(data.body)}
-    output:
-      shortest_transformation: 
-        n: {n}
-        values: {values}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
+  data = {
+    'shortest_transformations': values,
+    'count': n,
+  }
   return data
-  
 
-async def main(request: Request) -> models.Response:
-  data = ModuleData(body=request.data.body)
+
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  begin_word: str | None = None,
+  end_word: str | None = None,
+  word_list: List[str] | None = None
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data = await pre_processing(data=data)
   data.transformations = await build_out_transformations(

@@ -27,48 +27,25 @@ paths:
                   string: 2[abc]3[cd]ef
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
-                $ref: '#/components/schemas/OK/text_plain'
+                type: string
+                decompressed_string: string
               examples:
                 'Example 0':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      inputs: 
-                        string: 3[abc]4[ab]c
-                      outputs: 
-                        decompressed_string: abcabcabcababababc
+                    decompressed_string: abcabcabcababababc
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      inputs: 
-                        string: 3[a2[c]]
-                      outputs: 
-                        decompressed_string: aaabcbc
+                    decompressed_string: aaabcbc
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input: 
-                        string: 3[a2[c]]
-                      output: 
-                        decompressed_string: accaccacc
+                    decompressed_string: accaccacc
                 'Example 3':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input: 
-                        string: 2[abc]3[cd]ef
-                      output: 
-                        decompressed_string: abcabccdcdcdef
+                    decompressed_string: abcabccdcdcdef
 components:
   examples:
     '{path}.description': |

@@ -1,22 +1,31 @@
 
 
-from dataclasses import dataclass, field
+import dataclasses as dc
 from os import path, makedirs
 from shelve import DbfilenameShelf
+import json as JSON
 import zlib
 from urllib.request import urlopen
+from fastapi import Request
 
-from api import models
 from shared.get_environment import app as get_environment
-# from shared.get_request_form_data import app as get_form_data
+from shared.get_persistent_storage import app as get_persistent_storage
+from shared.format_main_arguments import app as format_main_arguments
 from functions.wrappers.aws import app as aws_wrapper
 
 
-ENV = get_environment.main(f'module_path: {__file__}')
+ENV = get_environment.main(module_path=__file__)
 THIS_FILE_PATH = __file__
+PERSISTENT_STORAGE = None
 
 
-@dataclass
+@dc.dataclass
+class DataClass:
+  # Generic dataclass type hint
+  ...
+
+
+@dc.dataclass
 class Storage:
   this_file_path = THIS_FILE_PATH
   persistent: DbfilenameShelf | None = None
@@ -25,13 +34,49 @@ class Storage:
   directory: str = ENV.DATA_PATH
 
 
-@dataclass
+@dc.dataclass
+class Form:
+  json: str | None = None
+  binary: bytes | None = None
+
+
+@dc.dataclass
 class Data:
+  form: Form | None = None
+  storage: Storage | None = None
   content: str | None = None
-  form: models.Form | None = None
-  storage: Storage = field(default_factory=lambda: Storage())
-  response: models.Response = field(
-    default_factory=lambda: models.Response())
+  response: dict | None = None
+
+
+async def format_form_json(form_json: str) -> DataClass:
+  form_json = JSON.loads(form_json)
+  fields = []
+  for key, value in form_json.items():
+    value_type = type(value).__name__
+    field = [
+      key,
+      value_type,
+      dc.field(default=value)
+    ]
+    fields.append(field)
+  form_json = dc.make_dataclass(cls_name='JSON', fields=fields)
+  form_json = form_json()
+  return form_json
+
+
+async def format_form_binary(form_binary: bytes):
+  content = await form_binary.read()
+  return content
+
+
+async def set_persistent_storage() -> DbfilenameShelf:
+  global PERSISTENT_STORAGE
+
+  if PERSISTENT_STORAGE:
+    return PERSISTENT_STORAGE.storage
+
+  PERSISTENT_STORAGE = await get_persistent_storage.main()
+  return PERSISTENT_STORAGE.storage
 
 
 async def add_chunk_to_persistent_storage(data: Data) -> Data:
@@ -41,7 +86,7 @@ async def add_chunk_to_persistent_storage(data: Data) -> Data:
 
   chunks = data.storage.persistent[file_name]
   chunk = f'chunk_{data.form.json.chunk_i}'
-  chunks[chunk] = data.form.binary.content
+  chunks[chunk] = data.form.binary
   data.storage.persistent[file_name] = chunks
   return data
 
@@ -127,21 +172,25 @@ async def save_content_to_file_system(data: Data) -> bool:
   return True
 
 
+
+
+
 async def save_content_to_s3(data: Data) -> bool:
   key = '{folder}/chunk_{file_name}'.format(
     folder=data.storage.folder,
     file_name=data.form.json.file_name,
   )
-  services = f'''
-    - name: s3.put_object
-      parameters:
-        Bucket: {data.storage.s3_bucket}
-        Body: {data.content}
-        Key: {key}
-      parse_response:
-      - ResponseMetadata.HTTPStatusCode
+  service = f'''
+    client: s3
+    method: put_object
+    parameters:
+      Bucket: {data.storage.s3_bucket}
+      Form: {data.content}
+      Key: {key}
+    parse_response:
+    - ResponseMetadata.HTTPStatusCode
   '''
-  response = aws_wrapper.main(services=services)
+  response = aws_wrapper.main(service=service)
   return response.request_response
 
 
@@ -151,7 +200,7 @@ SAVE_CONTENT = {
 }
 
 
-async def save_content_to_final_destination(data: Data) -> bool:
+async def save_content_to_final_destination(data: Data) -> dict:
   if data.content is None:
     return False
   function = SAVE_CONTENT[data.form.json.location]
@@ -159,26 +208,37 @@ async def save_content_to_final_destination(data: Data) -> bool:
   return result
 
 
-async def get_response(data) -> models.Response:
-  response_data = {
+async def get_response(data) -> dict:
+  response = {
     'message': 'Chunk saved to persistent storage',
     'chunk': data.form.json.chunk_i,
     'file_name': data.form.json.file_name,
   }
   if data.content is not None:
     message = f'Chunks combined and file saved to {data.form.json.location}'
-    response_data['message'] = message
-    del response_data['chunk']
-  response = models.Response(data=response_data)
+    response['message'] = message
+    del response['chunk']
+
   return response
 
 
+# pylint: disable=unused-argument
 async def main(
-  request: 'Request',
-  persistent_storage: DbfilenameShelf,
+  json: str | None = None,
+  binary: bytes | None = None,
+  request: Request | None = None,
 ) -> dict:
-  data = Data(form=request.data.form)
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'form': Form},
+    main_data_class=Data,
+  )
+  data.form.json = await format_form_json(form_json=data.form.json)
+  data.form.binary = await format_form_binary(form_binary=data.form.binary)
+
+  persistent_storage = await set_persistent_storage()
   data.storage = Storage(persistent=persistent_storage)
+
   data = await add_chunk_to_persistent_storage(data=data)
   data.content = await combined_chunks(data=data)
   data = await remove_chunks(data=data)
@@ -187,8 +247,8 @@ async def main(
     content=data.content,
     read_as=data.form.json.read_as,
   )
+
   data = await set_final_storage(data=data)
-  result = await save_content_to_final_destination(data=data)
+  await save_content_to_final_destination(data=data)
   data.response = await get_response(data=data)
   return data.response
-  

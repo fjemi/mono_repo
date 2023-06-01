@@ -1,0 +1,138 @@
+resources:
+- title: Search a 2D Matrix II
+  url: https://leetcode.com/problems/search-a-2d-matrix-ii/
+- function_name: target_not_in_edge
+  description: |
+    Case where the target is not in a partition edge or corner;
+    do nothing and return null
+  inputs:
+    values:
+    - target: null
+      edge: null
+      values: null
+      matrix: null
+    - target: target_0
+      edge: edge_0
+      values: values_0
+      matrix: matrix_0
+  expected_outputs:
+  - null
+  - null
+  assertions: equals
+- function_name: find_target_at_corners
+  description: > 
+    Returns the matrix position for a corner of an edge, where
+    the position has a value equal to the target
+  inputs:
+    values:
+    - target: 0
+      edge: ['0.0', '0.0']
+      values: [0, 1]
+      matrix: null
+    - target: 2
+      edge: ['0.0', '0.1']
+      values: [0, 1]
+      matrix: null
+    - target: 3
+      edge: ['2.0', '0.0']
+      values: [0, 1]
+      matrix: null
+  expected_outputs:
+  - [0, 0]
+  - [0, 1]
+  - [2, 0]
+  assertions:
+- function_name: find_target_between_edges
+  description: >
+    Case where the target may be within the positions between the
+    two corners of an edge. Returns the position if it's value in
+    the matrix equals the target, otherwise null.
+  inputs:
+    values:
+    - target: 0
+      edge: [[0, 0], [0, 3]]
+      values: null
+      matrix: [1, 0, 1, 1]
+    - target: 0
+      edge: [[0, 0], [3, 0]]
+      values: null
+      matrix: 
+      - 1
+      - 1
+      - 0
+      - 1
+    - target: 2
+      edge: [[0, 0], [0, 3]]
+      values: null
+      matrix: [1, 0, 1, 1]
+  expected_outputs:
+  - [1, 0]
+  - [2, 0]
+  - null
+  assertions: equals
+- function_name: find_target_position
+  description: >
+    Returns the matrix position on a partition edge where the 
+    position's value is equal to the target
+  inputs:
+    values:
+    - data:
+        edges:
+        - [[0, 0], [0, 1]]
+        - [[0, 0], [0, 0]]
+        - [[1, 0], [1, 0]]
+        - [[1, 1], [1, 1]]
+        - [[2, 1], [2, 1]]
+        - [[2, 0], [2, 0]]
+        matrix:
+        - [0, 0]
+        - [0, 0]
+        - [0, 1]
+        target: 1
+        edges:
+        - [[0, 1], [0, 2]]
+        - [[0, 3], [0, 3]]
+        - [[0, 0], [0, 1]]
+        matrix:
+        - [0, 0, 2, 0]
+        target: 2
+  inputs_cast_as: 
+    data: Data
+  expected_outputs:
+  - target_position: [2, 1]
+  - target_position: [0, 2]
+  assertions:
+  - has_values
+  - type: Data
+- function_name: main
+  description: >
+    Orchestrates the execution of the other functons within the
+    module
+  inputs:
+    values:
+    - matrix:
+      - [1, 4, 7, 11, 15]
+      - [2, 5, 8, 12, 19]
+      - [3, 6, 9, 16, 22]
+      - [10, 13, 14, 17, 24]
+      - [18, 21, 23, 26, 30]
+      target: 5
+    - matrix:
+      - [1, 4, 7, 11]
+      - [2, 5, 8, 19]
+      - [3, 6, 9, 22]
+      - [10, 13, 17, 24]
+      target: 12
+    - matrix:
+      - [1, 4, 7]
+      - [2, 5, 8]
+      - [3, 6, 9]
+      - [10, 13, 17]
+      target: 5
+  expected_outputs:
+  - target_position: [1, 1]
+  - target_position: null
+  - target_position: [1, 1]
+  assertions:
+  - has_values
+  - type: Data

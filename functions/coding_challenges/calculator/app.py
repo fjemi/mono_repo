@@ -1,27 +1,28 @@
 #!usr/bin/env python3
 
 from typing import List, Any, Dict, Callable
-from dataclasses import dataclass, fields
+import dataclasses as dc
 import os
 from runpy import run_path
 import yaml
 from fastapi.templating import Jinja2Templates
+from fastapi import Request
 
-from api import models as api_models
+from shared.format_main_arguments import app as format_main_arguments
 from shared.get_environment import app as get_environment
 
 THIS_MODULE_PATH = __file__
-ENV = get_environment.main({'module_path': THIS_MODULE_PATH})
+ENV = get_environment.main(module_path=THIS_MODULE_PATH)
 
 FUNCTIONS = None
 
 
-@dataclass
+@dc.dataclass
 class Body:
   operations: List[dict] | List[str] | dict | str | None = None
 
 
-@dataclass
+@dc.dataclass
 class Operation:
   name: str | None = None
   inputs: List[int | float | List] | None = None
@@ -29,7 +30,7 @@ class Operation:
   chain: bool = False
 
 
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
   results: List[Operation] | None = None
@@ -58,13 +59,13 @@ async def get_functions(
 async def process_arguments_request_call(_locals: dict) -> Data:
   request = _locals['request'].data.body
   data = Data(body=Body())
-  for _field in fields(data.body):
-    if not hasattr(request, _field.name):
+  for field in dc.fields(data.body):
+    if not hasattr(request, field.name):
       continue
-    value = getattr(request, _field.name)
+    value = getattr(request, field.name)
     if value is None:
       continue
-    setattr(data.body, _field.name, value)
+    setattr(data.body, field.name, value)
   return data
 
 
@@ -97,7 +98,7 @@ async def process_main_arguments(_locals: dict) -> Data:
 
 
 async def handle_get_request(
-  request: api_models.Request,
+  request: Request,
   functions: Dict[str, Callable],
 ) -> Data:
   # _case = hasattr(request.data.query_params, 'name')
@@ -113,7 +114,7 @@ async def handle_get_request(
   )
 
   # function_list = list(functions.keys())
-  # data = json.dumps(asdict(request.data))
+  # data = json.dumps(dc.asdict(request.data))
   template = template.TemplateResponse(
     'index.html',
     context={
@@ -125,16 +126,16 @@ async def handle_get_request(
 
 
 async def process_request_body(
-  request: api_models.Request,
+  request: Request,
 ) -> Data:
   body = Body()
-  for _field in fields(body):
-    if not hasattr(request.data.body, _field.name):
+  for field in dc.fields(body):
+    if not hasattr(request.data.body, field.name):
       continue
-    value = getattr(request.data.body, _field.name)
+    value = getattr(request.data.body, field.name)
     if value is None:
       continue
-    setattr(body, _field.name, value)
+    setattr(body, field.name, value)
   data = Data(body=body)
   return data
 
@@ -164,14 +165,14 @@ async def process_operations(
   return data
 
 
-async def get_response(data: Data) -> api_models.Response | Jinja2Templates:
+async def get_response(data: Data) -> dict | Jinja2Templates:
   data = data.results
-  data = api_models.Response(data=data)
+  data = dict(data=data)
   return data
 
 
 async def handle_post_request(
-  request: api_models.Request,
+  request: Request,
   functions: Dict[str, Callable],
 ) -> Data:
   data = await process_request_body(request=request)
@@ -180,7 +181,7 @@ async def handle_post_request(
     functions=functions,
   )
   # data = await get_response(data=data)
-  data = api_models.Response(data=data.results)
+  data = dict(data=data.results)
   return data
 
 
@@ -191,8 +192,8 @@ REQUEST_HANDLER = {
 
 
 async def main(
-  request: api_models.Request,
-) -> api_models.Response | Jinja2Templates:
+  request: Request,
+) -> dict | Jinja2Templates:
   functions = await get_functions()
   handler = REQUEST_HANDLER[request.method]
   data = await handler(

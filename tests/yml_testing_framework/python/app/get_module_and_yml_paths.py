@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass
+import dataclasses as dc
 from os.path import exists, splitext
 from typing import List, Any, Dict
 import dacite
 
 
-@dataclass
+@dc.dataclass
 class Data:
   py_path: str | None = None
   yml_path: str | None = None
@@ -41,7 +41,7 @@ def setup_data(data: Data | dict | str) -> Data:
   main function'''
   cases = {
     isinstance(data, dict): 'dict',
-    hasattr(data, '__dataclass_fields__'): 'dataclass',
+    hasattr(data, '__dataclassfields__'): 'dataclass',
     isinstance(data, str): 'str',
   }
   _case = cases[1]
@@ -64,16 +64,16 @@ def get_associated_path(data: str) -> str:
   return function(data=data)
 
 
-def set_missing_field_path(data: Data) -> Data:
+def set_missingfield_path(data: Data) -> Data:
   '''Returns a dataclass. Fills in missing path or yaml path for instances where
   only one of them is set'''
   fields = {'py_path': 'yml_path', 'yml_path': 'py_path'}
-  for field, associated_field in fields.items():
+  for field, associatedfield in fields.items():
     field_value = getattr(data, field)
     if field_value is not None:
       continue
-    associated_field_value = getattr(data, associated_field)
-    field_value = get_associated_path(data=associated_field_value)
+    associatedfield_value = getattr(data, associatedfield)
+    field_value = get_associated_path(data=associatedfield_value)
     setattr(data, field, field_value)
   return data
 
@@ -81,7 +81,7 @@ def set_missing_field_path(data: Data) -> Data:
 def main(data: Data | dict | str) -> Data | Any:
   '''Returns the and python and yml paths'''
   data = setup_data(data=data)
-  data = set_missing_field_path(data=data)
+  data = set_missingfield_path(data=data)
   return data
 
 

@@ -24,40 +24,22 @@ paths:
                   items: []
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                reversed_items: array
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        items: [a, b, c, d]
-                      output: 
-                        reversed_items: [d, c, b, a]
+                    reversed_items: [d, c, b, a]
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        items: [1, 2]
-                      output:
-                        reversed_items: [2, 1]
+                    reversed_items: [2, 1]
                 'Example 3':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        items: []
-                      output:
-                        reversed_items: []
+                    reversed_items: []
 components:
   examples:
     '{path}.description': |

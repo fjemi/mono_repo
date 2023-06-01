@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field
+import dataclasses as dc
 from typing import Dict, List
 import os
 import glob
@@ -12,21 +12,21 @@ from shared.get_environment import app as get_environment
 
 THIS_MODULE_PATH = __file__
 SCHEMA_FILE_SUFFIX = '_openapi.yml'
-ENV = get_environment.main({'module_path': THIS_MODULE_PATH})
+ENV = get_environment.main(module_path=THIS_MODULE_PATH)
 
 
-@dataclass
+@dc.dataclass
 class Data:
   working_directory: str = ENV.WORKDIR
   schema_file_suffix: str = SCHEMA_FILE_SUFFIX
   app_module_path: str | None = None
-  directories: List[str] = field(default_factory=lambda: ['functions'])
+  directories: List[str] = dc.field(default_factory=lambda: ['functions'])
   app_schema: dict | None = None
   route_schemas: Dict[str, dict] | None = None
   app: FastAPI | None = None
 
 
-@dataclass
+@dc.dataclass
 class Output:
   app: FastAPI | None = None
   schema: dict | None = None
@@ -82,6 +82,8 @@ def get_routes_from_schema_paths(
   store = {}
   for directory, file_paths in schema_paths.items():
     for file_path in file_paths:
+      if file_path.find('ignore') != -1:
+        continue
       i = file_path.find(directory)
       route = file_path[i:]
       route = route.split(os.sep)

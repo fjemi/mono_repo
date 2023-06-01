@@ -1,36 +1,26 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, asdict
+import dataclasses as dc
 from typing import List, Any
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 from functions.algorithms.trees import app as shared_tree
 from functions.algorithms.trees.app import Tree
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   root: List[Any] | None = None
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Branches:
   left: List[Any] | None = None
   right: List[Any] | None = None
 
 
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
   tree: Tree | None = None
@@ -45,23 +35,24 @@ async def check_if_symmetric_tree(data: Data) -> Data:
   data.output = False
   if right == left:
     data.output = True
-  print(tree.root.left, tree.root.right, sep='\n\n')
 
   return data
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output: {data.output}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'output': data.output}
 
 
-async def main(request: Request) -> Data:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  root: List[Any] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data = await check_if_symmetric_tree(data=data)
   data = await get_response(data=data)

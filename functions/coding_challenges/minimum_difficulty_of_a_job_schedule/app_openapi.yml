@@ -28,43 +28,22 @@ paths:
                   days: 3
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                minimum_difficulty: number
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        job_difficulty: [6, 5, 4, 3, 2, 1]
-                        days: 2
-                      output: 
-                        minimum_difficulty: 7
+                    minimum_difficulty: 7
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        job_difficulty: [9, 9, 9]
-                        days: 4
-                      output: 
-                        minimum_difficulty: 
+                    minimum_difficulty: 
                 'Example 3':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        job_difficulty: [9, 9, 9]
-                        days: 4
-                      output: 
-                        minimum_difficulty: 
+                    minimum_difficulty: 
 components:
   examples:
     '{path}.description': |

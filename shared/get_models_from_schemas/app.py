@@ -1,16 +1,16 @@
-from dataclasses import make_dataclass, dataclass
+import dataclasses as dc
 from typing import Dict, Any, List
 from os import path
 from copy import deepcopy
 import yaml
 
 
-@dataclass
+@dc.dataclass
 class Model:
   ...
 
 
-@dataclass
+@dc.dataclass
 class Models:
   names: List[str] | None = None
   models: List[Model] | None = None
@@ -24,7 +24,11 @@ def get_schemas(
     root = path.dirname(py_path)
     yml_path = path.join(root, 'schemas.yml')
   schemas = None
-  with open(yml_path, 'r') as file:
+  with open(
+    file=yml_path,
+    mode='r',
+    encoding='utf-8',
+  ) as file:
     yml_data = yaml.safe_load(file)
     schemas = yml_data['schemas']
   return schemas
@@ -54,8 +58,8 @@ def get_models_as_dict(schemas: Dict) -> Dict[str, Model]:
   models = {}
   for name, schema in schemas.items():
     fields = set_fields(schema=schema)
-    model = make_dataclass(
-      name, 
+    model = dc.make_dataclass(
+      name,
       fields=fields,
       slots=True,
       kw_only=True,
@@ -68,8 +72,8 @@ def get_models_as_dataclass(schemas: Dict) -> Models:
   models = Models(names=[], models=[])
   for name, schema in schemas.items():
     fields = set_fields(schema=schema)
-    model = make_dataclass(
-      name, 
+    model = dc.make_dataclass(
+      name,
       fields=fields,
       slots=True,
       kw_only=True,

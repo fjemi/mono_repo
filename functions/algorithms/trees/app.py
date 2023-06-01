@@ -1,85 +1,42 @@
 #!/usr/bin/env python3
 
 from __future__ import annotations
-from dataclasses import dataclass, fields, asdict
+import dataclasses as dc
 from typing import Any, List
+from fastapi import Request
 
-from api import models as api_models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
+@dc.dataclass
 class Node:
   value: Any | None = None
   left: Node | None = None
   right: Node | None = None
 
 
-@dataclass
+@dc.dataclass
 class Tree:
   root: Node | None = None
 
 
-@dataclass
+@dc.dataclass
 class Body:
   tree: dict | Tree | None = None
   array: List[Any] | None = None
 
 
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
-  array_n: int = 0
   call_method: str = 'module'
   result: Tree | dict | list | None = None
 
 
-@dataclass
+@dc.dataclass
 class Indices:
   left: int = 0
   right: int = 0
-
-
-async def process_call_from_api(
-  data: Data,
-  _locals: dict
-) -> Data:
-  body = Body()
-  request = _locals['request']
-
-  for attribute in fields(body):
-    if not hasattr(request.data.body, attribute.name):
-      continue
-    value = getattr(request.data.body, attribute.name)
-    if value is None:
-      continue
-    setattr(body, attribute.name, value)
-
-  data.body = body
-  return data
-
-
-async def process_call_from_module(
-  data: Data,
-  _locals: dict,
-) -> Data:
-  del _locals['request']
-  body = Body(**_locals)
-  data.body = body
-  return data
-
-
-PROCESS_MAIN_ARGUMENTS = {
-  'api': process_call_from_api,
-  'module': process_call_from_module,
-}
-
-
-async def process_main_arguments(_locals: dict) -> Data:
-  data = Data()
-  data.call_method = 'api' if _locals['request'] else 'module'
-  switcher = PROCESS_MAIN_ARGUMENTS[data.call_method]
-  data = await switcher(data=data, _locals=_locals)
-  return data
 
 
 async def get_empty_tree(*args, **kwargs) -> Tree:
@@ -180,7 +137,7 @@ async def get_response(data: Data) -> Tree | dict | list:
   if data.call_method == 'module':
     return data.result
   if data.body.array is not None:
-    data = {'tree': asdict(data.result)}
+    data = {'tree': dc.asdict(data.result)}
   elif data.body.tree is not None:
     data = {'array': data.result}
   return data
@@ -188,11 +145,17 @@ async def get_response(data: Data) -> Tree | dict | list:
 
 # pylint: disable=unused-argument
 async def main(
-  request: api_models.Request | None = None,
+  request: Request | None = None,
   array: List[Any] | None = None,
   tree: Tree | None = None,
 ) -> Tree | List[Any] | None:
-  data = await process_main_arguments(_locals=locals())
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={
+      'body': Body,
+    },
+    main_data_class=Data,
+  )
   object_type = 'array' if data.body.tree is None else 'tree'
   handler = CONVERSION_HANDLER[object_type]
   data = await handler(data=data)

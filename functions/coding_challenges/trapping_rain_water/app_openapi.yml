@@ -24,43 +24,23 @@ paths:
                   height: [1, 3, 2, 4, 1, 3, 1, 4, 5, 2, 2, 1, 4, 2, 2]
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                total: number
+                trapped_rain: array
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        height: [0,1,0,2,1,0,1,3,2,1,2,1]
-                      output: 
-                        trapped_rain:
-                          amount: 6
-                          values: [1, 1, 2, 1, 0, 1]
+                    total: 6
+                    trapped_rain: [1, 1, 2, 1, 0, 1]
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        height: [4,2,0,3,2,5]
-                      output: 
-                        trapped_rain:
-                          amount: 9
-                          values: [2, 4, 1, 2]
+                    total: 9
+                    trapped_rain: [2, 4, 1, 2]
                 'Example 3':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        height: [1, 3, 2, 4, 1, 3, 1, 4, 5, 2, 2, 1, 4, 2, 2]
-                      output:
-                        trapped_rain:
-                          amount: 15
-                          values: [1, 3, 1, 3, 0, 2, 2, 3]
+                    total: 15
+                    trapped_rain: [1, 3, 1, 3, 0, 2, 2, 3]

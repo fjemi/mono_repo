@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, fields
+import dataclasses as dc
 from typing import Any
 import os
 import html
 import yaml
-from fastapi import HTTPException
+from fastapi import HTTPException, Request
 
-from api import models as api_models
 from functions.wrappers.aws import app as aws_wrapper
+from shared.format_main_arguments import app as format_main_arguments
 
 
 THIS_MODULE_DIRECTORY = os.path.dirname(__file__)
 
 
-@dataclass
+@dc.dataclass
 class Body:
   database: str | None = None
   query: str | None = None
@@ -22,75 +22,12 @@ class Body:
   text: str | None = None
 
 
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
   module_directory: str = THIS_MODULE_DIRECTORY
   call_method: str =  'module'
   result: Any | None = None
-
-
-async def process_request_from_api(
-  request: api_models.Request,
-  *args,
-  **kwargs,
-) -> Data:
-  _ = args, kwargs
-  body = Body()
-
-  for _field in fields(body):
-    if not hasattr(request.data.body, _field.name):
-      continue
-    value = getattr(request.data.body, _field.name)
-    if not value:
-      continue
-    setattr(body, _field.name, value)
-
-  data = Data(body=body, call_method='api')
-  return data
-
-
-async def process_request_from_module(
-  database: str,
-  query: str,
-  parameters: str,
-  text: str,
-  request: None = None,
-) -> Data:
-  _ = request
-  body = Body(
-    database=database,
-    query=query,
-    parameters=parameters,
-    text=text,
-  )
-  data = Data(body=body)
-  return data
-
-
-PROCESS_MAIN_ARGUMENTS = {
-  'api_call': process_request_from_api,
-  'module_call': process_request_from_module, 
-}
-
-
-async def process_main_arguments(
-  request: api_models.Request,
-  database: str,
-  query: str,
-  parameters: Any,
-  text: str,
-) -> Data:
-  cases = 'api_call' if request else 'module_call'
-  switcher = PROCESS_MAIN_ARGUMENTS[cases]
-  data = await switcher(
-    request=request,
-    database=database,
-    query=query,
-    parameters=parameters,
-    text=text,
-  )
-  return data
 
 
 async def get_query_from_path(data: Data) -> Data:
@@ -140,7 +77,7 @@ async def format_query_text(data: Data) -> Data:
     return data
 
   for key, value in data.body.parameters.items():
-    data.body.text = data.body.text.replace(f'[{key}]', value)
+    data.body.text = data.body.text.replace(f'[{key}]', str(value))
   return data
 
 
@@ -161,27 +98,22 @@ async def process_query(data: Data) -> Data:
   return data
 
 
-async def get_response(data: Data) -> Data:
-  if data.call_method == 'module':
-    data = data.result
-  elif data.call_method == 'api':
-    data = api_models.Response(data=data.result)
-  return data
+async def get_response(data: Data) -> Any:
+  return data.result
 
 
+# pylint: disable=unused-argument
 async def main(
-  request: api_models.Request | None = None,
+  request: Request | None = None,
   database: str | None = None,
   query: str | None = None,
   parameters: Any | None = None,
   text: str | None = None,
-) -> api_models.Response:
-  data = await process_main_arguments(
-    request=request,
-    database=database,
-    query=query,
-    parameters=parameters,
-    text=text,
+) -> Any:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
   )
   data = await get_query_from_path(data=data)
   data = await sanitize_query_text(data=data)

@@ -5,34 +5,36 @@
 from copy import deepcopy
 from random import randint
 from typing import List
-from dataclasses import dataclass, field
+import dataclasses as dc
 import sys
+from fastapi import Request
 
-from api import models as api_models
-from functions.security.authentication import app as authentication
+from shared.format_main_arguments import app as format_main_arguments
+from functions.security.authenticate_and_authorize import (
+  app as authenticate_and_authorize)
 
 
-@dataclass
-class Headers(api_models.Headers):
+@dc.dataclass
+class Headers:
   bearer: str | None = None
 
 
-@dataclass
-class Body(api_models.Body):
+@dc.dataclass
+class Body:
   user_id: str = 'user_00'
   guess: int | None = None
   upper_bound: int = 100
   lower_bound: int = 0
 
 
-@dataclass
+@dc.dataclass
 class State:
   upper_bound: int | None = None
   lower_bound: int | None = None
   guess: int | None = None
 
 
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
   states: List[State] | None = None
@@ -40,18 +42,18 @@ class Data:
   guessed_correctly: bool = False
 
 
-@dataclass
+@dc.dataclass
 class Bounds:
   upper: int = 100
   lower: int = 0
 
 
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
-  bounds: List[Bounds] = field(default_factory=lambda: [])
-  guesses: List[int] = field(default_factory=lambda: [])
-  messages: List[str] = field(default_factory=lambda: [])
+  bounds: List[Bounds] = dc.field(default_factory=lambda: [])
+  guesses: List[int] = dc.field(default_factory=lambda: [])
+  messages: List[str] = dc.field(default_factory=lambda: [])
   correct_guess: bool = False
 
 
@@ -149,52 +151,29 @@ def get_guess(
 #   if data.guess == data.number:
 #     return '='
 
-async def process_request_args(_locals: dict) -> Data:
-  request = _locals['request']
 
-
-
-async def process_non_request_args(_locals: dict) -> Data:
-  del _locals['request']
-  body = Body()
-  for key, value in _locals.items():
-    if value is None:
-      continue
-    setattr(body, key, value)
-  data = Data(body=body)
-  return data
-
-
-PROCESS_MAIN_ARGS = {
-  'request': process_request_args,
-  'non_request': process_non_request_args,
-}
-
-
-async def process_main_args(_locals: dict) -> Data:
-  _case = 'request' if _locals['request'] else 'non_request'
-  switcher = PROCESS_MAIN_ARGS[_case]
-  data = await switcher(_locals=_locals)
-  return data
-
-
-async def get_response(data: Data) -> api_models.Response:
+async def get_response(data: Data) -> dict:
   data = None
 
-  data = api_models.Response(data=data)
+  data = dict(data=data)
   return data
 
 
 # pylint: disable=unused-argument
-@authentication.decorator_factory(authenticate=False)
 async def main(
-  request: api_models.Request | None = None,
+  request: Request | None = None,
   user_id: str | None = None,
   guess: int | None = None,
   lower_bound: int | None = None,
   upper_bound: int | None = None,
-) -> api_models.Response:
-  data = await process_main_args(_locals=locals())
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body, 'headers': Headers},
+    main_data_class=Data,
+  )
+  request = None
+  # authenticate_and_authorize.main()
 
 
   data = await get_response(data=data)

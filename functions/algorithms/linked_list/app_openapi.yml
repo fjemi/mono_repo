@@ -3,7 +3,7 @@ paths:
     post:
       tags:
       - Algorithms
-      summary: Linked Lists Algorithms
+      summary: Linked Lists
       description: |
         Functions for working with linked lists:
         * Convert a list of items to a linked list
@@ -15,19 +15,19 @@ paths:
               type: string
               values: array[any] | null
             examples:
-              'Example 1':
+              'Array to linked list - Example 1':
                 value: |
                   values: [1, 2, 3 ,4, 5]
-              'Example 2':
+              'Array to linked list - Example 2':
                 value: |
                   values: []
-              'Example 3':
+              'Array to linked list - Example 3':
                 value: |
                   values: ['value']
-              'Example 4':
+              'Array to linked list - Example 4':
                 value: |
                   values: ['head', 'node_1', 'node_2']
-              'Example 5':
+              'Linked list to array - Example 5':
                 value: |
                   linked_list:
                     head:
@@ -41,17 +41,17 @@ paths:
                           value: 3
                         value: 2
                       value: 1
-              'Example 6':
+              'Linked list to array - Example 6':
                 value: |
                   linked_list:
                     head: null
-              'Example 7':
+              'Linked list to array - Example 7':
                 value: |
                   linked_list:
                     head:
                       next_node: null
                       value: value
-              'Example 8':
+              'Linked list to array - Example 8':
                 value: |
                   linked_list:
                     head:
@@ -67,9 +67,11 @@ paths:
           content: 
             text/plain:
               schema:
-                $ref: '#/components/schemas/OK/text_plain'
+                type: string
+                linked_list: object
+                values: array
               examples:
-                'Example 1':
+                'Array to linked list - Example 1':
                   value: |
                     linked_list:
                       head:
@@ -83,17 +85,17 @@ paths:
                             value: 3
                           value: 2
                         value: 1
-                'Example 2':
+                'Array to linked list - Example 2':
                   value: |
                     linked_list:
                       head: None
-                'Example 3':
+                'Array to linked list - Example 3':
                   value: |
                     linked_list:
                       head:
                         next_node: null
                         value: value
-                'Example 4':
+                'Array to linked list - Example 4':
                   value: |
                     linked_list:
                       head:
@@ -103,7 +105,7 @@ paths:
                             value: node_2
                           value: node_1
                         value: head
-                'Example 5':
+                'Linked list to array - Example 5':
                   value: |
                     values:
                     - 1
@@ -111,14 +113,14 @@ paths:
                     - 3
                     - 4
                     - 5
-                'Example 6':
+                'Linked list to array - Example 6':
                   value: |
                     values: []
-                'Example 7':
+                'Linked list to array - Example 7':
                   value: |
                     values:
                     - value
-                'Example 8':
+                'Linked list to array - Example 8':
                   value: |
                     values:
                     - head

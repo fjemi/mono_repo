@@ -1,39 +1,29 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from copy import deepcopy
 from typing import List, Dict
 import math
-import yaml
+from fastapi import Request
 
-from api import models
-
-
-@dataclass 
-class Body(models.Body):
-  nums1: List[int] = field(default_factory = lambda: [])
-  nums2: List[int] = field(default_factory = lambda: [])
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
-class Data(models.Data):
-  body: Body | None = None
+@dc.dataclass
+class Body:
+  nums1: List[int] = dc.field(default_factory = lambda: [])
+  nums2: List[int] = dc.field(default_factory = lambda: [])
 
 
-@dataclass
-class Request(models.Request):
-  data: Data | None = None
-
-
-@dataclass
-class ModuleData:
+@dc.dataclass
+class Data:
   body: Body | None = None
   array_copies: List[List[int]] | None = None
-  array: List[int] = field(default_factory = lambda: [])
+  array: List[int] = dc.field(default_factory = lambda: [])
   median: float | int | None = None
 
 
-async def pre_processing(data: ModuleData) -> ModuleData:
+async def pre_processing(data: Data) -> Data:
   data.array_copies = [
     deepcopy(data.body.nums1),
     deepcopy(data.body.nums2),
@@ -41,7 +31,7 @@ async def pre_processing(data: ModuleData) -> ModuleData:
   return data
 
 
-async def case_nums1_equal_nums2(data: ModuleData) -> ModuleData:
+async def case_nums1_equal_nums2(data: Data) -> Data:
   values = [
     data.body.nums1[0],
     data.body.nums2[0],
@@ -52,40 +42,40 @@ async def case_nums1_equal_nums2(data: ModuleData) -> ModuleData:
   return data
 
 
-async def case_nums1_greater_than_nums2(data: ModuleData) -> ModuleData:
+async def case_nums1_greater_than_nums2(data: Data) -> Data:
   value = data.body.nums2[0]
   data.array.append(value)
   data.body.nums2.pop(0)
   return data
 
 
-async def case_nums1_less_than_nums2(data: ModuleData) -> ModuleData:
+async def case_nums1_less_than_nums2(data: Data) -> Data:
   value = data.body.nums1[0]
   data.array.append(value)
   data.body.nums1.pop(0)
   return data
 
 
-async def case_nums1_empty(data: ModuleData) -> ModuleData:
+async def case_nums1_empty(data: Data) -> Data:
   data.array.extend(data.body.nums2)
   data.body.nums2 = []
   return data
 
 
-async def case_nums2_empty(data: ModuleData) -> ModuleData:
+async def case_nums2_empty(data: Data) -> Data:
   data.array.extend(data.body.nums1)
   data.body.nums1 = []
   return data
 
 
-async def case_nums1_and_nums2_empty(data: ModuleData) -> ModuleData:
+async def case_nums1_and_nums2_empty(data: Data) -> Data:
   return data
 
 
 async def case_nums1_and_nums2_values(
-  data: ModuleData,
+  data: Data,
   _locals: Dict = locals(),
-) -> ModuleData:
+) -> Data:
   a = data.body.nums1[0]
   b = data.body.nums2[0]
 
@@ -110,7 +100,7 @@ GET_MERGED_ARRAY= {
 }
 
 
-async def get_merged_array(data: ModuleData) -> ModuleData:
+async def get_merged_array(data: Data) -> Data:
   # Process the values of 'nums1' and 'nums2' until both arrays are empty
   while [len(data.body.nums2), len(data.body.nums1)] != [0, 0]:
     conditions = [
@@ -123,7 +113,7 @@ async def get_merged_array(data: ModuleData) -> ModuleData:
   return data
 
 
-async def post_processing(data: ModuleData) -> ModuleData:
+async def post_processing(data: Data) -> Data:
   data.body.nums1 = data.array_copies[0]
   data.body.nums2 = data.array_copies[1]
   data.array_copies = None
@@ -185,19 +175,20 @@ async def get_median(array: List[int]) -> float | int:
   result = await switcher(array=array, n=n)
   return result
 
-async def get_response(data: ModuleData) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output: 
-      median: {data.median}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'median': data.median}
 
 
-async def main(request: Request) -> models.Response:
-  data = ModuleData(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(request: Request | None = None,
+  nums1: List[int] | None = None,
+  nums2: List[int] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data = await pre_processing(data=data)
   data = await get_merged_array(data=data)

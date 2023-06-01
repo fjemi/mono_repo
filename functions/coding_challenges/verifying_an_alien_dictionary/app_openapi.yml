@@ -29,36 +29,19 @@ paths:
                   order: hlabcdefgijkmnopqrstuvwxyz
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                output: bool
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        words: 
-                        - world
-                        - worlds
-                        - row
-                        order: worldabcefghijkmnpqstuvxyz
-                      output: false
+                    output: false
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        words: 
-                        - hello
-                        - leetcode
-                        order: hlabcdefgijkmnopqrstuvwxyz
-                      output: true
+                    output: true
 components:
   examples:
     '{path}.description': |

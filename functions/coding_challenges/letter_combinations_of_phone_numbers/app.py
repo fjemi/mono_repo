@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 
-from __future__ import annotations
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List, Dict
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
 DIGIT_LETTER_MAPPING = {
@@ -20,26 +19,17 @@ DIGIT_LETTER_MAPPING = {
 }
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   digits: str | int = ''
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
-  combinations: List[str] = field(default_factory=lambda: [])
-  digit_letter_mapping: Dict[int, List[str]] = field(default_factory=lambda: DIGIT_LETTER_MAPPING)
+  combinations: List[str] = dc.field(default_factory=lambda: [])
+  digit_letter_mapping: Dict[int, List[str]] = dc.field(
+    default_factory=lambda: DIGIT_LETTER_MAPPING)
 
 
 async def case_digits_length_greater_than_equal_one(
@@ -103,19 +93,20 @@ async def get_combinations(
   return result
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output: {data.combinations}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'combinations': data.combinations}
 
 
-async def main(request: Request) -> models.Response:
-  # Pre-processing
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  digits: str | int | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data.body.digits = str(data.body.digits)
   # Processing

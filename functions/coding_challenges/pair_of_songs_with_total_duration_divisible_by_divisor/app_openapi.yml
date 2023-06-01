@@ -24,42 +24,28 @@ paths:
                   divisor: 60
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                songs: array
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        times: [30, 20, 150, 100, 40]
-                        divisor: 60
-                      output: 
-                        songs:
-                        - pairs: [30, 150]
-                          total_duration: 180
-                        - pairs: [20, 100]
-                          total_duration: 120
-                        - pairs: [20, 40]
-                          total_duration: 60
+                    songs:
+                    - pairs: [30, 150]
+                      total_duration: 180
+                    - pairs: [20, 100]
+                      total_duration: 120
+                    - pairs: [20, 40]
+                      total_duration: 60
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        times: [60, 60, 60]
-                        divisor: 60
-                      output: 
-                        songs:
-                        - pairs: [60, 60]
-                          total_duration: 120
-                        - pairs: [60, 60]
-                          total_duration: 120
-                        - pairs: [60, 60]
-                          total_duration: 120
+                    songs:
+                    - pairs: [60, 60]
+                      total_duration: 120
+                    - pairs: [60, 60]
+                      total_duration: 120
+                    - pairs: [60, 60]
+                      total_duration: 120

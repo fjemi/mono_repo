@@ -1,30 +1,20 @@
 #!usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
-from typing import List, Dict, Any
+import dataclasses as dc
+from typing import List
 from math import floor, ceil
 from copy import deepcopy
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   interval: List[int] | None = None
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body = field(default_factory=lambda: Body())
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData = field(default_factory=lambda: Data())
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
   intervals: List[List[int]] | None = None
@@ -41,12 +31,18 @@ async def case_one_number_is_zero(data: Data) -> Data:
   return data
 
 
-async def case_numbers_have_same_parity(a: int, b: int) -> List[List[int]]:
+async def case_numbers_have_same_parity(
+  a: int,
+  b: int,
+) -> List[List[int]]:
   store = [[a, b]]
   return store
 
 
-async def case_numbers_have_different_parity(a: int, b: int) -> List[List[int]]:
+async def case_numbers_have_different_parity(
+  a: int,
+  b: int,
+) -> List[List[int]]:
   store = [
     [a, 0],
     [b, 0],
@@ -55,9 +51,10 @@ async def case_numbers_have_different_parity(a: int, b: int) -> List[List[int]]:
 
 
 async def case_numbers_are_the_same_and_nonzero(
-  a: int, 
+  a: int,
   b: int,
 ) -> List[List[int]]:
+  _ = b
   if a % 2 == 0:
     store = [[0, 0]]
     return store
@@ -126,19 +123,20 @@ async def get_count_of_odd_numbers(data: Data) -> Data:
   return data
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)} 
-    output: 
-      odds: {data.odds}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  data = {'odds': data.odds}
 
 
-async def main(request: Request) -> models.Response:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  interval: List[int] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data = await format_interval(data=data)
   data = await get_count_of_odd_numbers(data=data)

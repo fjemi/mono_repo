@@ -24,32 +24,19 @@ paths:
                   budget: 7
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                max_price: number
+                prices: array
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        prices: [1, 12, 5, 111, 200, 1000, 10]
-                        budget: 50
-                      output: 
-                        max_price_combination:
-                          28: [1.5.10.12]
+                    max_price: 28
+                    prices: [1.5.10.12]
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        prices: [1, 2, 3, 4]
-                        budget: 7
-                      output: 
-                        max_price_combination:
-                          10: [1.2.3.4] 
+                    max_price: 10
+                    prices: [1.2.3.4] 

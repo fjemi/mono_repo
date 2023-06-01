@@ -1,20 +1,20 @@
-from dataclasses import dataclass, field
+import dataclasses as dc
 from typing import List, Dict, Any
 
 
-@dataclass
+@dc.dataclass
 class Cell:
   value: int = 0
   position: List[int] | None = None
 
 
-@dataclass
+@dc.dataclass
 class Data:
-  matrix: List[List[Any]] = field(default_factory=lambda: [])
-  adjacencies: Dict[str, List[Cell]] = field(default_factory=lambda: {})
-  values: List[Any] = field(default_factory=lambda: [])
-  connections: Dict[str, List] = field(default_factory=lambda: {})
-  connection_counts: Dict[str, int] = field(default_factory=lambda: {})
+  matrix: List[List[Any]] = dc.field(default_factory=lambda: [])
+  adjacencies: Dict[str, List[Cell]] = dc.field(default_factory=lambda: {})
+  values: List[Any] = dc.field(default_factory=lambda: [])
+  connections: Dict[str, List] = dc.field(default_factory=lambda: {})
+  connection_counts: Dict[str, int] = dc.field(default_factory=lambda: {})
 
 
 def get_adjacent_cells(matrix: List[List[int]], cell: List[int]) -> List[Cell]:

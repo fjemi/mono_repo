@@ -1,10 +1,10 @@
 #!usr/bin/env python3
 
-from dataclasses import dataclass, asdict, field, fields
+import dataclasses as dc
 from typing import Any, List, Dict
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 from functions.algorithms.linked_list.app import Node, LinkedList
 from functions.algorithms.linked_list import app as algorithms_linked_list
 
@@ -16,59 +16,49 @@ NAME_MAPPER = {
 }
 
 
-@dataclass
+@dc.dataclass
 class Base1:
   _list: str | LinkedList | None = None
   _linked_list: str | LinkedList | None = None
 
 
-@dataclass
+@dc.dataclass
 class Values(Base1):
   ...
 
 
-@dataclass
+@dc.dataclass
 class Names(Base1):
   ...
 
 
-@dataclass
+@dc.dataclass
 class Base2:
   one: LinkedList | Node | None = None
   two: LinkedList | Node | None = None
   merged: LinkedList | Node | None = None
 
 
-@dataclass
+@dc.dataclass
 class LinkedLists(Base2):
   ...
 
 
-@dataclass
+@dc.dataclass
 class CurrentNodes(Base2):
   ...
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   list1: List[Any] | None = None
   list2: List[Any] | None = None
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
-  name_mapper: Dict[str, str] = field(default_factory=lambda: NAME_MAPPER)
+  name_mapper: Dict[str, str] = dc.field(default_factory=lambda: NAME_MAPPER)
   linked_lists: LinkedLists | None = None
   current_nodes: CurrentNodes | None = None
   exit_loop: bool = False
@@ -98,9 +88,9 @@ async def get_linked_lists(data: Data) -> Data:
 
 async def set_current_nodes(data: Data) -> Data:
   data.current_nodes = CurrentNodes()
-  for _field in fields(data.linked_lists):
-    node = getattr(data.linked_lists, _field.name).head
-    setattr(data.current_nodes, _field.name, node)
+  for field in dc.fields(data.linked_lists):
+    node = getattr(data.linked_lists, field.name).head
+    setattr(data.current_nodes, field.name, node)
   return data
 
 
@@ -166,19 +156,21 @@ async def get_merged_list(data: Data) -> Data:
   return data
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output: 
-      merged: {data.merged_list} 
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'merged': data.merged_list}
 
 
-async def main(request: Request) -> models.Response:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  list1: List[Any] | None = None,
+  list2: List[Any] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data = await get_linked_lists(data=data)
   data = await set_current_nodes(data=data)

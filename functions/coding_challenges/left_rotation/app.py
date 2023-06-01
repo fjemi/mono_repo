@@ -1,29 +1,19 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, asdict
+import dataclasses as dc
 from typing import List, Any
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   array: List[Any] | None = None
   rotations: int = 0
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body | None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
   rotated_array: List[Any] | None = None
@@ -41,19 +31,21 @@ async def get_rotated_array(data: Data) -> List[Any]:
   return array
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output:
-      rotated_array: {data.rotated_array}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'rotated_array': data.rotated_array}
 
 
-async def main(request: Request) -> models.Response:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  body: Body | None = None,
+  rotated_array: List[Any] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data.rotated_array = await get_rotated_array(data=data)
   data = await get_response(data=data)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import ast
-from dataclasses import dataclass, field
+import dataclasses as dc
 from typing import List, Dict, Tuple, Callable, Any
 import dacite
 
@@ -18,10 +18,10 @@ FUNCTION_DEFINITION_ATTRIBUTES_MAP = {
 }
 
 
-@dataclass
+@dc.dataclass
 class Data:
   module_path: str = ''
-  function_definitions: List[Tuple[str, Callable] | List[str]] = field(
+  function_definitions: List[Tuple[str, Callable] | List[str]] = dc.field(
     default_factory=lambda: [])
   output_attributes: str | List[str] | None = None
 

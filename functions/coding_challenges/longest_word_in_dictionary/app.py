@@ -1,35 +1,25 @@
 #!/usr/bin/env python3
 
 from typing import List, Dict
-from dataclasses import dataclass, field, asdict
-from copy import deepcopy
-import yaml
+import dataclasses as dc
+# from copy import deepcopy
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   words: List[str] | None = None
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
   string: str = ''
-  words: List[str] = field(default_factory=lambda: [])
-  string_sequences: List[List[str]] = field(default_factory=lambda: [])
-  subsequences: Dict[int, List[str]] = field(default_factory=lambda: {})
+  words: List[str] = dc.field(default_factory=lambda: [])
+  string_sequences: List[List[str]] = dc.field(default_factory=lambda: [])
+  subsequences: Dict[int, List[str]] = dc.field(default_factory=lambda: {})
   n: int = 0
 
 
@@ -106,24 +96,26 @@ def subsequence_check(
   return False
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)} 
-    output: 
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
+async def get_response(data: Data) -> dict:
   return data
 
 
-async def main(request: Request) -> models.Response:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  words: List[str] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data.string_sequences = get_sequences(string=data.string)
   for word in data.words:
     word_sequences = get_sequences(string=word)
     check = subsequence_check(
-      string_sequences=data.string_sequences, 
+      string_sequences=data.string_sequences,
       word_sequences=word_sequences,
     )
     if check is False:
@@ -137,10 +129,10 @@ async def main(request: Request) -> models.Response:
 
 
 def example() -> None:
-  data = '''
+  words = '''
     string: aaabbc
   '''
-  data = main(data=data)
+  data = main(words=words)
   print(data)
 
 

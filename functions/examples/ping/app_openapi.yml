@@ -6,7 +6,7 @@ paths:
       summary: Ping the API
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             application/json:
               schema:
@@ -27,29 +27,25 @@ paths:
         content:
           application/json:
             schema: 
-              type: string
-              ping: string
+              type: 
+                nullable: true
             examples: 
               'Ping API':
                 value: {}
-          text/plain:
-            schema:
-              type: string
-              ping: string
-            examples:
-              'Ping API':
-                value: |
-                  {}
       responses:
         200:
-          text/plain:
-            schema:
-              type: string
-              ping: string
-            examples:
-              'Ping API': 
-                value: |
-                  ping: pong
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ping: 
+                    type: string
+              examples:
+                'Ping API': 
+                  value:
+                    ping: pong
 tags:
 - name: Examples
   description: Example functions

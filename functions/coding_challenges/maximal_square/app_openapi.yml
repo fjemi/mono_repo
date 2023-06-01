@@ -31,59 +31,31 @@ paths:
                   - [0]
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                largest_square: array
+                count: number
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        matrix: 
-                        - [1, 0, 1, 0, 0]
-                        - [1, 0, 1, 1, 1]
-                        - [1, 1, 1, 1, 1]
-                        - [1, 0, 0, 1, 0]
-                      output: 
-                        largest_square:
-                          n: 4
-                          indices: 
-                          - - ['1.2', '1.3', '2.2', '2.3']
-                            - ['1.3', '1.4', '2.3', '2.4']
+                    count: 4
+                    largest_square: 
+                    - - ['1.2', '1.3', '2.2', '2.3']
+                      - ['1.3', '1.4', '2.3', '2.4']
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        matrix: 
-                        - [0, 1]
-                        - [1, 0]
-                      output: 
-                        largest_square:
-                          n: 1
-                          indices:
-                          - - ['0.1']
-                            - ['1.0']
+                    count: 1
+                    largest_square:
+                    - - ['0.1']
+                      - ['1.0']
                 'Example 3':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        matrix: 
-                        - [0]
-                      output: 
-                        largest_square:
-                          n: 0
-                          indices:
-                          - - ['0.0']
-                          
+                    count: 0
+                    largest_square:
+                    - - ['0.0']         
 components:
   examples:
     '{path}.description': |

@@ -11,8 +11,7 @@ paths:
           text/plain:
             schema:
               type: string
-              scores: List[number]
-              ages: List[number]
+              prices: array
             examples:
               'Example 1':
                 value: |
@@ -22,31 +21,19 @@ paths:
                   prices: [7, 6, 4, 3, 1]
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                profit: number
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        prices: [7, 1, 5, 3, 6, 4]
-                      output:
-                        profit: 5
+                    profit: 5
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        prices: [7, 6, 4, 3, 1]
-                      output:
-                        profit: 0
+                    profit: 0
 components:
   examples:
     '{path}.description': |

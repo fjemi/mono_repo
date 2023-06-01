@@ -1,42 +1,32 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from copy import deepcopy
 from typing import List, Dict
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass 
-class Body(models.Body):
-  job_difficulty: List[int] = field(default_factory=lambda: [])
+@dc.dataclass
+class Body:
+  job_difficulty: List[int] = dc.field(default_factory=lambda: [])
   days: int = 0
 
-
-@dataclass
-class Data(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: Data | None = None
-
-@dataclass
-class ModuleData:
+@dc.dataclass
+class Data:
   body: Body | None = None
   jobs_n: int = 0
-  jobs_by_day: Dict[int, List[int]] = field(default_factory=lambda: {})
+  jobs_by_day: Dict[int, List[int]] = dc.field(default_factory=lambda: {})
   minimum_difficultly: int = 0
 
 
-async def pre_processing(data: ModuleData) -> ModuleData:
+async def pre_processing(data: Data) -> Data:
   data.jobs_n = len(data.body.job_difficulty)
   return data
 
 
-async def get_jobs_by_day(data: ModuleData) -> Dict[int, List[int]]:
+async def get_jobs_by_day(data: Data) -> Dict[int, List[int]]:
   if data.body.days > data.jobs_n:
     return -1
   if data.body.days == data.jobs_n:
@@ -71,19 +61,21 @@ async def get_minimum_difficulty(
   return minimum_difficultly
 
 
-async def get_response(data: ModuleData) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output: 
-      minimum_difficultly: {data.minimum_difficultly}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'minimum_difficultly': data.minimum_difficultly}
 
 
-async def main(request: Request) -> models.Response:
-  data = ModuleData(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  job_difficulty: List[int] | None = None,
+  days: int | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data = await pre_processing(data=data)
   data.jobs_by_day = await get_jobs_by_day(data=data)

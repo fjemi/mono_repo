@@ -1,6 +1,6 @@
 from time import time, ctime
 import threading
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 import yaml
 
 
@@ -9,16 +9,16 @@ import yaml
 STORE = []
 
 
-@dataclass 
+@dc.dataclass 
 class Time:
   start: str | float | None = None
   end: str | float | None = None
   run: str | float | None = None
 
 
-@dataclass
+@dc.dataclass
 class Data:
-  _time: Time = field(default_factory=lambda: Time())
+  _time: Time = dc.field(default_factory=lambda: Time())
   thread_name: str | None = None
 
 
@@ -34,7 +34,7 @@ def format_time(data: Data) -> str:
   data._time.run = f'{(data._time.end - data._time.start) * 1000} ms'
   data._time.start = ctime(data._time.start)
   data._time.end = ctime(data._time.end)
-  data = asdict(data)
+  data = dc.asdict(data)
   data = yaml.dump(data, indent=2)
   return data
 

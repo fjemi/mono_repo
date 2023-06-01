@@ -2,7 +2,7 @@
 
 import sys
 import pytest
-from dataclasses import dataclass
+import dataclasses as dc
 from yaml import safe_load
 from typing import Any, List, Dict
 
@@ -15,7 +15,7 @@ from tests.get_module_and_yml_paths_resources import app as test_resources
 TEST_RESOURCES_DIR = __file__.replace('app_test.py', 'test_resources')
 
 
-@dataclass
+@dc.dataclass
 class Tests:
   test_description: str | None = None
   case_descriptions: List[Dict[str, str]] | Dict[str, str] | None = None
@@ -232,7 +232,7 @@ def test_get_associated_path() -> None:
     assert result == tests.expected_results[i]
 
 
-def test_set_missing_field_path() -> None:
+def test_set_missingfield_path() -> None:
   tests = '''
     test_description: Should fill in the missing python or yaml path in a 
       `Data` object

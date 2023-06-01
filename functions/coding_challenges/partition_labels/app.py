@@ -1,52 +1,42 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
-from typing import List, Dict
+import dataclasses as dc
+from typing import List
 from copy import deepcopy
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass 
-class Body(models.Body):
+@dc.dataclass
+class Body:
   string: str = ''
 
 
-@dataclass
-class Data(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: Data | None = None
-
-
-@dataclass
+@dc.dataclass
 class Chars:
-  indices: dict = field(default_factory=lambda: {})
+  indices: dict = dc.field(default_factory=lambda: {})
   ordered: str = ''
 
 
-@dataclass
+@dc.dataclass
 class Bounds:
   lower: int = 0
   upper: int = 0
 
 
-@dataclass
+@dc.dataclass
 class Partitions:
-  indices: List[Bounds] = field(default_factory=lambda: [])
-  values: List[str] = field(default_factory=lambda: [])
-  sizes: List[int] = field(default_factory=lambda: [])
+  indices: List[Bounds] = dc.field(default_factory=lambda: [])
+  values: List[str] = dc.field(default_factory=lambda: [])
+  sizes: List[int] = dc.field(default_factory=lambda: [])
 
 
-@dataclass
-class ModuleData:
+@dc.dataclass
+class Data:
   body: Body | None = None
   chars: Chars | None = None
-  partitions: Partitions = field(default_factory=lambda: Partitions())
+  partitions: Partitions = dc.field(default_factory=lambda: Partitions())
   bounds: Bounds | None = None
 
 
@@ -67,27 +57,27 @@ async def get_ordered_chars_and_indices(string: str) -> Chars:
 
 
 async def case_lower_upper_in_bounds(
-  data: ModuleData,
+  data: Data,
   upper: int,
   lower: int
-) -> ModuleData:
+) -> Data:
   return data
 
 
 async def case_upper_in_bounds(
-  data: ModuleData,
+  data: Data,
   upper: int,
   lower: int
-) -> ModuleData:
+) -> Data:
   data.bounds.lower = lower
   return data
 
 
 async def case_lower_upper_not_in_bounds(
-  data: ModuleData,
+  data: Data,
   upper: int,
   lower: int
-) -> ModuleData:
+) -> Data:
   data.partitions.indices.append(deepcopy(data.bounds))
   data.bounds.lower = lower
   data.bounds.upper = upper
@@ -101,15 +91,15 @@ SWITCH = {
 }
 
 
-async def get_partition_indices(data: ModuleData) ->  ModuleData:
+async def get_partition_indices(data: Data) ->  Data:
   data.partitions = Partitions()
-  
+
   char = data.chars.ordered[-1]
   data.bounds = Bounds(
     upper=max(data.chars.indices[char]),
     lower=min(data.chars.indices[char]),
   )
-  
+
   for char in reversed(data.chars.ordered[:-1]):
     upper = max(data.chars.indices[char])
     lower = min(data.chars.indices[char])
@@ -125,7 +115,7 @@ async def get_partition_indices(data: ModuleData) ->  ModuleData:
 
 
 async def get_partition_strings_and_sizes(
-  partitions: Partitions, 
+  partitions: Partitions,
   string: str,
 ) -> Partitions:
   for bounds in partitions.indices:
@@ -135,21 +125,24 @@ async def get_partition_strings_and_sizes(
   return partitions
 
 
-async def get_response(data: ModuleData) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output: 
-      partitions: 
-        sizes: {data.partitions.sizes}
-        values: {data.partitions.values}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
+async def get_response(data: Data) -> dict:
+  data = {
+    'sizes': data.partitions.sizes,
+    'partitions': data.partitions.values,
+  }
   return data
 
 
-async def main(request: Request) -> models.Response:
-  data = ModuleData(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  string: str | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data.chars = await get_ordered_chars_and_indices(
     string=data.body.string)

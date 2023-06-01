@@ -1,0 +1,59 @@
+resources:
+- title: Top K Frequent Words
+  url: https://leetcode.com/problems/top-k-frequent-words
+- title: Install Numpy in Termux
+  url: https://voonze.com/install-numpy-in-termux/
+- title: '[Bug]: Unable to install python module numpy in termux'
+  url: https://github.com/termux/termux-packages/issues/10808
+- function_name:
+  description:
+  inputs_values:
+  expected_outputs:
+  assertions:
+- function_name: get_counts
+  description: Returns a dictionary with keys being unique words and values being
+    the number of occurences of the words
+  inputs_values:
+    words:
+    - [i, love, leetcode, i, love, coding]
+  expected_outputs:
+  - coding: 1
+    i: 2
+    leetcode: 1
+    love: 2
+  assertions: equals
+- function_name: process_counts
+  description: Returns a list of dot delimited counts and words as strings
+  inputs_values:
+  - counts:
+      coding: 1
+      i: 2
+      leetcode: 1
+      love: 2
+  expected_outputs:
+  - [2.love, 2.i, 1.leetcode, 1.coding]
+  assertions: equals
+- function_name: get_top_k_words
+  inputs_values:
+    - counts:
+      - 2.love
+      - 2.i
+      - 1.leetcode
+      - 1.coding
+      k: 2
+  expected_outputs:
+  - '2':
+    - i
+    - love
+  assertions: equals
+- function_name: main
+  inputs_values:
+  - words: [i, love, leetcode, i, love, coding]
+  expected_outputs:
+  - counts: null
+    k: 2
+    remove_fields: null
+    top_k_words:
+      '2':
+      - i
+      - love

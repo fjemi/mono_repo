@@ -81,7 +81,7 @@ def check_has_values(
       result = value == expected_value
       store.append(result)
 
-  if hasattr(output, '__dataclass_fields__'):
+  if hasattr(output, '__dataclassfields__'):
     for key, expected_value in expected_output.items():
       value = getattr()
       result = value == expected_value

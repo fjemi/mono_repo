@@ -1,29 +1,19 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, asdict
+import dataclasses as dc
 from typing import List, Any
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
+@dc.dataclass
 class Body:
   n: int = 0
   k: int = 0
 
 
-@dataclass
-class RequestData:
-  body: Body | None = None
-
-
-@dataclass
-class Request:
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
   chars: List[str] | None = None
@@ -79,20 +69,21 @@ async def process_permutations(
   return output
 
 
-async def get_response(data: Data) -> models.Data:
-  data.output = str(data.output)
-  data = f'''
-    input: {asdict(data.body)}
-    output: 
-      kth_permutation: {data.output}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'kth_permutation': data.output}
 
 
-async def main(request: Request) -> Data:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  n: int | None = None,
+  k: int | None = None,
+) -> Data:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data.chars = await get_chars(chars=data.chars, n=data.body.n)
   data.permutations = await get_permutations(chars=data.chars)

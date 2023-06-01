@@ -1,43 +1,33 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
 # Counts to exclude in for loop
 EXCLUDE_COUNTS = [3, 5]
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   array: List[List[int]] | None = None
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Hourglass:
-  positions: List = field(default_factory=lambda: [])
-  values: List = field(default_factory=lambda: [])
+  positions: List = dc.field(default_factory=lambda: [])
+  values: List = dc.field(default_factory=lambda: [])
   total: int = 0
 
 
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
-  start_positions: List = field(default_factory=lambda: [])
-  hourglasses: List[Hourglass] = field(default_factory=lambda: [])
+  start_positions: List = dc.field(default_factory=lambda: [])
+  hourglasses: List[Hourglass] = dc.field(default_factory=lambda: [])
   max_hourglass_total: int = 0
 
 
@@ -93,19 +83,20 @@ async def get_start_positions(data: Data) -> List[List]:
   return store
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output: 
-      hourglasses_sum: {data.max_hourglass_total}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'hourglasses_sum': data.max_hourglass_total}
 
 
-async def main(request: Request) -> models.Response:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  array: List[List[int]] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data.start_positions = await get_start_positions(data=data)
   data = await get_hourglasses_positions_and_values(data=data)

@@ -1,9 +1,9 @@
 #! /usr/bin/python3
 
-from dataclasses import dataclass, asdict
+import dataclasses as dc
 
 
-@dataclass
+@dc.dataclass
 class Data:
   ping: str = 'pong'
 
@@ -11,5 +11,5 @@ class Data:
 async def main(*args, **kwargs) -> dict:
   _ = args, kwargs
   data = Data()
-  data = asdict(data)
+  data = dc.asdict(data)
   return data

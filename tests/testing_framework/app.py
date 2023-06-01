@@ -1,11 +1,10 @@
-from dataclasses import dataclass
-from typing import Union
+import dataclasses as dc
 
 
-@dataclass
+@dc.dataclass
 class Data:
   pass
 
 
-def main(data: Union[Data, dict]) -> Data:
+def main(data: Data | dict) -> Data:
   return data

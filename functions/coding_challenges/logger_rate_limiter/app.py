@@ -1,33 +1,24 @@
 #!/usr/bin/env python3
 
 from typing import List, Dict
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   logs: List[List[str | int]] | None = None
   time_s: int = 10
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
-  stored: Dict[str, List[int]] = field(default_factory=lambda: {})
-  printed: Dict[str, List[int]] = field(default_factory=lambda: {})
+  stored: Dict[str, List[int]] = dc.field(default_factory=lambda: {})
+  printed: Dict[str, List[int]] = dc.field(default_factory=lambda: {})
   count: int = 0
 
 
@@ -90,22 +81,27 @@ async def count_printed(printed: dict) -> int:
   return count
 
 
-async def get_response(data: Data) -> models.Response:
+async def get_response(data: Data) -> dict:
   data = f'''
-    input: {asdict(data.body)}
-    output: 
-      printed_messages:
-        values: {data.printed}
-        n: {data.count}
+    printed_messages:
+      values: {data.printed}
+      n: {data.count}
   '''
   data = yaml.safe_load(data)
-  data = models.Response(data=data)
   return data
 
 
-async def main(request: Request) -> models.Response:
-  body = Body(**asdict(request.data.body))
-  data = Data(body=body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  logs: List[List[str | int]] | None = None,
+  time_s: int | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data = await get_messages_to_print(data=data)
   data.count = await count_printed(printed=data.printed)

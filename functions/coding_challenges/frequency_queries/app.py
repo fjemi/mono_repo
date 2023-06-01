@@ -1,33 +1,23 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
+@dc.dataclass
 class Body:
-  queries: List[List[int]] = field(default_factory=lambda: [])
+  queries: List[List[int]] = dc.field(default_factory=lambda: [])
 
 
-@dataclass
-class RequestData:
-  body: Body | None = None
-
-
-@dataclass
-class Request:
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
   i: int = -1
-  number_store: List = field(default_factory=lambda: [])
-  output: List = field(default_factory=lambda: [])
+  number_store: List = dc.field(default_factory=lambda: [])
+  output: List = dc.field(default_factory=lambda: [])
 
 
 async def add_number(data: Data) -> Data:
@@ -68,14 +58,8 @@ async def get_number_frequencies(data: Data) -> Data:
   return data
 
 
-async def get_response(data: Data) -> models.Data:
-  data = f'''
-    input: {asdict(data.body)}
-    output: {data.output}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'output': data.output}
 
 
 QUERY_SWITCHER = {
@@ -85,8 +69,16 @@ QUERY_SWITCHER = {
 }
 
 
-async def main(request: Request) -> Data:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  queries: List[List[int]] | None = None,
+) -> Data:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   for i, query in enumerate(data.body.queries):
     data.i = i

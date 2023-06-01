@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
 from typing import Dict, List
-from dataclasses import dataclass, fields
+import dataclasses as dc
 from copy import deepcopy
 
 from models import Base, Store
 
 
-@dataclass
+@dc.dataclass
 class Scores(Base):
   pass
 

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List, Dict
 from copy import deepcopy
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
 # Increment position to step to adjacencies
@@ -17,27 +17,17 @@ ADJACENT_STEPS = [
 ]
 
 
-@dataclass 
-class Body(models.Body):
+@dc.dataclass
+class Body:
   grid: List[List[int]] | None = None
 
 
-@dataclass
-class Data(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: Data | None = None
-
-
-@dataclass
-class ModuleData:
+@dc.dataclass
+class Data:
   body: Body | None = None
   positions: Dict[str, int] | None = None
   adjacencies: Dict[str, List[str]] | None = None
-  steps: List[List[int]] = field(default_factory=lambda: ADJACENT_STEPS)
+  steps: List[List[int]] = dc.field(default_factory=lambda: ADJACENT_STEPS)
   islands: Dict[str, List[str]] | None = None
   output: int | None = None
 
@@ -150,22 +140,25 @@ async def get_unique_islands(
   return islands_copy
 
 
-async def get_response(data: ModuleData) -> models.Response:
+async def get_response(data: Data) -> dict:
   islands = list(data.islands.values())
-  data = f'''
-    input: {asdict(data.body)}
-    output: 
-      islands: 
-        n: {data.output}
-        values: {islands}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
+  data = {
+    'count': len(islands),
+    'islands': islands,
+  }
   return data
 
 
-async def main(request: Request) -> models.Response:
-  data = ModuleData(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  grid: List[List[int]] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data.positions = await get_positions(grid=data.body.grid)
   data.adjacencies = await get_adjacencies(

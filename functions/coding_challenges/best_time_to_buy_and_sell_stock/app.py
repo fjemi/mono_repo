@@ -1,45 +1,29 @@
 #!/usr/bin/env python3
 
-from __future__ import annotations
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
+@dc.dataclass
 class Stock:
-  days: List[int] = field(default_factory=lambda: [])
-  prices: List[int] = field(default_factory=lambda: [])
+  days: List[int] = dc.field(default_factory=lambda: [])
+  prices: List[int] = dc.field(default_factory=lambda: [])
   profit: int = 0
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   prices: List[int] | None = None
   stock: Stock | None = None
 
 
-@dataclass
-class Data(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: Data | None = None
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
-  max_profit: List[Stock] = field(default_factory=lambda: [])
-
-
-SWITCH = {
-  
-}
+  max_profit: List[Stock] = dc.field(default_factory=lambda: [])
 
 
 async def check_profit_and_store_stock(
@@ -78,21 +62,23 @@ async def get_max_profit(data: Data) -> List[Stock]:
   return data
 
 
-async def get_response(data: Data) -> models.Response:
+async def get_response(data: Data) -> dict:
   stock = data.max_profit[0]
   profit = stock.profit
-  data = f'''
-    input: {asdict(data.body)}
-    output: 
-      profit: {profit}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+  return {'profit': profit}
 
 
-async def main(request: Request) -> models.Response:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  prices: List[int] | None = None,
+  stock: Stock | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data = await get_max_profit(data=data)
   data = await get_response(data=data)

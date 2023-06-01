@@ -1,35 +1,24 @@
 #!/usr/bin/env python3
 
-from __future__ import annotations
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List, Dict
 from math import sqrt
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
+@dc.dataclass
 class Body:
-  matrix: List[List[int]] = field(default_factory=lambda: [])
+  matrix: List[List[int]] = dc.field(default_factory=lambda: [])
 
 
-@dataclass
-class RequestData:
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
-  positions: Dict[str, int] = field(default_factory=lambda: {})
-  squares: Dict[str, List[List[str]]] = field(default_factory=lambda: {})
-  maximal_squares: Dict[int, List[List[str]]] = field(default_factory=lambda: {})
+  positions: Dict[str, int] = dc.field(default_factory=lambda: {})
+  squares: Dict[str, List[List[str]]] = dc.field(default_factory=lambda: {})
+  maximal_squares: Dict[int, List[List[str]]] = dc.field(default_factory=lambda: {})
 
 
 async def get_steps(
@@ -149,21 +138,24 @@ async def get_maximal_squares(squares):
   return {max_area: squares[max_area]}
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output: 
-      largest_square:
-        n: {list(data.maximal_squares.keys())[0]}
-        indices: {list(data.maximal_squares.values())}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
+async def get_response(data: Data) -> dict:
+  data = {
+    'count': list(data.maximal_squares.keys())[0],
+    'largest_squares': list(data.maximal_squares.values()),
+  }
   return data
 
 
-async def main(request: Request) -> models.Response:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  matrix: List[List[int]] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data = await pre_processing(data=data)
   data.squares = await process_squares(squares=data.squares, positions=data.positions)

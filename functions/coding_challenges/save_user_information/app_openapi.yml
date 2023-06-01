@@ -2,7 +2,7 @@ paths:
   '/{path}/':
     get:
       tags:
-      - Coding Challenges - TODO
+      - Coding Challenges
       summary: Save User Information
       description: 
         $ref: '#/components/examples/{path}.description'
@@ -20,7 +20,7 @@ paths:
                   value: <html>Example HTML Response</html>
     post:
       tags:
-      - Coding Challenges - TODO
+      - Coding Challenges
       summary: Save User Information
       description:
         $ref: '#/components/examples/{path}.description'

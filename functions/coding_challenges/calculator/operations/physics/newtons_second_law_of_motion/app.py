@@ -1,17 +1,17 @@
 #!usr/bin/env python3
 
-from dataclasses import dataclass, fields
+import dataclasses as dc
 from typing import List
 
 
-@dataclass
+@dc.dataclass
 class Inputs:
   force: float | None = None
   mass: float | None = None
   acceleration: float | None = None
 
 
-@dataclass
+@dc.dataclass
 class Data:
   inputs: Inputs | None = None
   operation: str | None = None
@@ -86,7 +86,7 @@ if __name__ == '__main__':
   # )
   # # Caculate the missing value
   # calculated_value = None
-  # for field in fields(data):
+  # for field in dc.fields(data):
   #   value = getattr(data, field.name)
   #   if value is not None:
   #     continue

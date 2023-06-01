@@ -1,34 +1,25 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List
-import yaml
+from fastapi import Request
 
-from shared.partition_matrix_into_edges import app as partition_matrix_into_edges
-from api import models
+from functions.algorithms.partition_matrix_into_edges import (
+  app as partition_matrix_into_edges)
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass 
-class Body(models.Body):
+@dc.dataclass
+class Body:
   matrix: List[List[int]] | None = None
   target: int | None = None
 
 
-@dataclass
-class Data(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: Data | None = None
-
-
-@dataclass
-class ModuleData:
+@dc.dataclass
+class Data:
   body: Body | None = None
   target_position: List[str | int] | None = None
-  edges: List[List[str]] = field(default_factory=lambda: [])
+  edges: List[List[str]] = dc.field(default_factory=lambda: [])
 
 
 async def find_target_at_corners(
@@ -89,7 +80,7 @@ FIND_TARGET_POSITION = {
 }
 
 
-async def find_target_position(data: ModuleData) -> ModuleData:
+async def find_target_position(data: Data) -> Data:
   edges_n = len(data.edges)
   for i in range(edges_n):
     edge = data.edges[i]
@@ -118,23 +109,25 @@ async def find_target_position(data: ModuleData) -> ModuleData:
   return data
 
 
-async def get_response(data: ModuleData) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output:
-      target_position: {data.target_position}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'target_position': data.target_position}
 
 
-async def main(request: Request) -> models.Response:
-  data = ModuleData(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  matrix: List[List[int]] | None = None,
+  target: int | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   m = len(data.body.matrix)
   n = len(data.body.matrix[0])
-  data.edges = partition_matrix_into_edges.main(f'shape: [{m}, {n}]')
+  data.edges = await partition_matrix_into_edges.main(shape=[m, n])
   data = await find_target_position(data=data)
   data = await get_response(data=data)
   return data

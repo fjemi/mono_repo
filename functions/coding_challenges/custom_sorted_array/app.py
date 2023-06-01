@@ -1,36 +1,26 @@
 #!usr/bin/env python3
 
 from typing import List
-from dataclasses import dataclass, asdict
+import dataclasses as dc
 from copy import deepcopy
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   numbers: List[int] | None = None
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Swaps:
   numbers: List[int] | None = None
   positions: List[List[int]] | None = None
   n: int = 0
 
 
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
   swaps: Swaps | None = None
@@ -55,19 +45,20 @@ async def sort_numbers_by_parity(swaps: Swaps) -> Swaps:
   return swaps
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)} 
-    output: 
-      swaps: {asdict(data.swaps)}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'swaps': dc.asdict(data.swaps)}
 
 
-async def main(request: Request) -> models.Response:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  numbers: List[int] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   data.swaps = Swaps(numbers=deepcopy(data.body.numbers), positions=[])
   request = None
   data.swaps = await sort_numbers_by_parity(swaps=data.swaps)

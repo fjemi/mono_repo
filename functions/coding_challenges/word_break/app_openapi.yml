@@ -16,41 +16,34 @@ paths:
             examples:
               'Example 1':
                 value: |
-                  string: catsandog
-                  word_dict: [cats, dog, sand, and, cat]
+                  string: leetcode
+                  word_dict: [leet, code]
               'Example 2':
                 value: |
                   word_dict: [apple, pen]
                   string: applepenapple
+              'Example 3':
+                value: |
+                  word_dict: [cats, dog, sand, and, cat]
+                  string: catsandog
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                segments: array
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        string: catsandog
-                        word_dict: [cats, dog, sand, and, cat]
-                      output:  
-                        sentences: []
+                    segments: [leet, code]
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        string: catsanddog
-                        word_dict: [cat, cats, and, sand, dog]
-                      output:  
-                        sentences: ['cats and dog', 'cat sand dog']
+                    segments: [apple, pen, apple]
+                'Example 3':
+                  value: |
+                    segments: []
 components:
   examples:
     '{path}.description': |

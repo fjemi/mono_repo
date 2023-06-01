@@ -32,43 +32,20 @@ paths:
                   case_sensitive: False 
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                magazine_contains_note: bool
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        magazine: ive got a lovely bunch of coconuts
-                        note: ive got some coconuts
-                      output:
-                        magazine_contains_note: false
+                    magazine_contains_note: false
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        magazine: Give me one grand today night
-                        note: give one grand today
-                        case_sensitive: True
-                      output:
-                        magazine_contains_note: false
+                    magazine_contains_note: false
                 'Example 3':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        magazine: Give me one grand today night
-                        note: give one grand today
-                        case_sensitive: False 
-                      output:
-                        magazine_contains_note: true
+                    magazine_contains_note: true
       

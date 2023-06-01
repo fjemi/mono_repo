@@ -1,92 +1,84 @@
 #!usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
-from typing import List, Union, Dict, Any
-import yaml
+import dataclasses as dc
+from typing import List, Dict, Any
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   players: List[Dict[str, int]] | Dict[str, int] | None = None
 
 
-@dataclass
-class Data(models.Data):
-  body: Body = field(default_factory=lambda: Body())
-
-
-@dataclass
-class Request(models.Request):
-  data: Data = field(default_factory=lambda: Data())
-
-
-@dataclass
+@dc.dataclass
 class Player:
   name: List[str] | None = None
   score: List[int] | None = None
 
 
-@dataclass
-class Props:
+@dc.dataclass
+class Data:
   body: Body | None = None
   players_by_scores: Dict[int, List[str]] | None = None
-  sorted_players: List[Player] = field(default_factory=lambda: [])
+  sorted_players: List[Player] = dc.field(default_factory=lambda: [])
 
 
-async def aggregate_player_scores(props: Props) -> Props:
+async def aggregate_player_scores(data: Data) -> Data:
   store = {}
-  for item in props.body.players:
+  for item in data.body.players:
     name = item['name']
     if name in store:
       store[name] += item['score']
     else:
       store[name] = item['score']
 
-  props.body.players = store
-  return props
+  data.body.players = store
+  return data
 
 
-async def get_players_by_score(props: Props) -> Props:
+async def get_players_by_score(data: Data) -> Data:
   store = {}
 
-  for player, score in props.body.players.items():
+  for player, score in data.body.players.items():
     if score not in store:
       store[score] = []
     store[score].append(player)
     store[score].sort()
 
-  props.players_by_scores = store
-  return props
+  data.players_by_scores = store
+  return data
 
 
-async def sort_players_by_scores_and_alphabetically(props: Props) -> Props:
+async def sort_players_by_scores_and_alphabetically(data: Data) -> Data:
   store = []
-  scores = props.players_by_scores.keys()
+  scores = data.players_by_scores.keys()
   for score in reversed(scores):
-    for name in props.players_by_scores[score]:
+    for name in data.players_by_scores[score]:
       store.append(dict(name=name, score=score))
-  props.sorted_players = store
-  return props
+  data.sorted_players = store
+  return data
 
 
-async def get_response(props: Props) -> models.Response:
-  props = f'''
-    input: {asdict(props.body)} 
-    output: 
-      players: {props.sorted_players}
-  '''
-  props = yaml.safe_load(props)
-  props = models.Response(data=props)
-  return props
+async def get_response(data: Data) -> dict:
+  return {'players': data.sorted_players}
 
 
-async def main(request: Request) -> models.Response:
-  props = Props(body=request.data.body)
+
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  players: List[Dict[str, int]] | Dict[str, int] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
-  props = await aggregate_player_scores(props=props)
-  props = await get_players_by_score(props=props)
-  props = await sort_players_by_scores_and_alphabetically(props=props)
-  props = await get_response(props=props)
-  return props
+  data = await aggregate_player_scores(data=data)
+  data = await get_players_by_score(data=data)
+  data = await sort_players_by_scores_and_alphabetically(data=data)
+  data = await get_response(data=data)
+  return data

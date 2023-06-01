@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List, Dict
 from copy import deepcopy
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
 # Step to neighboring positions
@@ -25,62 +25,45 @@ STEPS = {
 }
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   cities: List[List[int]] | None = None
   exclude_diagonals: bool = False
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Steps:
   horizontal: List[List[int]]
   vertical: List[List[int]]
   diagonal: List[List[int]]
 
 
-@dataclass
+@dc.dataclass
 class Shape:
   m: int = 0
   n: int = 0
 
 
-@dataclass
+@dc.dataclass
 class Connections:
   direct: Dict[str, List[str]] | None = None
   indirect: Dict[str, List[str]] | None = None
 
 
-@dataclass
+@dc.dataclass
 class Provinces:
   values: List[List[str]] | None = None
   n: int = 0
 
 
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
-  steps: Dict[str, List[List[int]]] | List[List[int]] = field(
+  steps: Dict[str, List[List[int]]] | List[List[int]] = dc.field(
     default_factory=lambda: STEPS)
   shape: Shape | None = None
   connections: Connections | None = None
   provinces: Provinces | None = None
-
-
-async def process_request(request: Request) -> Data:
-  body = Body(**asdict(request.data.body))
-  data = Data(body=body)
-  request = None
-  return data, request
 
 
 async def format_steps(
@@ -207,19 +190,25 @@ async def get_provinces(
   return provinces
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output: 
-      provinces: {asdict(data.provinces)}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {
+    'provinces': data.provinces.values,
+    'count': data.provinces.n,
+  }
 
 
-async def main(request: Request) -> models.Response:
-  data, request = await process_request(request=request)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  cities: List[List[int]] | None = None,
+  exclude_diagonals: bool | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
+  request = None
   data.steps = await format_steps(
     steps=data.steps,
     exclude_diagonals=data.body.exclude_diagonals,

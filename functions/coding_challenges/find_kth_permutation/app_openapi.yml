@@ -28,43 +28,22 @@ paths:
                   k: 1
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                kth_permutation: string
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        n: 3
-                        k: 3
-                      output:
-                        kth_permutation: '213'
+                    kth_permutation: '213'
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        n: 4
-                        k: 9
-                      output:
-                        kth_permutation: '2314'
+                    kth_permutation: '2314'
                 'Example 3':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        n: 3
-                        k: 1
-                      output:
-                        kth_permutation: '123'
+                    kth_permutation: '123'
 components:
   examples:
     '{path}.description': |

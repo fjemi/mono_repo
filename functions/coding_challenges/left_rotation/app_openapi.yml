@@ -24,31 +24,17 @@ paths:
                   rotations: 4
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                rotated_array: array
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        array: [1, 2, 3, 4, 5]
-                        rotations: 2
-                      output: 
-                        rotated_array: [3, 4, 5, 1, 2]
+                    rotated_array: [3, 4, 5, 1, 2]
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data:
-                      input:
-                        array: [1, 2, 3, 4, 5]
-                        rotations: 4
-                      output: 
-                        rotated_array: [5, 1, 2, 3, 4]
+                    rotated_array: [5, 1, 2, 3, 4]
 

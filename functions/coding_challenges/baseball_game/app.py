@@ -1,28 +1,18 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
+@dc.dataclass
 class Body:
   operations: List[str | int] | None = None
 
 
-@dataclass
-class Data:
-  body: Body = field(default_factory=lambda: Body())
-
-
-@dataclass
-class Request(models.Request):
-  data: Data = field(default_factory=lambda: Data())
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
   record: str | None = None
@@ -30,7 +20,8 @@ class Data:
 
 
 async def process_int_operation(
-  operation: int, store: List[int]
+  operation: int,
+  store: List[int],
 ) -> List[int]:
   return store + [operation]
 
@@ -82,20 +73,20 @@ async def get_total_score(record: List[int]) -> int:
   return sum(record)
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    inputs: 
-      {asdict(data.body)}
-    outputs: 
-      total_score: {data.total_score}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'total_score': data.total_score}
 
 
-async def main(request: models.Request) -> models.Response:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  operations: List[str | int] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data.record = await get_record(operations=data.body.operations)
   data.total_score = await get_total_score(record=data.record)

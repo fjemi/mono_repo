@@ -33,38 +33,16 @@ paths:
                   - [0, 0, 1, 2, 4, 0]
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                output: number
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        array: 
-                        - [1, 1, 1, 0, 0, 0]
-                        - [0, 1, 0, 0, 0, 0]
-                        - [1, 1, 1, 0, 0, 0]
-                        - [0, 0, 2, 4, 4, 0]
-                        - [0, 0, 0, 2, 0, 0]
-                        - [0, 0, 1, 2, 4, 0]
-                      output: 19
+                    output: 19
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        array:
-                        - [-9, -9, -9, 1, 1, 1] 
-                        - [0, -9, 0, 4, 3, 2]
-                        - [-9, -9, -9, 1, 2, 3]
-                        - [0, 0, 8, 6, 6, 0]
-                        - [0, 0, 0, -2, 0, 0]
-                        - [0, 0, 1, 2, 4, 0]
-                      output: 28
+                    output: 28

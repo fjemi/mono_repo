@@ -1,0 +1,614 @@
+tests:
+- function_name: get_positions_for_chars
+  description: >
+    Returns a dictionary with keys being the unique characters
+    on the board, and values being lists of the character's
+    positions on the board.
+  inputs_values:
+  - char: A
+    chars: {}
+    i: 0
+    j: 0
+  - char: B
+    chars: 
+      A: ['0.0']
+    i: 0
+    j: 1
+  - char: C
+    chars:
+      A:
+      - '0.0'
+      B:
+      - '0.1'
+    i: 0
+    j: 2
+  - char: E
+    chars:
+      A:
+      - '0.0'
+      B:
+      - '0.1'
+      C:
+      - '0.2'
+    i: 0
+    j: 3
+  - char: C
+    chars:
+      A:
+      - '0.0'
+      B:
+      - '0.1'
+      C:
+      - '0.2'
+      E:
+      - '0.3'
+    i: 1
+    j: 2
+  - char: A
+    chars:
+      A:
+      - '0.0'
+      B:
+      - '0.1'
+      C:
+      - '0.2'
+      - '1.2'
+      E:
+      - '0.3'
+    i: 2
+    j: 0
+  - char: D
+    chars:
+      A:
+      - '0.0'
+      - '2.0'
+      B:
+      - '0.1'
+      C:
+      - '0.2'
+      - '1.2'
+      E:
+      - '0.3'
+    i: 2
+    j: 1
+  - char: E
+    chars:
+      A:
+      - '0.0'
+      - '2.0'
+      B:
+      - '0.1'
+      C:
+      - '0.2'
+      - '1.2'
+      D:
+      - '2.1'
+      E:
+      - '0.3'
+    i: 2
+    j: 2
+  - char: E
+    chars:
+      A:
+      - '0.0'
+      - '2.0'
+      B:
+      - '0.1'
+      C:
+      - '0.2'
+      - '1.2'
+      D:
+      - '2.1'
+      E:
+      - '0.3'
+      - '2.2'
+    i: 2
+    j: 3
+  expected_outputs:
+  - chars:
+      A: ['0.0']
+  - chars:
+      A:
+      - '0.0'
+      B:
+      - '0.1'
+  - chars:
+      A:
+      - '0.0'
+      B:
+      - '0.1'
+      C:
+      - '0.2'
+  - chars:
+      A:
+      - '0.0'
+      B:
+      - '0.1'
+      C:
+      - '0.2'
+      E:
+      - '0.3'
+  - chars:
+      A:
+      - '0.0'
+      B:
+      - '0.1'
+      C:
+      - '0.2'
+      - '1.2'
+      E:
+      - '0.3'
+  - chars:
+      A:
+      - '0.0'
+      - '2.0'
+      B:
+      - '0.1'
+      C:
+      - '0.2'
+      - '1.2'
+      E:
+      - '0.3'
+  - chars:
+      A:
+      - '0.0'
+      - '2.0'
+      B:
+      - '0.1'
+      C:
+      - '0.2'
+      - '1.2'
+      D:
+      - '2.1'
+      E:
+      - '0.3'
+  - chars:
+      A:
+      - '0.0'
+      - '2.0'
+      B:
+      - '0.1'
+      C:
+      - '0.2'
+      - '1.2'
+      D:
+      - '2.1'
+      E:
+      - '0.3'
+      - '2.2'
+  - chars:
+      A:
+      - '0.0'
+      - '2.0'
+      B:
+      - '0.1'
+      C:
+      - '0.2'
+      - '1.2'
+      D:
+      - '2.1'
+      E:
+      - '0.3'
+      - '2.2'
+      - '2.3'
+
+  assertions: equals
+- function_name: get_positions_for_neighbors
+  description: >
+    Returns a dictionary with keys being positions on the grid, 
+    and values being position's neighbors (horizontally and
+    vertically adjacent positions). 
+  inputs_values:
+  - board:
+    - [A, B, C, E]
+    - [S, F, C, S]
+    - [A, D, E, E]
+    i: 0
+    j: 0
+    neighbor_steps:
+    - [1, 0]
+    - [-1, 0]
+    - [0, 1]
+    - [0, -1]
+    neighbors: {}
+    shape: {board_m: 3, board_n: 4}
+    word: ABCCED
+  - board:
+    - [A, B, C, E]
+    - [S, F, C, S]
+    - [A, D, E, E]
+    i: 0
+    j: 1
+    neighbor_steps:
+    - [1, 0]
+    - [-1, 0]
+    - [0, 1]
+    - [0, -1]
+    neighbors:
+      '0.0': ['0.1']
+    shape: {board_m: 3, board_n: 4}
+    word: ABCCED
+  - board:
+    - [A, B, C, E]
+    - [S, F, C, S]
+    - [A, D, E, E]
+    i: 1
+    j: 2
+    neighbor_steps:
+    - [1, 0]
+    - [-1, 0]
+    - [0, 1]
+    - [0, -1]
+    neighbors:
+      '0.0': ['0.1']
+      '0.1': ['0.2', '0.0']
+      '0.2': ['1.2', '0.3', '0.1']
+      '0.3': ['0.2']
+    shape: {board_m: 3, board_n: 4}
+    word: ABCCED
+  - board:
+    - [A, B, C, E]
+    - [S, F, C, S]
+    - [A, D, E, E]
+    i: 2
+    j: 0
+    neighbor_steps:
+    - [1, 0]
+    - [-1, 0]
+    - [0, 1]
+    - [0, -1]
+    neighbors:
+      '0.0': ['0.1']
+      '0.1': ['0.2', '0.0']
+      '0.2': ['1.2', '0.3', '0.1']
+      '0.3': ['0.2']
+      '1.2': ['2.2', '0.2']
+    shape: {board_m: 3, board_n: 4}
+    word: ABCCED
+  - board:
+    - [A, B, C, E]
+    - [S, F, C, S]
+    - [A, D, E, E]
+    i: 2
+    j: 1
+    neighbor_steps:
+    - [1, 0]
+    - [-1, 0]
+    - [0, 1]
+    - [0, -1]
+    neighbors:
+      '0.0': ['0.1']
+      '0.1': ['0.2', '0.0']
+      '0.2': ['1.2', '0.3', '0.1']
+      '0.3': ['0.2']
+      '1.2': ['2.2', '0.2']
+      '2.0': ['2.1']
+    shape: {board_m: 3, board_n: 4}
+    word: ABCCED
+  - board:
+    - [A, B, C, E]
+    - [S, F, C, S]
+    - [A, D, E, E]
+    i: 2
+    j: 2
+    neighbor_steps:
+    - [1, 0]
+    - [-1, 0]
+    - [0, 1]
+    - [0, -1]
+    neighbors:
+      '0.0': ['0.1']
+      '0.1': ['0.2', '0.0']
+      '0.2': ['1.2', '0.3', '0.1']
+      '0.3': ['0.2']
+      '1.2': ['2.2', '0.2']
+      '2.0': ['2.1']
+      '2.1': ['2.2', '2.0']
+    shape: {board_m: 3, board_n: 4}
+    word: ABCCED
+  - board:
+    - [A, B, C, E]
+    - [S, F, C, S]
+    - [A, D, E, E]
+    i: 2
+    j: 3
+    neighbor_steps:
+    - [1, 0]
+    - [-1, 0]
+    - [0, 1]
+    - [0, -1]
+    neighbors:
+      '0.0': ['0.1']
+      '0.1': ['0.2', '0.0']
+      '0.2': ['1.2', '0.3', '0.1']
+      '0.3': ['0.2']
+      '1.2': ['2.2', '0.2']
+      '2.0': ['2.1']
+      '2.1': ['2.2', '2.0']
+      '2.2': ['1.2', '2.3', '2.1']
+    shape: {board_m: 3, board_n: 4}
+    word: ABCCED
+  expected_outputs:
+  - '0.0': ['0.1']
+  - '0.0': ['0.1']
+    '0.1': ['0.2', '0.0']
+  - '0.0': ['0.1']
+    '0.1': ['0.2', '0.0']
+    '0.2': ['1.2', '0.3', '0.1']
+    '0.3': ['0.2']
+    '1.2': ['2.2', '0.2']
+  - '0.0': ['0.1']
+    '0.1': ['0.2', '0.0']
+    '0.2': ['1.2', '0.3', '0.1']
+    '0.3': ['0.2']
+    '1.2': ['2.2', '0.2']
+    '2.0': ['2.1']
+  - '0.0': ['0.1']
+    '0.1': ['0.2', '0.0']
+    '0.2': ['1.2', '0.3', '0.1']
+    '0.3': ['0.2']
+    '1.2': ['2.2', '0.2']
+    '2.0': ['2.1']
+    '2.1': ['2.2', '2.0']
+  - '0.0': ['0.1']
+    '0.1': ['0.2', '0.0']
+    '0.2': ['1.2', '0.3', '0.1']
+    '0.3': ['0.2']
+    '1.2': ['2.2', '0.2']
+    '2.0': ['2.1']
+    '2.1': ['2.2', '2.0']
+    '2.2': ['1.2', '2.3', '2.1']
+  - '0.0': ['0.1']
+    '0.1': ['0.2', '0.0']
+    '0.2': ['1.2', '0.3', '0.1']
+    '0.3': ['0.2']
+    '1.2': ['2.2', '0.2']
+    '2.0': ['2.1']
+    '2.1': ['2.2', '2.0']
+    '2.2': ['1.2', '2.3', '2.1']
+    '2.3': ['2.2']
+  assertions: equals
+- function_name: get_positions
+  descriptions: >
+    Returns position data (char positions and position neighbors)
+    for a board and word. Sets char and neighbor positions for
+    chars on the board that appear in the word
+  inputs_values:
+    board:
+    - [A, B, C, E]
+    - [S, F, C, S]
+    - [A, D, E, E]
+    neighbor_steps:
+    - [1, 0]
+    - [-1, 0]
+    - [0, 1]
+    - [0, -1]
+    shape: {board_m: 3, board_n: 4}
+    word: ABCCED
+  expected_outputs:
+    chars:
+      A: ['0.0', '2.0']
+      B: ['0.1']
+      C: ['0.2', '1.2']
+      D: ['2.1']
+      E: ['0.3', '2.2', '2.3']
+    neighbors:
+      '0.0': ['0.1']
+      '0.1': ['0.2', '0.0']
+      '0.2': ['1.2', '0.3', '0.1']
+      '0.3': ['0.2']
+      '1.2': ['2.2', '0.2']
+      '2.0': ['2.1']
+      '2.1': ['2.2', '2.0']
+      '2.2': ['1.2', '2.3', '2.1']
+      '2.3': ['2.2']
+- function_name: pre_processing
+  description: >
+    Sets char and neighbor position data for the board a
+    dataclass object.
+  inputs_values:
+  - data:
+      board:
+      - [A, B, C, E]
+      - [S, F, C, S]
+      - [A, D, E, E]
+      neighbor_steps:
+      - [1, 0]
+      - [-1, 0]
+      - [0, 1]
+      - [0, -1]
+      paths: null
+      positions: null
+      remove_fields: [remove_fields, shape, positions, neighbor_steps]
+      shape: null
+      word: ABCCED
+  inputs_cast_as:
+    data: Data
+  expected_outputs:
+  - board:
+    - [A, B, C, E]
+    - [S, F, C, S]
+    - [A, D, E, E]
+    neighbor_steps:
+    - [1, 0]
+    - [-1, 0]
+    - [0, 1]
+    - [0, -1]
+    paths: null
+    positions:
+      chars:
+        A: ['0.0', '2.0']
+        B: ['0.1']
+        C: ['0.2', '1.2']
+        D: ['2.1']
+        E: ['0.3', '2.2', '2.3']
+      neighbors:
+        '0.0': ['0.1']
+        '0.1': ['0.2', '0.0']
+        '0.2': ['1.2', '0.3', '0.1']
+        '0.3': ['0.2']
+        '1.2': ['2.2', '0.2']
+        '2.0': ['2.1']
+        '2.1': ['2.2', '2.0']
+        '2.2': ['1.2', '2.3', '2.1']
+        '2.3': ['2.2']
+    shape: {board_m: 3, board_n: 4}
+    word: ABCCED
+    assertions: has_values
+- function_name: get_tree_roots
+  description: >
+    Returns a list of the positions board whose values are equals 
+    to the first character in the word, or an empty list if no
+    such values exist.
+  inputs_values:
+  - chars:
+      A: ['0.0', '2.0']
+      B: ['0.1']
+      C: ['0.2', '1.2']
+      D: ['2.1']
+      E: ['0.3', '2.2', '2.3']
+    word: ABCCED
+  - chars:
+      B: ['0.1']
+      C: ['0.2', '1.2']
+      D: ['2.1']
+      E: ['0.3', '2.2', '2.3']
+    word: ABCCED
+  expected_outputs: 
+  - ['0.0', '2.0']
+  - []
+  assertions: equals
+- function_name: get_tree_branches
+  description: >
+    Steps through positions and neighbors to form branches or 
+    strings of pipe delimited positions that whose characters
+    form the word in order
+  inputs_values:
+  - positions:
+      chars:
+        A: ['0.0', '2.0']
+        B: ['0.1']
+        C: ['0.2', '1.2']
+        D: ['2.1']
+        E: ['0.3', '2.2', '2.3']
+      neighbors:
+        '0.0': ['0.1']
+        '0.1': ['0.2', '0.0']
+        '0.2': ['1.2', '0.3', '0.1']
+        '0.3': ['0.2']
+        '1.2': ['2.2', '0.2']
+        '2.0': ['2.1']
+        '2.1': ['2.2', '2.0']
+        '2.2': ['1.2', '2.3', '2.1']
+        '2.3': ['2.2']
+    tree_roots: ['0.0', '2.0']
+    word: ABCCED
+  - positions:
+      chars:
+        A: ['0.0', '2.0']
+        B: ['0.1']
+        C: ['0.2', '1.2']
+        D: ['2.1']
+        E: ['0.3', '2.2', '2.3']
+      neighbors:
+        '0.0': ['0.1']
+        '0.1': ['0.2', '0.0']
+        '0.2': ['1.2', '0.3', '0.1']
+        '0.3': ['0.2']
+        '1.2': ['2.2', '0.2']
+        '2.0': ['2.1']
+        '2.1': ['2.2', '2.0']
+        '2.2': ['1.2', '2.3', '2.1']
+        '2.3': ['2.2']
+    tree_roots: ['0.0', '2.0']
+    word: ABZCCED
+  expected_outputs:
+    0: ['0.0', '2.0']
+    1: [0.0|0.1]
+  assertions: equals
+- function_name: get_paths_from_tree_branchs
+  description: > 
+    Returns a list of branches with positions whose characters 
+    make up the word or an empty list if no such branches exist.
+  inputs_values:
+  - tree_branches:
+      0: ['0.0', '2.0']
+      1: [0.0|0.1]
+    word: ABZCCED                                                
+  - tree_branches:
+      0: ['0.0', '2.0']
+      1: [0.0|0.1]
+      2: [0.0|0.1|0.2]
+      3: [0.0|0.1|0.2|1.2]
+      4: [0.0|0.1|0.2|1.2|2.2]
+      5: [0.0|0.1|0.2|1.2|2.2|2.1]
+    word: ABCCED
+  expected_outputs: 
+  - []
+  - [0.0|0.1|0.2|1.2|2.2|2.1]
+  assertions: equals
+- function_name: get_paths
+  description: >
+    Returns a list of positions, as pipe delimited strings,
+    whose characters make up the word
+  inputs_values:
+  - positions:
+      chars:
+        A: ['0.0', '2.0']
+        B: ['0.1']
+        C: ['0.2', '1.2']
+        D: ['2.1']
+        E: ['0.3', '2.2', '2.3']
+      neighbors:
+        '0.0': ['0.1']
+        '0.1': ['0.2', '0.0']
+        '0.2': ['1.2', '0.3', '0.1']
+        '0.3': ['0.2']
+        '1.2': ['2.2', '0.2']
+        '2.0': ['2.1']
+        '2.1': ['2.2', '2.0']
+        '2.2': ['1.2', '2.3', '2.1']                            
+        '2.3': ['2.2']
+    word: ABCCED
+  - positions:
+      chars:
+        A: ['0.0', '2.0']
+        B: ['0.1']
+        C: ['0.2', '1.2']
+        D: ['2.1']
+        E: ['0.3', '2.2', '2.3']
+      neighbors:
+        '0.0': ['0.1']
+        '0.1': ['0.2', '0.0']
+        '0.2': ['1.2', '0.3', '0.1']
+        '0.3': ['0.2']
+        '1.2': ['2.2', '0.2']
+        '2.0': ['2.1']
+        '2.1': ['2.2', '2.0']
+        '2.2': ['1.2', '2.3', '2.1']                            
+        '2.3': ['2.2']
+    word: ABZCCED
+  expected_outputs: 
+  - [0.0|0.1|0.2|1.2|2.2|2.1]
+  - []
+- function_name: main
+  description: | 
+    Orchestrates the executes the other functions within the
+    module. Returns paths of board positions whose characters
+    form a word
+  inputs_values:
+  - board:
+    - [A, B, C, E]
+    - [S, F, C, S]
+    - [A, D, E, E] 
+    word: ABCCED
+  - board:
+    - [A, B, C, E]
+    - [S, F, C, S]
+    - [A, D, E, E] 
+    word: ABCZCED
+  inputs_cast_as: Data
+  expected_outputs:
+  - paths: [0_0, 0_1, 0_2, 1_2, 2_2, 2_1]
+  - paths: []
+  assertions: has_values

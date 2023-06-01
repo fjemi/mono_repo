@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, fields
+import dataclasses as dc
 from pathlib import Path
 from fastapi.responses import FileResponse
 
@@ -8,10 +8,10 @@ from shared.get_environment import app as get_environment
 
 
 THIS_MODULE_PATH = __file__
-ENV = get_environment.main({'module_path': THIS_MODULE_PATH})
+ENV = get_environment.main(module_path=THIS_MODULE_PATH)
 
 
-@dataclass
+@dc.dataclass
 class Data:
   filename: str = 'favicon.ico'
   directory: str = 'api.static'
@@ -19,7 +19,7 @@ class Data:
   response: FileResponse | None = None
 
 
-@dataclass
+@dc.dataclass
 class DataClass:
   ...
 
@@ -28,7 +28,7 @@ async def process_kwargs(
   data: Data,
   kwargs: dict,
 ) -> DataClass:
-  for field in fields(data):
+  for field in dc.fields(data):
     if field.name not in kwargs:
       continue
     setattr(data, field.name, kwargs[field.name])

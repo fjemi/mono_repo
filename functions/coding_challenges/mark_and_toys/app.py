@@ -1,36 +1,25 @@
 #!usr/bin/env python3
 
 from typing import List, Dict
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from copy import deepcopy
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
+@dc.dataclass
 class Body:
   budget: float | int = 0
   prices: List[float | int] | None = None
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
-  prices: List[List[int]] = field(default_factory=lambda: [])
+  prices: List[List[int]] = dc.field(default_factory=lambda: [])
   price_combinations: List[str] | None = None
-
-  max_toys_under_budget: List[float | int] = field(
+  max_toys_under_budget: List[float | int] = dc.field(
     default_factory=lambda: [])
 
 
@@ -120,22 +109,43 @@ async def aggregate_price_combinations(data: Data) -> Data:
   return data
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output: 
-      max_price_combination: {data.price_combinations} 
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
+async def get_response(data: Data) -> dict:
+  data = {
+    'max_price': list(data.price_combinations.keys())[0],
+    'prices': list(data.price_combinations.values())[0],
+  }
   return data
 
 
-async def main(request: Request) -> models.Response:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  budget: float | int | None = None,
+  prices: List[float | int] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data.prices = await filter_prices(data=data)
   data.price_combinations = await get_price_combinations(prices=data.prices)
   data = await aggregate_price_combinations(data=data)
   data = await get_response(data=data)
   return data
+
+
+async def example() -> None:
+  result = await main(
+    prices=[1, 12, 5, 111, 200, 1000, 10],
+    budget=50,
+  )
+  print(result)
+
+
+if __name__ == '__main__':
+  import asyncio
+
+
+  asyncio.run(example())

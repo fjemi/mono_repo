@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+import dataclasses as dc
 from typing import List, Any, Dict
 from os.path import exists, splitext
 from io import TextIOWrapper
@@ -6,7 +6,7 @@ import yaml
 import csv
 
 
-@dataclass
+@dc.dataclass
 class Data:
   path: str = None
   cast_as: str = 'dict'

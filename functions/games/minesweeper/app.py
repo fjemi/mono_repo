@@ -2,29 +2,29 @@
 
 import numpy as np
 import random
-from dataclasses import dataclass, field
+import dataclasses as dc
 from typing import List, Dict
 from random import randint
 
-from api import models as api_models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
+@dc.dataclass
 class Shape:
   m: int = 0
   n: int = 0
 
 
-@dataclass
+@dc.dataclass
 class Data:
   shape: Shape | None = None
   n: int = 0
   m: int = 0
-  adjacent_positions: Dict[str, List] = field(default_factory=lambda: {})
-  mines: List[int] = field(default_factory=lambda: [])
-  scores: Dict[str, int] = field(default_factory=lambda: {})
-  moves: List[List[int]] = field(default_factory=lambda: [])
-  player_score: List[int] = field(default_factory=lambda: [])
+  adjacent_positions: Dict[str, List] = dc.field(default_factory=lambda: {})
+  mines: List[int] = dc.field(default_factory=lambda: [])
+  scores: Dict[str, int] = dc.field(default_factory=lambda: {})
+  moves: List[List[int]] = dc.field(default_factory=lambda: [])
+  player_score: List[int] = dc.field(default_factory=lambda: [])
   mine_hit: bool = False
 
 

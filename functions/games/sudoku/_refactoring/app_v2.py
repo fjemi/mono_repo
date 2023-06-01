@@ -1,6 +1,6 @@
 # #!/usr/bin/env python3
 
-from dataclasses import dataclass, field
+import dataclasses as dc
 from typing import List, Dict
 from copy import deepcopy
 
@@ -16,7 +16,7 @@ from shared.error_handler import app as error_handler
 from shared.setup_data import app as setup_data
 
 
-@dataclass
+@dc.dataclass
 class Group:
   positions: Dict[str, int] | List[List[int]] | None = None
   values: Dict[str, List[int]] | List[List[int]] | None = None
@@ -24,20 +24,20 @@ class Group:
   scores: Dict[str, float] | None = None
 
 
-@dataclass
+@dc.dataclass
 class Groups:
   n: int = 0
   grid: Dict[str, int] | None = None
-  rows: Group = field(default_factory=lambda: Group())
-  columns: Group = field(default_factory=lambda: Group())
-  intersections: Group = field(default_factory=lambda: Group())
+  rows: Group = dc.field(default_factory=lambda: Group())
+  columns: Group = dc.field(default_factory=lambda: Group())
+  intersections: Group = dc.field(default_factory=lambda: Group())
   values: Dict[str, float] | None = None
 
 class Store:
   pass
 
 
-@dataclass
+@dc.dataclass
 class Data:
   grid: List[List[int | str]] | None = None
   n: int = 0
@@ -65,11 +65,11 @@ def get_intersection_positions(n: int) -> Dict[str, List[str]]:
       position = f'{i}.{j}'
       store[position] = []
       for k in _range:
-        neighboor = f'{i}.{k}'
-        store[position].append(neighboor)
-        neighboor = f'{k}.{j}'
-        if neighboor != position:
-          store[position].append(neighboor)
+        neighbor = f'{i}.{k}'
+        store[position].append(neighbor)
+        neighbor = f'{k}.{j}'
+        if neighbor != position:
+          store[position].append(neighbor)
   return store 
 
 
@@ -147,10 +147,10 @@ def get_column_values(groups: Groups) -> List[List[int]]:
 def get_intersection_values(groups: Groups) -> Dict[str, List[int]]:
   store = {}
   
-  for position, neighboors in groups.intersections.positions.items():
+  for position, neighbors in groups.intersections.positions.items():
     values = []
-    for neighboor in neighboors:
-      value = groups.grid[neighboor]
+    for neighbor in neighbors:
+      value = groups.grid[neighbor]
       values.append(value)
     store[position] = values
 

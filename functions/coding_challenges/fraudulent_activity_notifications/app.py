@@ -2,35 +2,25 @@
 
 from typing import List
 from math import floor
-from dataclasses import dataclass, field, asdict
-import yaml
+import dataclasses as dc
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
+@dc.dataclass
 class Body:
   expenditures: List[float | int] | None = None
   trailing_days: int = 0
 
 
-@dataclass
-class RequestData:
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Result:
   number: int = 0
   value: str = ''
 
 
-@dataclass
+@dc.dataclass
 class Window:
   '''
   Attributes:
@@ -39,12 +29,12 @@ class Window:
     current: Index of the current days expense
     median: The median of the trailing day expenses
   '''
-  trailing: List[float | int] = field(default_factory=lambda: [])
+  trailing: List[float | int] = dc.field(default_factory=lambda: [])
   median: float | int = 0
   current: float | int = 0
 
 
-@dataclass
+@dc.dataclass
 class Data:
   '''
   Attributes:
@@ -54,8 +44,8 @@ class Data:
     notifications: Store data resulting in a notification
   '''
   body: Body | None = None
-  windows: List[Window] = field(default_factory=lambda: [])
-  notifications: List[Window] = field(default_factory=lambda: [])
+  windows: List[Window] = dc.field(default_factory=lambda: [])
+  notifications: List[Window] = dc.field(default_factory=lambda: [])
 
 
 async def get_notifications_for_windows(data: Data) -> List[Window]:
@@ -71,24 +61,24 @@ async def get_notifications_for_windows(data: Data) -> List[Window]:
     check = data.windows[k].median * 2 <= data.windows[k].current
     if check is False:
       continue
-    # Add window to nodata = tification store
+    # Add window to nodata = notification store
     data.notifications.append(data.windows[k])
   return data
 
 
 async def calculate_median(numbers: List[float | int]) -> float | int:
-  '''Calcualte the median for a list of numbers'''
+  '''Calculate the median for a list of numbers'''
   numbers.sort()
   n = len(numbers)
 
   # Empty list of numbers
   if n == 0:
     return 0
-  # Even lengthed list of numbers
+  # Even lengthened list of numbers
   if n % 2 != 0:
     index = floor(n / 2)
     return numbers[index]
-  # Odd lengthed list of numbers
+  # Odd lengthened list of numbers
   if n % 2 == 0:
     start = floor(n / 2) - 1
     end = start + 1
@@ -101,7 +91,7 @@ async def get_trailing_windows(data: Data) -> List[Window]:
   n = len(data.body.expenditures)
   data.windows = []
   for i in range(n):
-    # Expenses betwen `i` and `j` form the trailing window
+    # Expenses between `i` and `j` form the trailing window
     j = i + data.body.trailing_days
     # No more windows
     if j >= n:
@@ -113,22 +103,24 @@ async def get_trailing_windows(data: Data) -> List[Window]:
   return data
 
 
-async def get_response(data: Data) -> models.Response:
-  props = f'''
-    input: {asdict(data.body)} 
-    output:
-      windows: {data.notifications}
-  '''
-  props = yaml.safe_load(props)
-  props = models.Response(data=props)
-  return props
+async def get_response(data: Data) -> dict:
+  return {'windows': data.notifications}
 
 
-async def main(request: Request) -> models.Response:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  expenditures: List[float | int] | None = None,
+  trailing_days: int | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data = await get_trailing_windows(data=data)
   data = await get_notifications_for_windows(data=data)
-  data.notifications = [asdict(x) for x in data.notifications]
+  data.notifications = [dc.asdict(x) for x in data.notifications]
   data = await get_response(data=data)
   return data

@@ -24,37 +24,22 @@ paths:
                   k: 4
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                top_k_words: array
+                count: number
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        words: [i, love, leetcode, i, love, coding]
-                        k: 2
-                      output: 
-                        top_k_words:
-                          n: 2 
-                          values: [i, love]
+                    top_k_words: [i, love]
+                    count: 2
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        words: [the, day, is, sunny, the, the, the, sunny, is, is] 
-                        k: 4
-                      output:
-                        top_k_words:
-                          n: 4
-                          values: [the]
+                    count: 4
+                    top_k_words: [the]
 components:
   examples:
     '{path}.description': |

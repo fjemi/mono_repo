@@ -11,8 +11,8 @@ paths:
           text/plain:
             schema:
               type: string
-              board: array[array[string]]
-              words: array[string]
+              board: array
+              word: string
             examples:
               'Example 1':
                 value: |
@@ -30,39 +30,19 @@ paths:
                   word: ABZCCED
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                paths: array
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        board:
-                        - [A, B, C, E]
-                        - [S, F, C, S]
-                        - [A, D, E, E] 
-                        word: ABCCED
-                      output:
-                        paths: [0.0|0.1|0.2|1.2|2.2|2.1]
+                    paths: [0.0|0.1|0.2|1.2|2.2|2.1]
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        board:
-                        - [A, B, C, E]
-                        - [S, F, C, S]
-                        - [A, D, E, E] 
-                        word: ABZCCED
-                      output: 
-                        paths: []
+                    paths: []
 components:
   examples:
     '{path}.description': |

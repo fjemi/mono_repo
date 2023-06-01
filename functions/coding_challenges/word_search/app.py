@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List, Dict, Any
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
 # Step to horizontal and vertical neighbors
@@ -16,40 +16,30 @@ NEIGHBOR_STEPS = [
 ]
 
 
-@dataclass
+@dc.dataclass
 class Shape:
   board_m: int = 0
   board_n: int = 0
 
 
-@dataclass
+@dc.dataclass
 class Positions:
   chars: Dict | None = None
   neighbors: Dict | None = None
 
 
-@dataclas
+@dc.dataclass
 class Body:
   board: List[List[Any]] | None = None
   word: str = ''
 
 
-@dataclass
-class RequestData:
-  body: Body | None = None
-
-
-@dataclass
-class Request:
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
-  shape: Shape | None = None
+  shape: dict | Shape | None = None
   positions: Positions | None = None
-  neighbor_steps: List[List[int]] = field(
+  neighbor_steps: List[List[int]] = dc.field(
     default_factory=lambda: NEIGHBOR_STEPS)
   paths: List[List[str]] | None = None
 
@@ -226,19 +216,21 @@ async def get_paths(
   return paths
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output:
-      paths: {data.paths}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'paths': data.paths}
 
 
-async def main(request: Request) -> models.Response:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  board: List[List[Any]] | None = None,
+  word: str = '',
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data = await pre_processing(data=data)
   data.paths = await get_paths(positions=data.positions, word=data.body.word)

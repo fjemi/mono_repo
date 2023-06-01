@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field
+import dataclasses as dc
 from os import path
 from importlib.machinery import SourceFileLoader
-from typing import Callable
+from typing import Callable, Any
+from fastapi import Request
 
-from api import models
 from shared.get_environment import app as get_environment
-from shared.setup_data import app as setup_data
+from shared.format_main_arguments import app as format_main_arguments
 
 
 THIS_MODULE_PATH = __file__
-ENV = get_environment.main(data=f'module_path: {__file__}')
+ENV = get_environment.main(module_path=THIS_MODULE_PATH)
 
 
-@dataclass
+@dc.dataclass
 class Function:
   name: str = 'main'
   module: str = 'app.py'
@@ -23,22 +23,29 @@ class Function:
   function: Callable | None = None
 
 
-@dataclass
-class Data:
-  function: Function  = None
+@dc.dataclass
+class Body:
+  function: dict | Function  = None
   import_module_path: str | None = None
-  env: models.Env = field(default_factory=lambda: ENV)
+  working_directory: str = ENV.WORKDIR
+
+
+@dc.dataclass
+class Data:
+  body: Body | None = None
+  call_method: str = 'module'
+  response: Any | None = None
 
 
 async def get_function_module_path(data: Data) -> str:
-  directory = data.env.WORKDIR
-  if data.import_module_path:
-    directory = path.dirname(data.import_module_path)
-    
-  folders = data.function.directory.split('.')
+  directory = data.body.working_directory
+  if data.body.import_module_path:
+    directory = path.dirname(data.body.import_module_path)
+
+  folders = data.body.function.directory.split('.')
   for folder in folders:
     directory = path.join(directory, folder)
-  module_path = path.join(directory, data.function.module)
+  module_path = path.join(directory, data.body.function.module)
   return module_path
 
 
@@ -50,31 +57,47 @@ async def load_function_from_module_path(
     parent_folder,
     function.module_path,
   ).load_module()
-  function.function = getattr(module, function.name)
+  function = getattr(module, function.name)
   return function
 
 
-async def main(data: Data | dict | str) -> 'Callable':
-  data = setup_data.main(data=data, data_class=Data)
-  data.function.module_path = await get_function_module_path(data=data)
-  data.function = await load_function_from_module_path(function=data.function)
-  return data.function.function
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  function: dict | Function  = None,
+  import_module_path: str | None = None,
+  working_directory: str | None = None,
+) -> Callable:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
+  data.body.function = Function(**data.body.function)
+  data.body.function.module_path = await get_function_module_path(data=data)
+  data.response = await load_function_from_module_path(
+    function=data.body.function)
+  return data.response
 
 
 async def example() -> None:
+  import yaml
+
+
   data = f'''
     function:
       name: main
       module: app.py
       directory: test_resources
-    import_module_path: {__file__}
+    import_module_path: {THIS_MODULE_PATH}
   '''
-  result = await main(data=data)
+  data = yaml.safe_load(data)
+  result = await main(**data)
   print(result)
-  
+
 
 if __name__ == '__main__':
   import asyncio
-  
-  
+
+
   asyncio.run(example())

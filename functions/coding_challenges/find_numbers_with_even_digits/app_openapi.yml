@@ -24,32 +24,19 @@ paths:
                   digits: 2
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                even_digit_nums: array
+                count: number
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        nums: [12,345,2,6,7896]
-                      output: 
-                        even_digit_nums: 
-                          values: [12, 7896]
-                          n: 2
+                    even_digit_nums: [12, 7896]
+                    count: 2
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        nums: [555,901,482,1771]
-                      output:
-                        even_digit_nums: 
-                          values: [1771]
-                          n: 1
+                    even_digit_nums: [1771]
+                    count: 1

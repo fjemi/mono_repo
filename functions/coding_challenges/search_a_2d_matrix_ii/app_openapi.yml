@@ -42,56 +42,22 @@ paths:
                 
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                target_position: array
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        matrix:
-                        - [1, 4, 7, 11, 15]
-                        - [2, 5, 8, 12, 19]
-                        - [3, 6, 9, 16, 22]
-                        - [10, 13, 14, 17, 24]
-                        - [18, 21, 23, 26, 30]
-                        target: 5
-                      output: 
-                        target_position: [1, 1]
+                    target_position: [1, 1]
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        matrix:
-                        - [1, 4, 7, 11]
-                        - [2, 5, 8, 19]
-                        - [3, 6, 9, 22]
-                        - [10, 13, 17, 24]
-                        target: 12
-                      output: 
-                        target_position: [1, 2]
+                    target_position: [1, 2]
                 'Example 3':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        matrix:
-                        - [1, 4, 7]
-                        - [2, 5, 8]
-                        - [3, 6, 9]
-                        - [10, 13, 17]
-                        target: 5
-                      output:
-                        target_position: [1, 1]
+                    target_position: [1, 1]
 components:
   examples:
     '{path}.description': |

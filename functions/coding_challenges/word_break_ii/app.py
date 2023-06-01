@@ -1,33 +1,23 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List
 from copy import deepcopy
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass 
-class Body(models.Body):
+@dc.dataclass
+class Body:
   string: str = ''
-  word_dict: List[str] = field(default_factory=lambda: [])
+  word_dict: List[str] = dc.field(default_factory=lambda: [])
 
 
-@dataclass
-class Data(models.Data):
+@dc.dataclass
+class Data:
   body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: Data | None = None
-
-
-@dataclass
-class ModuleData:
-  body: Body | None = None
-  sentences: List[str] = field(default_factory=lambda: [])
+  sentences: List[str] = dc.field(default_factory=lambda: [])
 
 
 async def build_sentence(
@@ -73,19 +63,21 @@ async def process_sentences(sentences: List[List[str]]) -> List[str]:
   return store
 
 
-async def get_response(data: ModuleData) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output:
-      sentences: {data.sentences}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'sentences': data.sentences}
 
 
-async def main(request: Request) -> models.Response:
-  data = ModuleData(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  string: str | None = None,
+  word_dict: List[str] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   data.sentences = await get_sentences(
     word_dict=data.body.word_dict,
     string=data.body.string,

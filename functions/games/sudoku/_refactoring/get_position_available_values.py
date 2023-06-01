@@ -1,13 +1,13 @@
 
 
-from dataclasses import dataclass
+import dataclasses as dc
 from typing import List, Dict
 from copy import deepcopy
 
 from models import Base
 
 
-@dataclass
+@dc.dataclass
 class Available(Base):
   pass
 

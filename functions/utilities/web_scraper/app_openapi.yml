@@ -15,51 +15,19 @@ paths:
             examples:
               'Example 1':
                 value: |
-                  sites: 
-              'Example 2':
-                value: |
-                  sites: 
-              'Example 3':
-                value: |
-                  sites: 
+                  ''
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
-                $ref: '#/components/schemas/OK/text_plain'
+                type: string
+                triplets: array
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        nums: [-1, 0, 1, 2, -1, -4]
-                      output:
-                        triplets:
-                        - [-1, -1, 2]
-                        - [-1, 0, 1]
-                'Example 2':
-                  value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        nums: [0, 1, 1]
-                      output:
-                        triplets: []
-                'Example 3':
-                  value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        nums: [0, 0, 0]
-                      ouptut:
-                        triplets: 
-                        - [0, 0, 0]
+                    ''
 components:
   examples:
     '{path}.description': |

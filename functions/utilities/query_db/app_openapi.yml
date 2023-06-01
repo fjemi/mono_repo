@@ -66,52 +66,33 @@ paths:
         200:
           description: Success
           content: 
-            text/plain:
+            application/json:
               schema:
-                type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                type: 
+                  AnyValue: {}
               examples:
-              "DynamoDB - Get a Existing User's Role":
-                value: |
-                  code: 200
-                  data:
-                  - [admin, guest, user]
-                  status: OK
-              "DynamoDB - Get a Non-Existing User's Role":
-                value: |
-                  code: 200
-                  data:
-                  - []
-                  status: OK
-              'DynamoDB - Create Table':
-                value: |
-                  code: 200
-                  data: [EXAMPLE_TABLE, CREATING]
-                  status: OK
-              'DynamoDB - Delete Table':
-                value: |
-                  code: 200
-                  data: [EXAMPLE_TABLE, DELETING]
-                  status: OK
-              'DynamoDB - Send Text as Query':
-                value: |
-                  code: 200
-                  data: [ ... ]
-                  status: OK
+                "DynamoDB - Get a Existing User's Role":
+                  value:
+                    Items.0.roles.SS:
+                    - [admin, guest, user]
+                "DynamoDB - Get a Non-Existing User's Role":
+                  value:
+                    Items.0.roles.SS:
+                    - []
+                'DynamoDB - Create Table':
+                  value: 
+                  - TableDescription.TableName: EXAMPLE_TABLE
+                  - TableDescription.TableStatus: CREATING
+                'DynamoDB - Delete Table':
+                  value: 
+                  - TableDescription.TableName: EXAMPLE_TABLE
+                  - TableDescription.TableStatus: DELETING
+                'DynamoDB - Send Text as Query':
+                  value: 
+                    AnyValue: {}
         404: 
           description: Not Found
           content: 
-            text/plain:
-              schema:
-                type: string
-                detail: string
-              examples:
-                'Database does not exist':
-                  value: |
-                    detail: '[database] does not exist'
-                'Query does not exist for database':
-                  value: |
-                    detail: '[query] does not exist for [database]'
             application/json:
               schema:
                 type: object
@@ -127,18 +108,11 @@ paths:
         500:
           description: Error
           content:
-            text/plain:
-              schema:
-                type: string
-                detail: string
-              examples:
-                'Internal Server Error':
-                  value: |
-                    detail: Internal Server Error
             application/json:
               schema:
-                type: string
-                detail: string
+                type: object
+                properties:
+                  detail: string
               examples:
                 'Internal Server Error':
                   value:

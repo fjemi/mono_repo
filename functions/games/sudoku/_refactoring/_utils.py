@@ -1,13 +1,13 @@
 
 
-from dataclasses import dataclass
+import dataclasses as dc
 from typing import Dict, List
 from math import sqrt
 
 from models import Groups
 
 
-@dataclass
+@dc.dataclass
 class Data:
   grid: List[List[int]] | Dict[str, int] | None = None
   

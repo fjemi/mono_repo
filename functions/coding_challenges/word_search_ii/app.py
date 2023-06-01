@@ -1,35 +1,26 @@
 #!/usr/bin/env python3
 
 from __future__ import annotations
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List, Dict
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   board: List[List[str]] | None = None
   words: List[str] | Dict[int, List[str]] | None = None
 
-  
-@dataclass
-class Data(models.Data):
+
+@dc.dataclass
+class Data:
   body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: Data | None = None
-
-
-@dataclass
-class ModuleData:
-  body: Body | None = None
-  values: Dict[str, str] = field(default_factory=lambda: {})
-  adjacent_positions: Dict[str, List[str]] = field(default_factory=lambda: {})
-  positions: Dict[str, str] = field(default_factory=lambda: {})
+  values: Dict[str, str] = dc.field(default_factory=lambda: {})
+  adjacent_positions: Dict[str, List[str]] = dc.field(
+    default_factory=lambda: {})
+  positions: Dict[str, str] = dc.field(default_factory=lambda: {})
 
 
 async def get_adjacent_positions(
@@ -63,7 +54,7 @@ async def get_adjacent_positions(
   return store
 
 
-async def get_positions_values_and_adjacent_positions(data: ModuleData) -> ModuleData:
+async def get_positions_values_and_adjacent_positions(data: Data) -> Data:
   board_m = len(data.body.board)
   board_n = len(data.body.board[0])
 
@@ -83,7 +74,7 @@ async def get_positions_values_and_adjacent_positions(data: ModuleData) -> Modul
   return data
 
 
-async def find_word_on_board(word: str, data: ModuleData) -> List[str]:
+async def find_word_on_board(word: str, data: Data) -> List[str]:
   char = word[0]
   # Return empty list if first char in word not on board
   if char not in data.values:
@@ -122,7 +113,7 @@ async def find_word_on_board(word: str, data: ModuleData) -> List[str]:
   return tree[-1]
 
 
-async def find_word_positions(data: ModuleData) -> ModuleData:
+async def find_word_positions(data: Data) -> Data:
   store = {}
   for word in data.body.words:
     positions = await find_word_on_board(word=word, data=data)
@@ -134,22 +125,23 @@ async def find_word_positions(data: ModuleData) -> ModuleData:
   return store
 
 
-async def get_response(data: ModuleData) -> models.Request:
-  words = list(data.body.words.keys())
-  data = f'''
-    input: 
-      board: {data.body.board}
-      words: {words}
-    output: 
-      words: {data.body.words}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  # words = list(data.body.words.keys())
+  return {'words': data.body.words}
 
 
-async def main(request: Request) -> models.Response:
-  data = ModuleData(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  board: List[List[str]] | None = None,
+  words: List[str] | Dict[int, List[str]] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
+  request = None
   data = await get_positions_values_and_adjacent_positions(data=data)
   data.body.words = await find_word_positions(data=data)
   data = await get_response(data=data)

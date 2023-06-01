@@ -11,7 +11,7 @@ paths:
           text/plain:
             schema:
               type: string
-              socks: array[number]
+              socks: array
             examples:
               'Example 1':
                 value: |
@@ -21,37 +21,24 @@ paths:
                   socks: [10, 20, 20, 10, 10, 30, 50, 10, 20]
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                matching_pairs: object
+                count: number
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        socks: [1, 2, 1, 2, 1, 3, 2]
-                      output: 
-                        matching_pairs:
-                          values: 
-                            1: 1
-                            2: 1
-                          n: 2
+                    matching_pairs:
+                      1: 1
+                      2: 1
+                    count: 2
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        socks: [10, 20, 20, 10, 10, 30, 50, 10, 20]
-                      output:
-                        matching_pairs:
-                          values: 
-                            10: 2
-                            20: 1
-                          n: 3
+                    matching_pairs:
+                      10: 2
+                      20: 1
+                    n: 3
                           

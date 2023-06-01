@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 
 from typing import Callable
-from dataclasses import dataclass
+import dataclasses as dc
 
 from app import error_handler
 
 
-@dataclass
+@dc.dataclass
 class Data:
   a: int = 0
   result: int = 0

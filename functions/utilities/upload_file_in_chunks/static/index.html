@@ -4,7 +4,6 @@
   <meta charset='UTF-8'>
   <meta name='viewport' content='width=device_width, initial-scale=1.0'>
   <title>Upload Files</title>
-  <h2>Upload File</h2>
 </head>
 <body>
   <input 
@@ -13,13 +12,16 @@
     value='{{ data }}'
   >
   <div id='header'>
-      
+    <h2>Upload File</h2>
   </div>
-  <div id='paragraphs'>
-    <p><input type='file' id='file'></p>
+
+  <p>
+  <div id='form'>
+    <p><input type='file' id='file' required="true"></p>
     <p><button id='upload'>Upload</button></p>
     <p><small id='status'></small></p>
   </div>  
+  </p>
 
   <script
     type='text/javascript'

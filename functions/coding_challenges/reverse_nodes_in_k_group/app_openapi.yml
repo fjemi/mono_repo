@@ -11,7 +11,7 @@ paths:
           text/plain:
             schema:
               type: string
-              head: array[number]
+              head: array
               k: number
             examples:
               'Example 1':
@@ -24,45 +24,19 @@ paths:
                   k: 3
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                reversed_nodes: array
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        grid:
-                        - [2, 1, 1]
-                        - [1, 1, 0]
-                        - [0, 1, 1]
-                      output: 
-                        minutes: 4
-                'Example 1':
-                  value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        head: [1, 2, 3, 4, 5]
-                        k: 2
-                      output:
-                        reversed_nodes: [2, 1, 4, 3, 5]
+                    reversed_nodes: [2, 1, 4, 3, 5]
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        head: [1, 2, 3, 4, 5]
-                        k: 3
-                      output:
-                        reversed_nodes: [3, 2, 1, 4, 5]
+                    reversed_nodes: [3, 2, 1, 4, 5]
 components:
   examples:
     '{path}.description': |

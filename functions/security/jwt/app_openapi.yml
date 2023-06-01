@@ -10,12 +10,21 @@ paths:
         content:
           text/plain:
             schema:
-              type: string
-              algorithm: string
-              key: string | null
-              payload: object | null
-              token: string | null
-              operation: string
+              type: object
+              properties:
+                algorithm: 
+                  type: string
+                key: 
+                  type: string
+                payload: 
+                  anyOf:
+                  - type: object
+                    additionalProperties: true
+                  - type: string
+                token: 
+                  type: string
+                operation: 
+                  type: string
             examples:
               'HS256 Encode':
                 value: |
@@ -33,21 +42,8 @@ paths:
               'RS256 Encode':
                 value: |
                   algorithm: RS256
-                  key: |
-                    -----BEGIN RSA PRIVATE KEY-----
-                    MIICWgIBAAKBgGD9zN5CI0l8Aq0CAtmwxAeeGyhB1qGNq2QKFMD2ULG7JREYonHg
-                    TXCE4SaSGAwQbDLoKALh287WTXXXJc3Et2TXrwpG2glW497rW9u+SjuPXox7wrq/
-                    31x06j6GbIUk4VlEB1zfPuIr+TdOoZeoNc09IyKwhflGWuHMfCQDw5WpAgMBAAEC
-                    gYBdOxl2e3SX6lBYJRrATh3ghKXuKHs7h4Y7/0S7xwkCDrYunNNpSwalJdWW0c+z
-                    qQWYWXg8bQZw56ZFo61/AZyWbNfcxvMMqUMhowylX7rRXjliwo/8uTFv+XJNo/w2
-                    uJ9I/U7ykYbuf2F4hrNFvoiWbkmVU6mzyX3fAGtr1/UQAQJBALRgsWPN/O3SB9Zj
-                    a4BsYMd9WUar5iwesGDG/aRDSsVIiWfe14rX/Nyspo0UcW+hY1pANNgrI4f9b+j8
-                    RQ1qbSkCQQCJp4xOaXvae06cwWW091qv6Ju6LIihBjCosvvfJXZNXe4G4G4uPs+R
-                    QxKqUuO7EL6DrkwFg+GMSvopSeMTzHSBAkB1uLWNQZ7VR8I9tV0vz4vKJpDhgscR
-                    /GV4g+Z+Ejz2TMUAuXtK7nPlQfjhEnqGNHo3KLhUbLMfydQD5sDaZJ8hAkAIB6UQ
-                    oeieqxi/3iw/rTo2Drye1KA3vHO0M5SrxLSs+LC85/Slb/aNw7rgAqvUKrriVZWL
-                    sNDEbU9Af1XmvsOBAkBXTGIxQxDWaJNsvEQrGkEmiA2jYoNd/evbsKt+oCccNlwx
-                    fWT7caCU2hrEj+ZaAxQIV2PU55kujQqX0yIGlUFJ
+                  key: -----BEGIN RSA PRIVATE KEY-----
+                    MIICWgIBAAKBgGD9zN5CI0l8Aq0CAtmwxAeeGyhB1qGNq2QKFMD2ULG7JREYonHgTXCE4SaSGAwQbDLoKALh287WTXXXJc3Et2TXrwpG2glW497rW9u+SjuPXox7wrq/31x06j6GbIUk4VlEB1zfPuIr+TdOoZeoNc09IyKwhflGWuHMfCQDw5WpAgMBAAECgYBdOxl2e3SX6lBYJRrATh3ghKXuKHs7h4Y7/0S7xwkCDrYunNNpSwalJdWW0c+zqQWYWXg8bQZw56ZFo61/AZyWbNfcxvMMqUMhowylX7rRXjliwo/8uTFv+XJNo/w2uJ9I/U7ykYbuf2F4hrNFvoiWbkmVU6mzyX3fAGtr1/UQAQJBALRgsWPN/O3SB9Zja4BsYMd9WUar5iwesGDG/aRDSsVIiWfe14rX/Nyspo0UcW+hY1pANNgrI4f9b+j8RQ1qbSkCQQCJp4xOaXvae06cwWW091qv6Ju6LIihBjCosvvfJXZNXe4G4G4uPs+RQxKqUuO7EL6DrkwFg+GMSvopSeMTzHSBAkB1uLWNQZ7VR8I9tV0vz4vKJpDhgscR/GV4g+Z+Ejz2TMUAuXtK7nPlQfjhEnqGNHo3KLhUbLMfydQD5sDaZJ8hAkAIB6UQoeieqxi/3iw/rTo2Drye1KA3vHO0M5SrxLSs+LC85/Slb/aNw7rgAqvUKrriVZWLsNDEbU9Af1XmvsOBAkBXTGIxQxDWaJNsvEQrGkEmiA2jYoNd/evbsKt+oCccNlwxfWT7caCU2hrEj+ZaAxQIV2PU55kujQqX0yIGlUFJ
                     -----END RSA PRIVATE KEY-----
                   payload:
                     example: payload
@@ -55,18 +51,10 @@ paths:
               'RS256 Decode':
                 value: |
                   algorithm: RS256
-                  key: |
-                    -----BEGIN PUBLIC KEY-----
-                    MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGD9zN5CI0l8Aq0CAtmwxAeeGyhB
-                    1qGNq2QKFMD2ULG7JREYonHgTXCE4SaSGAwQbDLoKALh287WTXXXJc3Et2TXrwpG
-                    2glW497rW9u+SjuPXox7wrq/31x06j6GbIUk4VlEB1zfPuIr+TdOoZeoNc09IyKw
-                    hflGWuHMfCQDw5WpAgMBAAE=
+                  key: -----BEGIN PUBLIC KEY-----
+                    MIGeMA0GCSqGSIb3DQEBAQUAA4GMADCBiAKBgGD9zN5CI0l8Aq0CAtmwxAeeGyhB1qGNq2QKFMD2ULG7JREYonHgTXCE4SaSGAwQbDLoKALh287WTXXXJc3Et2TXrwpG2glW497rW9u+SjuPXox7wrq/31x06j6GbIUk4VlEB1zfPuIr+TdOoZeoNc09IyKwhflGWuHMfCQDw5WpAgMBAAE=
                     -----END PUBLIC KEY-----
-                  token: |
-                    eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.e30.LSf7_KxxKkArn-
-                    9Bv8tcMnCSat_O1SYzgfFHPxmb_ZPP88B-RYNZvIL60FA18UzhtVSjT
-                    rdnnGDfnVXvifYqpRDHMh6kZ68w-Udy1ZLT43DMnKC9EHMslR8g6az3
-                    KUyrLWdtYTdtSmansTdViig27bsr5LJchqWVvri-y9G_c6E
+                  token: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.e30.LSf7_KxxKkArn-9Bv8tcMnCSat_O1SYzgfFHPxmb_ZPP88B-RYNZvIL60FA18UzhtVSjTrdnnGDfnVXvifYqpRDHMh6kZ68w-Udy1ZLT43DMnKC9EHMslR8g6az3KUyrLWdtYTdtSmansTdViig27bsr5LJchqWVvri-y9G_c6E
                   operation: decode
               'HS256 Encode - User':
                 value: |
@@ -77,11 +65,10 @@ paths:
                         user_agent: null
                         origin: null
                       user:
-                        id: user_00
-                        roles:
-                        - anonymous
-                        email: user@email.come
-                        name: first_name, last_name
+                        id: user_id
+                        email: user@email.com
+                        first_name: first_name
+                        last_name: last_name
                     expiration_time: null
                     issued_at: null
                     issuer: null
@@ -90,32 +77,42 @@ paths:
                     not_before: null
                     jwt_id: null
                   operation: encode
+                  operation: encode
 
       responses:
         200:
           description: Success
           content: 
-            text/plain:
+            application/json:
               schema:
-                type: string
+                oneOf:
+                - $ref: '#/components/{path}.schemas/JWT_Token'
+                - $ref: '#/components/{path}.schemas/JWT_Payload'
               examples:
                 'HS256 Encode':
-                  value: |
-                    token: | 
-                      eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleGFtcGxlIj
-                      oicGF5bG9hZCJ9.2eT0rQiCkCQCIyQGtDyuQkLDPRqqS6ncr8Qi
-                      NBbF5yQ
+                  value:
+                    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleGFtcGxlIjoicGF5bG9hZCJ9.2eT0rQiCkCQCIyQGtDyuQkLDPRqqS6ncr8QiNBbF5yQ
                 'HS256 Decode':
-                  value: |
-                    example: payload
+                  value:
+                    payload:
+                     example: payload
                 'RS256 Encode':
-                  value: |
-                    token: |
-                      eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleGFtcGxlIj
-                      oicGF5bG9hZCJ9.MSWLpt1TWczB3stpWqvtZ3gP5dZg1nYQnUMO
-                      NbDwco0zZrFoLNAwU7pikRuRt9brB0ZkR473VCjtVO28trpaGrv
-                      hrlBJggVVx9HpxUxpsRWMf0_p4qvnBTCBhZoaIhSPL8aJjlBn4S
-                      WD3EPGDdwnkFTZ2_587JLrw_F5m9UNpeE
+                  value:
+                    token: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJleGFtcGxlIjoicGF5bG9hZCJ9.MSWLpt1TWczB3stpWqvtZ3gP5dZg1nYQnUMONbDwco0zZrFoLNAwU7pikRuRt9brB0ZkR473VCjtVO28trpaGrvhrlBJggVVx9HpxUxpsRWMf0_p4qvnBTCBhZoaIhSPL8aJjlBn4SWD3EPGDdwnkFTZ2_587JLrw_F5m9UNpeE
                 'RS256 Decode':
-                  value: |
-                    example: payload
+                  value:
+                    payload:
+                      example: payload
+components:
+  '{path}.schemas':
+    JWT_Token:
+      type: object
+      properties:
+        token: 
+          type: string
+    JWT_Payload:
+      type: object
+      properties:
+        payload:
+          type: object
+          additionalProperties: true

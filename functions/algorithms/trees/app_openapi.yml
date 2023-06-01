@@ -4,7 +4,7 @@ paths:
       tags:
       - TODO
       - Algorithms
-      summary: Tree Conversions
+      summary: Trees
       description: |
         Functions for conversions between a 
         [tree](https://en.wikipedia.org/wiki/Tree_(data_structure)) and a 
@@ -60,29 +60,31 @@ paths:
         200:
           description: Success
           content: 
-            text/plain:
+            application/json:
               schema:
-                type: string
+                oneOf:
+                - $ref: '#/components/{path}.schemas/Tree'
+                - $ref: '#/components/{path}.schemas/Array'
               examples:
-                'Array to tree - Example 1': 
-                  value: |
+                'Array to tree 1': 
+                  value:
                     tree: {root: null}
-                'Array to tree - Example 2':
-                  value: |
+                'Array to tree 2':
+                  value:
                     tree:
                       root: 
                         left: null
                         right: null
                         value: 1
-                'Array to tree - Example 3':
-                  value: |
+                'Array to tree 3':
+                  value:
                     tree:
                       root:
                         left: {left: null, right: null, value: 2}
                         right: {left: null, right: null, value: 3}
                         value: 1
-                'Array to tree - Example 4':
-                  value: |
+                'Array to tree 4':
+                  value:
                     tree:
                       root:
                         left:
@@ -91,16 +93,47 @@ paths:
                           value: 2
                         right: {left: null, right: null, value: 3}
                         value: 1
-                'Array to tree - Example 1':
-                  value: |
+                'Tree to array 1':
+                  value:
                     array: []
-                'Array to tree - Example 2':
-                  value: |
+                'Tree to array 2':
+                  value:
                     array: [1]
-                'Array to tree - Example 3':
-                  value: |
+                'Tree to array 3':
+                  value:
                     array: [1, 2, 3]
-                'Array to tree - Example 4':
-                  value: |
+                'Tree to array 4':
+                  value:
                     array: [1, 2, 3, 4, 5]
                       
+components:
+  '{path}.schemas':
+    Node:
+      type: object
+      properties:
+        value: 
+          type: 
+            AnyValue: {}
+        next_node:
+          type: object
+          description: Another Node or null
+          nullable: true
+
+    Tree:
+      type: object
+      properties:
+        tree: 
+          type: object
+          properties:
+            root:
+              type: 
+                $ref: '#/components/{path}.schemas/Node'
+      
+    Array:
+      type: object
+      properties:
+        'array':
+          type: array
+          items: 
+            type: number
+        

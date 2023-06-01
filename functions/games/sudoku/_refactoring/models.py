@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field
+import dataclasses as dc
 from typing import List, Dict
 
 
-@dataclass
+@dc.dataclass
 class Position:
   # columns:
   # rows:
@@ -12,24 +12,24 @@ class Position:
   ...
 
 
-@dataclass
+@dc.dataclass
 class Groups:
   n: int = 0
   branch: str | None = None
-  grid: Dict[str, str | float] = field(
+  grid: Dict[str, str | float] = dc.field(
     default_factory=lambda: {})
-  rows: List[List[str] | float] = field(
+  rows: List[List[str] | float] = dc.field(
     default_factory=lambda: [])
-  columns: List[List[str] | float] = field(
+  columns: List[List[str] | float] = dc.field(
     default_factory=lambda: [])
-  intersections: Dict[str, List[str] | float] = field(
+  intersections: Dict[str, List[str] | float] = dc.field(
     default_factory=lambda: {})
-  values: Dict[str, str | float] = field(
+  values: Dict[str, str | float] = dc.field(
     default_factory=lambda: {})
   valid: bool = True
 
 
-@dataclass
+@dc.dataclass
 class Data:
   grid: List[List[str | int]] | None = None
   positions: Groups | None = None
@@ -38,7 +38,7 @@ class Data:
   completed_values_total: int = 0
 
 
-@dataclass
+@dc.dataclass
 class Base:
   n: int = 0
   columns: List[List[int | int] | float] | None = None
@@ -51,7 +51,7 @@ class Store:
   pass
 
 
-# @dataclass
+# @dc.dataclass
 # class Group:
 #   positions: Dict[str, int] | List[List[int]] | None = None
 #   values: Dict[str, List[int]] | List[List[int]] | None = None
@@ -59,11 +59,11 @@ class Store:
 #   scores: Dict[str, float] | None = None
 
 
-# @dataclass
+# @dc.dataclass
 # class Groups:
   # n: int = 0
   # grid: Dict[str, int] | None = None
-#   rows: Group = field(default_factory=lambda: Group())
-#   columns: Group = field(default_factory=lambda: Group())
-#   intersections: Group = field(default_factory=lambda: Group())
+#   rows: Group = dc.field(default_factory=lambda: Group())
+#   columns: Group = dc.field(default_factory=lambda: Group())
+#   intersections: Group = dc.field(default_factory=lambda: Group())
   

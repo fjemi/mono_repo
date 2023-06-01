@@ -21,35 +21,22 @@ paths:
                   string: eccbbbbdec
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                partitions: array
+                sizes: array
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        string: ababcbacadefegdehijhklij
-                      output: 
-                        partitions:
-                          sizes: [9, 7, 8]
-                          values: [ababcbaca, defegde, hijhklij]
+                    sizes: [9, 7, 8]
+                    partitions: [ababcbaca, defegde, hijhklij]
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        string: eccbbbbdec
-                      output: 
-                        partitions: 
-                          size: [10]
-                          values: [eccbbbbdec]
+                    size: [10]
+                    partitions: [eccbbbbdec]
 components:
   examples:
     '{path}.description': |

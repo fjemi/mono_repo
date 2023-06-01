@@ -24,40 +24,22 @@ paths:
                   meeting_times: [[7,10],[2,4]]
       responses:
         200:
-          description: Successful Response
+          description: Success
           content: 
             text/plain:
               schema:
                 type: string
-                $ref: '#/components/schemas/OK/text_plain'
+                rooms: number
               examples:
                 'Example 1':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        meeting_times: [[0, 30],[5, 10],[15, 20]]
-                      output: 
-                        rooms: 2
+                    rooms: 2
                 'Example 2':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        meeting_times: [[0, 30], [5, 45], [15, 20]]
-                      output: 
-                        rooms: 3
+                    rooms: 3
                 'Example 3':
                   value: |
-                    code: 200
-                    status: OK
-                    data: 
-                      input:
-                        meeting_times: [[7,10],[2,4]]
-                      output: 
-                        rooms: 1
+                    rooms: 1
 components:
   examples:
     '{path}.description': |

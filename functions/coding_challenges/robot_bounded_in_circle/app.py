@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 from typing import List, Dict
-from dataclasses import dataclass, field, asdict
-import yaml
+import dataclasses as dc
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
 DIRECTION_MAP = {
@@ -21,23 +21,13 @@ TURN_MAP = {
 }
 
 
-@dataclass
-class Body(models.Body):
+@dc.dataclass
+class Body:
   instructions: str = ''
   repeat_limit: int = 10
 
 
-@dataclass
-class RequestData(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class State:
   position: List[int] | None = None
   facing: List[str] | None = None
@@ -45,13 +35,13 @@ class State:
   bound_in_circle: bool = False
 
 
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
   state: State | None = None
-  direction_map: Dict[str, List[int]] = field(
+  direction_map: Dict[str, List[int]] = dc.field(
     default_factory=lambda: DIRECTION_MAP)
-  turn_map: Dict[str, List[int]] = field(
+  turn_map: Dict[str, List[int]] = dc.field(
     default_factory=lambda: TURN_MAP)
 
 
@@ -123,20 +113,22 @@ async def perform_instructions(data: Data) -> Data:
   return data
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output: 
-      states: {asdict(data.state)}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
+async def get_response(data: Data) -> dict:
+  data = {'states': dc.asdict(data.state)}
   return data
 
 
-async def main(request: Request) -> models.Response:
-  body = Body(**asdict(request.data.body))
-  data = Data(body=body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  instructions: str | None = None,
+  repeat_limit: int | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data.state = await get_initial_state()
   data = await perform_instructions(data=data)

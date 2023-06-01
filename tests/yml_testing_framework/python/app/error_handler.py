@@ -1,33 +1,37 @@
+# 
+
 from typing import Callable, Any, List, Dict, Tuple
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 import yaml
 import time
 
-from app import get_environment
-
-ENV = get_environment.main(data=__file__)
+from shared.get_environment import app as get_environment
 
 
+THIS_MODULE_PATH = __file__
+ENV = get_environment.main(module_path=THIS_MODULE_PATH)
 
-@dataclass
+
+
+@dc.dataclass
 class Time:
   start: float = None
   end: float = None
   run: str = None
 
 
-@dataclass
+@dc.dataclass
 class Log:
   function: str = None
   args: List | Tuple = None
   kwargs: Dict = None
   result: Any = None
-  _time: Time = field(default_factory=lambda: Time())
+  _time: Time = dc.field(default_factory=lambda: Time())
   memory_usage: float = None
   error: str = None
 
 
-@dataclass
+@dc.dataclass
 class Data:
   log_path: str | None = ''
 
@@ -46,7 +50,7 @@ def format_time(_time: Time) -> Time:
 def format_log(log: Log, result: Any) -> Log:
   log._time = format_time(_time=log._time)
   log.result = str(result)
-  log = asdict(log)
+  log = dc.asdict(log)
   log = yaml.dump(dict(log=log), indent=2)
   return log
 
@@ -91,7 +95,7 @@ def main(function: Callable) -> Any:
     #   args=args, 
     #   kwargs=kwargs,
     # )
-    # result = asdict(result)
+    # result = dc.asdict(result)
     # log = yaml.dump(result, indent=2)
     # print(log)
     # print(result)

@@ -3,7 +3,7 @@ paths:
     post:
       tags:
       - Algorithms
-      summary: Grid Conversions
+      summary: Grids
       description: |
         Functions for converting `m * n`, where `m, n` are nonzero integers, 
         grids (matrices) between lists, dictionaries and strings.

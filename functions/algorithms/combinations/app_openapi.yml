@@ -1,0 +1,98 @@
+paths: 
+  '/{path}/':
+    post:
+      tags:
+      - Algorithms
+      summary: Combinations
+      description: |
+        Functions for converting `m * n`, where `m, n` are nonzero integers, 
+        grids (matrices) between lists, dictionaries and strings.
+      requestBody:
+        content:
+          text/plain:
+            schema:
+              type: string
+              grid: array | object | str
+              convert_to: string
+            examples:
+              'List to Dict':
+                value: |
+                  grid:
+                  - [1, 2, 3]
+                  - [4, 5, 6]
+                  convert_to: dict
+              'Dict to List':
+                value: |
+                  grid:
+                    '0.0': 1
+                    '0.1': 2
+                    '0.2': 3
+                    '1.0': 4
+                    '1.1': 5
+                    '1.2': 6
+                  convert_to: list
+              'List to Str':
+                value: |
+                  grid:
+                  - [1, 2, 3]
+                  - [4, 5, 6]
+                  convert_to: str
+              'Str to List':
+                value: |
+                  grid: 0.0,1|0.1,2|0.2,3|1.0,4|1.1,5|1.2,6
+                  convert_to: list
+              'Dict to Str':
+                value: |
+                  grid:
+                    "0.0": 1
+                    "0.1": 2
+                    "0.2": 3
+                  convert_to: str
+              'Str to Dict':
+                value: |
+                  grid: 0.0,1|0.1,2|0.2,3|1.0,4|1.1,5|1.2,6
+                  convert_to: dict
+            
+      responses:
+        200:
+          description: Success
+          content: 
+            text/plain:
+              schema:
+                type: string
+                grid: object | array | string
+              examples:
+                'List to Dict':
+                  value: |
+                    grid:
+                      '0.0': 1
+                      '0.1': 2
+                      '0.2': 3
+                      '1.0': 4
+                      '1.1': 5
+                      '1.2': 6
+                'Dict to List':
+                  value: |
+                    grid:
+                    - [1, 2, 3]
+                    - [4, 5, 6]
+                'List to Str':
+                  value: |
+                    grid: 0.0,1|0.1,2|0.2,3|1.0,4|1.1,5|1.2,6
+                'Str to List':
+                  value: |
+                    grid: 
+                    - ['1', '2', '3']
+                    - ['4', '5', '6']
+                'Dict to Str':
+                  value: |
+                    grid: 0.0,1|0.1,2|0.2,3
+                'Str to Dict':
+                  value: |
+                    grid: 
+                      '0.0': '1'
+                      '0.1': '2'
+                      '0.2': '3'
+                      '1.0': '4'
+                      '1.1': '5'
+                      '1.2': '6'

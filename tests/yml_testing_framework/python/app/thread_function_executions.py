@@ -1,7 +1,7 @@
 from threading import Thread, Lock
 from typing import Callable, List, Dict, Any
 # from types import ModuleType
-from dataclasses import dataclass, fields
+import dataclasses as dc
 import dacite
 import time
 import inspect
@@ -10,7 +10,7 @@ STORE = []
 # THREADS = []
 LOCK = Lock()
 
-@dataclass
+@dc.dataclass
 class Data:
   # module: ModuleType | None = None
   target: Callable | None = None
@@ -50,7 +50,7 @@ SETUP_DATA = {
 def setup_data(main_args: dict) -> Data:
   '''Returns a `Data` object from the args passed into the main function'''
   conditions = [
-    hasattr(main_args['data'], '__dataclass_fields__'),
+    hasattr(main_args['data'], '__dataclassfields__'),
     isinstance(main_args['data'], dict) is True,
     main_args['data'] is None,
   ]
@@ -66,12 +66,12 @@ CONVERT_DATA_FIELDS_TO_LISTS = {
 }
 
 
-def convert_data_fields_to_lists(data: Data) -> Data:
+def convert_datafields_to_lists(data: Data) -> Data:
   '''Converts field values that are not lists to lists'''
-  exclude_fields = ['target', 'store_name']
+  excludefields = ['target', 'store_name']
   
-  for field in fields(data):
-    if field.name in exclude_fields:
+  for field in dc.fields(data):
+    if field.name in excludefields:
       continue
     value = getattr(data, field.name)
     _type = type(value).__name__
@@ -152,7 +152,7 @@ def main(
   this module'''
   # Setup
   data = setup_data(main_args=locals())
-  data = convert_data_fields_to_lists(data=data)
+  data = convert_datafields_to_lists(data=data)
   data.threads = create_threads(data=data)
   start_threads(threads=data.threads)
   return get_store_from_targets_module(

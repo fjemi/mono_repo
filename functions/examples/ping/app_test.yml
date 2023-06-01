@@ -6,17 +6,9 @@ functions:
       data: null 
     assertions:
     - equals: 
-        code: 200
-        status: OK
-        data:
-          ping: pong
-      response_as: dict
+        ping: pong
   - arguments: 
       data: {}
     assertions: 
     - equals: 
-        code: 200
-        status: OK
-        data:
-          ping: pong
-      response_as: dict
+        ping: pong

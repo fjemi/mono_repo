@@ -2,27 +2,17 @@
 
 import string
 from random import randint, shuffle
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List, Dict
-import yaml
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
-class Body(models.Body):
-  required_chars: List[str] = field(default_factory=lambda: [])
+@dc.dataclass
+class Body:
+  required_chars: List[str] = dc.field(default_factory=lambda: [])
   length: int = 8
-
-
-@dataclass
-class RequestData(models.Data):
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
 
 
 CHARS = {
@@ -33,17 +23,17 @@ CHARS = {
 }
 
 
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
-  chars: Dict[str, List[str]] = field(default_factory=lambda: CHARS)
-  counts: Dict = field(default_factory=lambda: {})
-  char_positions: List[int] = field(default_factory=lambda: [])
+  chars: Dict[str, List[str]] = dc.field(default_factory=lambda: CHARS)
+  counts: Dict = dc.field(default_factory=lambda: {})
+  char_positions: List[int] = dc.field(default_factory=lambda: [])
   password: str = ''
 
 
 async def get_char_counts(data: Data) -> dict:
-  '''Returns the percentage of occurance of char types in the total
+  '''Returns the percentage of occurrence of char types in the total
   of available chars'''
   counts = {}
   keys = list(data.chars.keys())
@@ -104,19 +94,21 @@ async def get_password(data: Data) -> str:
   return password
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output: 
-      password: {data.password}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'password': data.password}
 
 
-async def main(request: Request) -> models.Response:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  required_chars: List[str] | None = None,
+  length: int | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   data.counts = await get_char_counts(data)
   data.char_positions = await set_char_positions(data)

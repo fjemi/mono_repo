@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from dataclasses import dataclass, fields, asdict, field
+import dataclasses as dc
 from typing import List, Any, Dict, Callable
 from inspect import cleandoc
 from types import ModuleType
@@ -10,7 +10,7 @@ from fnmatch import fnmatch
 from app import get_module_at_path
 
 
-@dataclass 
+@dc.dataclass 
 class Constructor:
   '''
   description: Stores information about a constructor, an object to cast 
@@ -23,7 +23,7 @@ class Constructor:
   _object: Any | None = None
 
 
-@dataclass
+@dc.dataclass
 class Module:
   '''
   description: Store information about a module to test
@@ -37,7 +37,7 @@ class Module:
   _object: ModuleType | None = None
 
 
-@dataclass
+@dc.dataclass
 class Data:
   '''
   description: Dataclass for storing information used within this module
@@ -79,7 +79,7 @@ def setup_data(data: Data | dict, _locals: Dict = locals()) -> Data:
   downstream'''
   _type = type(data).__name__
   switcher = {
-    '__dataclass_fields__' in dir(data): 'data',
+    '__dataclassfields__' in dir(data): 'data',
     _type == 'Data': 'data',
     _type == 'dict': 'dict',
     # _type == 'str': 'str',
@@ -121,7 +121,7 @@ def convert_single_item_to_list(data: Data, _locals: Dict = locals()) -> Data:
   return data
 
 
-def get_field_lengths(data: Data) -> Data:
+def getfield_lengths(data: Data) -> Data:
   '''
   description: Returns the number of items within the `constructors` and
     `values` fields
@@ -428,11 +428,11 @@ def get_value_and_cast_type_cases(
       constructor.name in ['None', 'NoneType', None]: 'none',
       constructor.name == 'dict': 'dict',
       constructor.name in ['list', 'tuple']: 'list|tuple',
-      hasattr(constructor._object, '__dataclass_fields__') is True: 'dataclass',
-      hasattr(constructor._object, '__fields__') is True: 'basemodel',
+      hasattr(constructor._object, '__dataclassfields__') is True: 'dataclass',
+      hasattr(constructor._object, '_fields__') is True: 'basemodel',
       sum([
-        hasattr(constructor._object, '__fields__') is False,
-        hasattr(constructor._object, '__dataclass_fields__') is False,
+        hasattr(constructor._object, '_fields__') is False,
+        hasattr(constructor._object, '__dataclassfields__') is False,
         constructor.name not in [
           'dict', 
           'list', 
@@ -442,7 +442,7 @@ def get_value_and_cast_type_cases(
           None,
         ],
       ]) / 3: 'other',
-      hasattr(constructor._object, '__fields__') is True: 'basemodel',
+      hasattr(constructor._object, '_fields__') is True: 'basemodel',
     }
     
     # Determine the value type based on these conditions
@@ -452,12 +452,12 @@ def get_value_and_cast_type_cases(
       value_type in ['list', 'tuple']: 'list|tuple',
       value in ['None', None, 'NoneType']: 'none',
       hasattr(value, 'keys') is True: 'dict',
-      hasattr(value, '__dataclass_fields__') is True: 'dataclass',
-      hasattr(value, '__fields__') is True: 'basemodel',
+      hasattr(value, '__dataclassfields__') is True: 'dataclass',
+      hasattr(value, '_fields__') is True: 'basemodel',
       sum([
         hasattr(value, 'keys') is False,
-        hasattr(value, '__fields__') is False,
-        hasattr(value, '__dataclass_fields__') is False,
+        hasattr(value, '_fields__') is False,
+        hasattr(value, '__dataclassfields__') is False,
         value_type not in ['dict', 'list', 'tuple'],
         value not in ['None', None, 'NoneType'],
       ]) / 5: 'other',
@@ -532,7 +532,7 @@ def main(data: Data | dict, _locals: Dict = locals()) -> List[Any]:
   module in order.'''
   data = setup_data(data, _locals=_locals)
   data = convert_single_item_to_list(data=data, _locals=_locals)
-  data = get_field_lengths(data=data)
+  data = getfield_lengths(data=data)
   data = match_constructors_to_values_relationship(data=data, _locals=_locals)
   if data.modules is None:
     data.modules = set_modules_and_add_standard_library(module=data.modules)
@@ -569,7 +569,7 @@ def example() -> None:
   from time import time
 
 
-  @dataclass
+  @dc.dataclass
   class DataClass:
     test: str = ''
   

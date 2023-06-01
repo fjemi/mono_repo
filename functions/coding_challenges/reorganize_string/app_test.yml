@@ -1,7 +1,7 @@
 functions: 
 - name: get_char_counts
   description: Returns a dictionary with keys as chars and values as the 
-    number of occurances of the char in the string
+    number of occurences of the char in the string
   input_dataclass: Data
   inputs:
     - string: ''
@@ -18,7 +18,7 @@ functions:
     - {'a': 1, 'b': 2}
     - {'a': 1, 'b': 3}
 - name:  get_upper_bound
-  description: Returns the upper bound for the max occurance of chars in s 
+  description: Returns the upper bound for the max occurrence of chars in s 
     string of length n
   inputs:
     - string: ''

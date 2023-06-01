@@ -1,24 +1,24 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, asdict, fields
+import dataclasses as dc
 from typing import Any
 import time
 import os
 import json
-from fastapi import HTTPException, Response
+from fastapi import HTTPException, Request
 from fastapi.responses import JSONResponse
 from fastapi.templating import Jinja2Templates
 
-from api import models as api_models
+from shared.format_main_arguments import app as format_main_arguments
 from functions.wrappers.aws import app as asw_wrapper
 from shared.get_environment import app as get_environment
 
 
 THIS_MODULE_PATH = __file__
-ENV = get_environment.main({'module_path': THIS_MODULE_PATH})
+ENV = get_environment.main(module_path=THIS_MODULE_PATH)
 
 
-@dataclass
+@dc.dataclass
 class Body:
   name: str | None = None
   age: int | float | None = None
@@ -26,9 +26,17 @@ class Body:
   save_to: str = 's3'
 
 
-@dataclass
+@dc.dataclass
+class Form:
+  name: str | None = None
+  age: int | float | None = None
+  username: str | None = None
+
+
+@dc.dataclass
 class Data:
   body: Body | None = None
+  form: Form | None = None
   request_method: str = 'GET'
   json: str | None = None
   folder: str | None = None
@@ -36,7 +44,8 @@ class Data:
   response: Any | None = None
 
 
-async def handle_get_request(request: api_models.Request) -> Data:
+async def handle_get_request(data: Data) -> Data:
+  _ = data
   directory = os.path.dirname(THIS_MODULE_PATH)
   directory = os.path.join(directory, 'static')
   template = Jinja2Templates(
@@ -46,54 +55,23 @@ async def handle_get_request(request: api_models.Request) -> Data:
 
   template = template.TemplateResponse(
     'index.html',
-    context={'request': request},
+    context={'request': {}},
   )
   return template
 
 
-async def body_or_form_data(
-  request: api_models.Request,
-) -> api_models.Request:
-  if request.data.body:
-    return request
+async def format_form_data(data: Data) -> Data:
+  if data.body:
+    return data
 
-  store = {}
-  for key, value in request.data.form.items():
-    value = value.decode('utf-8')
-    store[key] = value
+  for field in dc.fields(data.form):
+    value = getattr(data.form, field.name)
+    print(value)
+    # value = value.decode('utf-8')
 
-  request.data.body = Body(**store)
-  request.data.form = None
-  return request
-
-
-async def process_post_request_parameters(
-  request: api_models.Request,
-) -> Data:
-  body = Body()
-
-  store = []
-  for _field in fields(body):
-    if not hasattr(request.data.body, _field.name):
-      store.append(_field.name)
-      continue
-    value = getattr(request.data.body, _field.name)
-    if value is None:
-      store.append(_field.name)
-      continue
-    setattr(body, _field.name, value)
-
-  if store:
-    raise HTTPException(
-      status_code=400,
-      detail=f'Missing request parameters: {store}',
-    )
-
-  data = Data(
-    body=body,
-    request_method='POST',
-    timestamp=int(time.time()),
-  )
+  data.form = dc.asdict(data.form)
+  data.body = Body(**data.form)
+  data.form = None
   return data
 
 
@@ -102,13 +80,6 @@ async def get_folder_name(this_module_path: str) -> str:
   directory = directory.split(os.sep)
   folder = directory[-1]
   return folder
-
-
-async def convert_post_request_parameters_to_json(data: Data) -> Data:
-  data.json = asdict(data.body)
-  del data.json['save_to']
-  data.json = json.dumps(data.json)
-  return data
 
 
 async def save_to_s3(data: Data) -> Data:
@@ -147,8 +118,7 @@ async def save_to_s3(data: Data) -> Data:
   '''
 
   response = await asw_wrapper.main(service=service)
-
-  if response != [200]:
+  if response != [{'ResponseMetadata.HTTPStatusCode': 200}]:
     raise HTTPException(
       status_code=500,
       detail=f'Could not save {key} to S3',
@@ -205,10 +175,15 @@ async def save_post_request_parameters(data: Data) -> Data:
   return data
 
 
-async def handle_post_request(request: api_models.Request) -> Data:
-  request = await body_or_form_data(request=request)
-  data = await process_post_request_parameters(request=request)
-  data = await convert_post_request_parameters_to_json(data=data)
+async def handle_post_request(data: Data) -> Data:
+  data = await format_form_data(data=data)
+
+  data.request_method = 'POST'
+  data.timestamp = int(time.time())
+  data.json = dc.asdict(data.body)
+  del data.json['save_to']
+  data.json = json.dumps(data.json)
+
   data = await save_post_request_parameters(data=data)
   return data
 
@@ -228,10 +203,22 @@ async def get_response(data: Data) -> JSONResponse | Jinja2Templates:
   return data
 
 
+# pylint: disable=unused-argument
 async def main(
-  request: api_models.Request,
-) -> api_models.Response | Jinja2Templates:
+  request: Request | None = None,
+  name: str | None = None,
+  age: int | float | None = None,
+  username: str | None = None,
+  save_to: str | None = None,
+) -> dict | Jinja2Templates:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body, 'form': Form},
+    main_data_class=Data,
+  )
+  # return
   handler = REQUEST_HANDLER[request.method]
-  data = await handler(request=request)
+  request = None
+  data = await handler(data=data)
   data = await get_response(data=data)
   return data

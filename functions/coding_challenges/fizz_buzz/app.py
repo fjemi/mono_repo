@@ -1,37 +1,27 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
-from typing import List, Union, Dict
-import yaml
+import dataclasses as dc
+from typing import List, Dict
+from fastapi import Request
 
-from api import models
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
+@dc.dataclass
 class Body:
   numbers: List[int] | None = None
 
 
-@dataclass
-class RequestData:
-  body: Body | None = None
-
-
-@dataclass
-class Request(models.Request):
-  data: RequestData | None = None
-
-
-@dataclass
+@dc.dataclass
 class Result:
   number: int = 0
   value: str = ''
 
 
-@dataclass
-class Props:
+@dc.dataclass
+class Data:
   body: Body | None = None
-  results: List[str] = field(default_factory=lambda: [])
+  results: List[str] = dc.field(default_factory=lambda: [])
 
 
 SWITCHER = {
@@ -53,23 +43,25 @@ async def get_fizz_buzz(number: int) -> str:
   return result
 
 
-async def get_response(props: Props) -> models.Response:
-  props = f'''
-    input: {asdict(props.body)} 
-    output: {props.results}
-  '''
-  props = yaml.safe_load(props)
-  props = models.Response(data=props)
-  return props
+async def get_response(data: Data) -> dict:
+  return {'output': data.results}
 
 
-async def main(request: Request) -> models.Response:
-  props = Props(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  numbers: List[int] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
-  if not isinstance(props.body.numbers, list):
-    props.body.numbers = [props.body.numbers]
-  for number in props.body.numbers:
+  if not isinstance(data.body.numbers, list):
+    data.body.numbers = [data.body.numbers]
+  for number in data.body.numbers:
     result = await get_fizz_buzz(number=number)
-    props.results.append(result)
-  props = await get_response(props=props)
-  return props
+    data.results.append(result)
+  data = await get_response(data=data)
+  return data

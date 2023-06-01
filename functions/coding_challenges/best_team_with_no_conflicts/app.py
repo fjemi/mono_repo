@@ -1,29 +1,19 @@
 #!/usr/bin/env python3
 
-from dataclasses import dataclass, field, asdict
+import dataclasses as dc
 from typing import List, Dict
-import yaml
+from fastapi import Request
 
-from api import models 
+from shared.format_main_arguments import app as format_main_arguments
 
 
-@dataclass
+@dc.dataclass
 class Body:
   scores: List[int] | None = None
   ages: List[int] | None = None
-  
-
-@dataclass
-class Data:
-  body: Body | None = None
 
 
-@dataclass
-class Request:
-  data: Data | None = None
-
-
-@dataclass
+@dc.dataclass
 class Data:
   body: Body | None = None
   total_score: int = 0
@@ -119,19 +109,21 @@ async def get_total_score(scores_by_ages: Dict[int, int]) -> int:
   return total_score
 
 
-async def get_response(data: Data) -> models.Response:
-  data = f'''
-    input: {asdict(data.body)}
-    output:
-      total_score: {data.total_score}
-  '''
-  data = yaml.safe_load(data)
-  data = models.Response(data=data)
-  return data
+async def get_response(data: Data) -> dict:
+  return {'total_score': data.total_score}
 
 
-async def main(request: Request) -> models.Response:
-  data = Data(body=request.data.body)
+# pylint: disable=unused-argument
+async def main(
+  request: Request | None = None,
+  scores: List[int] | None = None,
+  ages: List[int] | None = None,
+) -> dict:
+  data = await format_main_arguments.main(
+    _locals=locals(),
+    data_classes={'body': Body},
+    main_data_class=Data,
+  )
   request = None
   scores_by_ages = await get_scores_by_ages(
     scores=data.body.scores,
